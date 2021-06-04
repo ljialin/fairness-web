@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+  Welcome to the web page of Fairness Project <br>
+  Finished Processes: <br>
+  {% for p in f_processes %}
+    <li> {{ p.get_name() }} </li>
+  {% endfor %}
+  Running Processes:
+  {% for p in r_processes %}
+    <li> {{ p.get_name() }} </li>
+  {% endfor %}
+</body>
+</html>
