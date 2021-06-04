@@ -1,22 +1,24 @@
-from flask import Flask, render_template, request
-from entities import *
 import os
+from flask import Flask, render_template, request
+from root import PRJROOT
+from entities import *
 
 app = Flask(__name__)
 
 @app.route('/')
-def student():
+def main_page():
    kwargs = {
       'f_processes': [],
       'r_processes': []
    }
 
-   for _, _, files in os.walk('./metadata/processes'):
+   path = PRJROOT + 'metadata/processes'
+   for _, _, files in os.walk(path):
       for fname in files:
          print(fname[-7:])
          if fname[-7:] != '.pickle':
             continue
-         with open('metadata/processes/' + fname, 'rb') as f:
+         with open(path + '/' + fname, 'rb') as f:
             process = CustomUnpickler(f).load()
          if process.finished:
             kwargs['f_processes'].append(process)
