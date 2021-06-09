@@ -15,7 +15,6 @@ def main_page():
    path = PRJROOT + 'metadata/processes'
    for _, _, files in os.walk(path):
       for fname in files:
-         print(fname[-7:])
          if fname[-7:] != '.pickle':
             continue
          with open(path + '/' + fname, 'rb') as f:
@@ -26,6 +25,9 @@ def main_page():
             kwargs['r_processes'].append(process)
    return render_template('index.html', **kwargs)
 
+@app.route('/create')
+def create_page():
+   return 'To Be Developed'
 
 if __name__ == '__main__':
    app.run(debug = True)

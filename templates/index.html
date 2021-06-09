@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>Title</title>
-</head>
+  <head>
+    <script type = "text/javascript"
+      src = "{{ url_for('static', filename = 'redirection.js') }}" >
+    </script>
+  </head></head>
 <body>
   Welcome to the web page of Fairness Project <br>
   Finished Processes: <br>
@@ -14,5 +18,6 @@
   {% for p in r_processes %}
     <li> {{ p.get_name() }} </li>
   {% endfor %}
+  <input type="submit" value="Create New Process" onclick="toCreate()">
 </body>
 </html>
