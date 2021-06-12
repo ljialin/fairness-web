@@ -12,11 +12,15 @@
   Welcome to the web page of Fairness Project <br>
   Finished Processes: <br>
   {% for p in f_processes %}
-    <li> {{ p.get_name() }} </li>
+    <li>
+      <a href="/process/{{ p.get_strid() }}">{{ p.get_name() }}</a>
+    </li>
   {% endfor %}
   Running Processes:
   {% for p in r_processes %}
-    <li> {{ p.get_name() }} </li>
+    <li>
+      <a href="/process/{{ p.get_strid() }}">{{ p.get_name() }}</a>
+    </li>
   {% endfor %}
   <input type="submit" value="Create New Process" onclick="toCreate()">
 </body>

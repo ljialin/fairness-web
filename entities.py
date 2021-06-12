@@ -18,6 +18,9 @@ class Process:
     def get_name(self):
         return 'process_%03d' % self.pid
 
+    def get_strid(self):
+        return '%03d' % self.pid
+
     def __str__(self):
         return 'process_%03d' % self.pid
 
