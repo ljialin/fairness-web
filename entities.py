@@ -10,10 +10,12 @@ class CustomUnpickler(pickle.Unpickler):
 
 class Process:
     # Don't overwrite __getattr__(self, item) function!
+    count = 0
 
-    def __init__(self, **kwargs):
-        self.finished = kwargs['finished']
-        self.pid = kwargs['pid']
+    def __init__(self):
+        self.finished = False
+        self.pid = Process.count
+        Process.count += 1
 
     def get_name(self):
         return 'process_%03d' % self.pid

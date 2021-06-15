@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, abort
 from root import PRJROOT
 from entities import *
 
@@ -19,6 +19,7 @@ def main_page():
             continue
          with open(path + '/' + fname, 'rb') as f:
             process = CustomUnpickler(f).load()
+            Process.count += 1
          if process.finished:
             kwargs['f_processes'].append(process)
          else:
@@ -28,12 +29,22 @@ def main_page():
 
 @app.route('/create')
 def create_page():
-   return 'To Be Developed'
-
+   return render_template('create_page.html')
 
 @app.route('/process/<pid>')
 def process_page(pid):
-   return f'Detailed Information of Process {pid}'
+   filepath = PRJROOT + f'metadata/processes/process_{pid}.pickle'
+   try:
+      with open(filepath, 'rb') as f:
+         process = CustomUnpickler(f).load()
+   except FileNotFoundError:
+      abort(404)
+
+   kwargs = {
+      'pid': pid,
+      'finished': process.finished
+   }
+   return render_template('process_page.html', **kwargs)
 
 if __name__ == '__main__':
    app.run(debug = True)

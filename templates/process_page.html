@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+  <meta charset="UTF-8">
+  <title>Process Detial</title>
+  <head>
+    <script type = "text/javascript"
+      src = "{{ url_for('static', filename = 'script.js') }}" >
+    </script>
+  </head>
+</head>
+<body>
+  <h2>
+    优化过程-{{ pid }}（
+      {% if finished %}
+        结束
+      {% else %}
+        运行中
+      {% endif %}
+    ）
+  </h2>
+  <p>
+    <img src="{{ url_for('static', filename= './images/curve.jpg') }}" alt="curve"/>
+  </p>
+  {% if not finished %}
+  <p>
+    <button id="pausecontinue" onclick="pauseContinue()"> 暂停 </button>
+      <button onclick="killProcess()"> 结束进程 </button>
+  </p>
+  {% endif %}
+  <p>
+    {% if not finished %}
+      <input type="submit" value="上传模型" onclick="uploadModels()">
+    {% endif %}
+    <input type="submit" value="下载模型" onclick="downloadModels()">
+  </p>
+</body>
+</html>

@@ -1,27 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cn">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
-  <head>
-    <script type = "text/javascript"
-      src = "{{ url_for('static', filename = 'redirection.js') }}" >
-    </script>
-  </head></head>
+  <title>Fairness Platform</title>
+  <script type = "text/javascript"
+    src = "{{ url_for('static', filename = 'script.js') }}" >
+  </script>
+</head>
 <body>
-  Welcome to the web page of Fairness Project <br>
-  Finished Processes: <br>
+  <h1> 简介... </h1>
+  <h3> 历史进程: </h3>
   {% for p in f_processes %}
     <li>
       <a href="/process/{{ p.get_strid() }}">{{ p.get_name() }}</a>
     </li>
   {% endfor %}
-  Running Processes:
+  <h3> 运行中进程: </h3>
   {% for p in r_processes %}
     <li>
       <a href="/process/{{ p.get_strid() }}">{{ p.get_name() }}</a>
     </li>
   {% endfor %}
-  <input type="submit" value="Create New Process" onclick="toCreate()">
+  <p>
+    <input type="submit" value="创建新进程" onclick="toCreatePage()">
+  </p>
 </body>
 </html>

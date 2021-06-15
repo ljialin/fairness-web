@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+  <meta charset="UTF-8">
+  <title>创建新进程</title>
+  <head>
+    <script type = "text/javascript"
+      src = "{{ url_for('static', filename = 'script.js') }}" >
+    </script>
+  </head>
+</head>
+<body>
+  <h2> 数据集 </h2>
+	<div>
+      <p><label>
+        <input type="radio" name="dataset" value="adult"> Adult
+      </label></p>
+	  <p><label>
+        <input type="radio" name="dataset" value="bank"> Bank
+      </label></p>
+	  <p><label>
+        <input type="radio" name="dataset" value="compas"> COMPAS
+      </label> </p>
+      <p>
+        <input type="submit" value="上传数据集" onclick="uploadDataset()">
+      </p>
+	</div>
+  <h4> 离散属性 </h4>
+	<div>
+	  <p><label>
+        <input type="checkbox" name="discreteAttr" value="workclass"> Work Class
+      </label></p>
+	  <p><label>
+        <input type="checkbox" name="discreteAttr" value="education"> Education
+      </label></p>
+	</div>
+  <h4> 连续属性 </h4>
+	<div>
+	  <p><label>
+        <input type="checkbox" name="continusAttr" value="age"> Age
+      </label></p>
+	  <p><label>
+        <input type="checkbox" name="continusAttr" value="income"> Income
+      </label></p>
+	</div>
+  <h4> 目标属性 </h4>
+	<div>
+	  <p><label>
+        <input type="radio" name="tarAttr" value="workclass"> Work Class
+      </label></p>
+	  <p><label>
+        <input type="radio" name="tarAttr" value="education"> Education
+      </label></p>
+	  <p><label>
+        <input type="radio" name="tarAttr" value="age"> Age
+      </label></p>
+	  <p><label>
+        <input type="radio" name="tarAttr" value="income"> Income
+      </label></p>
+	</div>
+  <input type="submit" value="确认">
+</body>
+</html>
