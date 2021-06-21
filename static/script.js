@@ -1,5 +1,5 @@
-function toCreatePage() {
-    window.location.href="/create"
+function toDataPage() {
+    window.location.href="/data"
 }
 
 function uploadDataset(){

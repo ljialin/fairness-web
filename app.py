@@ -26,10 +26,9 @@ def main_page():
             kwargs['r_processes'].append(process)
    return render_template('index.html', **kwargs)
 
-
-@app.route('/create')
-def create_page():
-   return render_template('create_page.html')
+@app.route('/data')
+def data_page():
+   return render_template('data_page.html')
 
 @app.route('/process/<pid>')
 def process_page(pid):
