@@ -1,4 +1,7 @@
+import csv
+import json
 import pickle
+from root import PRJROOT
 
 class CustomUnpickler(pickle.Unpickler):
     def find_class(self, module, name):
@@ -7,6 +10,17 @@ class CustomUnpickler(pickle.Unpickler):
         except AttributeError:
             return super().find_class(module, name)
 
+
+class DataTab:
+    def __init__(self, name):
+        self.name = name
+        self.attrs = []
+        self.is_discrete = []
+        self.convert_map = {}
+        with open(PRJROOT + name + '.txt', 'r') as f:
+            content = []
+            reader = csv.reader(f)
+            self.attrs = next(reader)
 
 class Process:
     # Don't overwrite __getattr__(self, item) function!
