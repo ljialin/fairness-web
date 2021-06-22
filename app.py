@@ -29,19 +29,41 @@ def main_page():
     return render_template('index.html', **kwargs)
 
 
-@app.route('/data')
-def data_page():
+# @app.route('/data')
+# def data_page():
+#     kwargs = {
+#         'datasets': [],
+#         'selected': None
+#     }
+#     path = PRJROOT + 'data/'
+#     for root, _, files in os.walk(path):
+#         if root != path:
+#             continue
+#         for fname in files:
+#             if fname[-4:] != '.csv':
+#                 continue
+#             kwargs['datasets'].append(DataTab(fname[:-4]))
+#     return render_template('data_page.html', **kwargs)
+
+
+@app.route('/data', methods=['POST', 'GET'])
+def dataset_selecetd():
+    print(request.form.to_dict())
+    request_info = request.form.to_dict()
     kwargs = {
-        'datasets':{}
+        'datasets': [],
+        'selected': None
     }
     path = PRJROOT + 'data/'
-    datasets = []
-    for _, _, files in os.walk(path):
+    for root, _, files in os.walk(path):
+        if root != path:
+            continue
         for fname in files:
             if fname[-4:] != '.csv':
                 continue
-            kwargs['datasets'][fname[:-4]] = {'discrete'}
+            kwargs['datasets'].append(DataTab(fname[:-4]))
     return render_template('data_page.html', **kwargs)
+
 
 
 @app.route('/create')

@@ -19,13 +19,13 @@ people_liable_for
 telephone
 foreign_worker
 credit
-DISCRETE ATTRIBUTES:
+DISCRETE ATTRBUTES:
 status:
     A11
     A12
     A13
     A14
-create_history:
+create_hsitory:
     A30
     A31
     A32
