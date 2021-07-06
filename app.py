@@ -1,10 +1,19 @@
+"""
+@DATE: 2021/6/03
+@Author: Ziqi Wang
+@File: app.py
+"""
+
 import os
-import csv
 from flask import Flask, render_template, request, abort
-from root import PRJROOT
-from entities import *
+from src.entities import *
+from src.process import Process
+from src.utils import CustomUnpickler, FileUtils
+from src.pages import UserPageMgr
 
 app = Flask(__name__)
+
+app.config["SECRET_KEY"] = 'fairness'
 
 
 @app.route('/')
@@ -29,41 +38,23 @@ def main_page():
     return render_template('index.html', **kwargs)
 
 
-# @app.route('/data')
-# def data_page():
-#     kwargs = {
-#         'datasets': [],
-#         'selected': None
-#     }
-#     path = PRJROOT + 'data/'
-#     for root, _, files in os.walk(path):
-#         if root != path:
-#             continue
-#         for fname in files:
-#             if fname[-4:] != '.csv':
-#                 continue
-#             kwargs['datasets'].append(DataTab(fname[:-4]))
-#     return render_template('data_page.html', **kwargs)
-
-
 @app.route('/data', methods=['POST', 'GET'])
-def dataset_selecetd():
-    print(request.form.to_dict())
-    request_info = request.form.to_dict()
-    kwargs = {
-        'datasets': [],
-        'selected': None
-    }
-    path = PRJROOT + 'data/'
-    for root, _, files in os.walk(path):
-        if root != path:
-            continue
-        for fname in files:
-            if fname[-4:] != '.csv':
-                continue
-            kwargs['datasets'].append(DataTab(fname[:-4]))
-    return render_template('data_page.html', **kwargs)
-
+def data_page():
+    # print(request.form)
+    if not request.form:
+        return render_template('data_page.html', page=UserPageMgr.new())
+    else:
+        errinfo = None
+        if request.form['name'] == 'upload-dataset':
+            errinfo = UserPageMgr.get().upload_dataset(
+                request.files['desc'], request.files['data'], request.form['keep-or-not'] == 'T'
+            )
+        elif request.form['name'] == 'select-dataset':
+            errinfo = UserPageMgr.get().select_dataset(
+                request.form['dataset']
+            )
+            print(errinfo)
+        return render_template('data_page.html', page=UserPageMgr.get(), errinfo=errinfo)
 
 
 @app.route('/create')
