@@ -1,5 +1,5 @@
 NAME:
-German1
+German2
 NUMBER OF ATTRIBUTES:
 20
 ATTRIBUTES:
@@ -10,12 +10,12 @@ purpose, categorical, A40, A41, A42, A43, A44, A45, A46, A47, A48, A49, A410
 credit_amount, numberical
 savings, categorical, A61, A62, A63, A64, A65
 employment, categorical, A71, A72, A73, A74, A75
-investment_as_income_percentage,numberical
+investment_as_income_percentage,numberical, 1~4
 personal_status, categorical, A91, A92, A93, A94, A95
 other_debtors, categorical, A101, A102, A103
 residence_since, numberical, 1~4
 property, categorical, A121, A122, A123, A124
-age, numberical, 18~100
+age, numberical, 18 ~ 100
 installment_plans, categorical, A141, A142, A143
 housing, categorical, A151, A152, A153
 number_of_credits, numberical

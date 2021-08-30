@@ -1,5 +1,5 @@
 function toDataPage() {
-    window.location.href="/data"
+    window.location.href="/evaluate"
 }
 
 function uploadDataset(){

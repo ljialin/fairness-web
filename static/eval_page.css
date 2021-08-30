@@ -1,0 +1,74 @@
+body{
+    /*background: #42413C ;*/
+    margin: 0;/*消除body中的留白*/
+    padding: 0;
+    text-align: center;
+}
+
+.container{
+    width: 90%;
+    height: 720px;
+    /*background: #FFF;*/
+    margin: 0 auto;/*侧边的自动值与宽度结合使用，可以将布局居中对齐*/
+    text-align: left;
+}
+
+.header{
+    width: 100%;
+    height: 60px;
+    float: top;
+    /*padding: 10px 0;*/
+    /*background: #ADB96E;*/
+}
+
+.content{
+    width: 100%;
+    height: 640px;
+}
+
+.sidebar{
+    float: left;/*侧边栏居左，改为right可令侧边栏居右*/
+    width: 20%;
+    height: 660px;
+    /*background: #a4f;*/
+}
+
+.side_form{
+    /*float: top;*/
+    width: 100%;
+    height: 40%;
+    float: top;
+    overflow-y: auto;
+}
+
+.main_content{
+    width: 78%;
+    height: 640px;
+    margin-left: 2%;
+    float: left;
+    overflow-y: auto;
+    /*background: #eee;*/
+}
+
+.block{
+    width: 100%;
+    float: top;
+}
+
+.col3first{
+    width: 32%;
+    float: left;
+}
+
+.col3{
+    width: 32%;
+    float: left;
+    margin-left: 2%;
+}
+
+/*.footer{*/
+/*    clear: both;!*清除前后的浮动元素，使页脚显示在其下方*!*/
+/*    position: relative;!*修改IE浏览器中clear无效的bug*!*/
+/*    padding: 10px 0;*/
+/*    !*background: #CCC49F;*!*/
+/*}*/

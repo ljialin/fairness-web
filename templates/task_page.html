@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>Process Detial</title>
-  <head>
-    <script type = "text/javascript"
-      src = "{{ url_for('static', filename = 'script.js') }}" >
-    </script>
-  </head>
+  <script type = "text/javascript"
+    src = "{{ url_for('static', filename = 'script.js') }}" >
+  </script>
 </head>
 <body>
+  <p> <input type="button" value="回到主页面" onclick="window.location.href='/'"> </p>
   <h2>
     优化过程-{{ pid }}（
       {% if finished %}
@@ -24,8 +23,7 @@
   </p>
   {% if not finished %}
   <p>
-    <button id="pausecontinue" onclick="pauseContinue()"> 暂停 </button>
-      <button onclick="killProcess()"> 结束进程 </button>
+    <input type="submit" value="终止任务" onclick="killProcess()">
   </p>
   {% endif %}
   <p>

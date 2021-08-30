@@ -3,26 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <title>Fairness Platform</title>
-  <script type = "text/javascript"
-    src = "{{ url_for('static', filename = 'script.js') }}" >
-  </script>
+  <script type = "text/javascript" src = "/static/redirect.js" > </script>
 </head>
 <body>
   <h1> 简介... </h1>
-  <h3> 历史进程: </h3>
+  <h3> 历史任务: </h3>
   {% for p in f_processes %}
     <li>
-      <a href="/process/{{ p.get_strid() }}">{{ p.get_name() }}</a>
+      <a href="/task/{{ p.get_strid() }}"> {{ p.get_name() }} </a>
     </li>
   {% endfor %}
-  <h3> 运行中进程: </h3>
+  <h3> 运行中任务: </h3>
   {% for p in r_processes %}
     <li>
-      <a href="/process/{{ p.get_strid() }}">{{ p.get_name() }}</a>
+      <a href="/task/{{ p.get_strid() }}"> {{ p.get_name() }} </a>
     </li>
   {% endfor %}
-  <p>
-    <input type="submit" value="创建新进程" onclick="toDataPage()">
-  </p>
+
+  <form method="post" style="float: top; margin-top: 10px">
+    <input type="hidden" name="name" value="next">
+    <input type="hidden" name="tar" value="/data-eval">
+    <input type="submit" value="评估数据公平性">
+  </form>
+  <form method="post" style="float: top; margin-top: 10px">
+    <input type="hidden" name="name" value="next">
+    <input type="hidden" name="tar" value="/model-upload">
+    <input type="submit" value="评估模型公平性">
+  </form>
+  <form method="post" style="float: top; margin-top: 10px">
+    <input type="hidden" name="name" value="next">
+    <input type="hidden" name="tar" value="/algo-cfg">
+    <input type="submit" value="创建新任务">
+  </form>
 </body>
 </html>

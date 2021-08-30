@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Model Upload</title>
+</head>
+<body>
+  <input type="button" value="回到主页面" onclick="window.location.href='/'">
+  <h3>
+    请上传pytorch模型（.pth或.pkl）文件。模型文件必须是包含网络结构信息的完整网络文件。
+    目前不支持通过torch.save(model.state_dict(), path)保存的模型参数文件。
+  </h3>
+  <form action="" enctype='multipart/form-data' method='POST'>
+    <p>
+      选择模型文件(.pth或.pkl)
+      <input type="file" name="model">
+    </p>
+    <input type="submit" value="上传模型并进行模型评估">
+  </form>
+</body>
+</html>
