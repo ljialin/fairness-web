@@ -8,17 +8,26 @@
 <body>
   <h1> 简介... </h1>
   <h3> 历史任务: </h3>
-  {% for p in f_processes %}
+{#  {% for p in f_processes %}#}
     <li>
-      <a href="/task/{{ p.get_strid() }}"> {{ p.get_name() }} </a>
+      <a href="/task/0000"> task-0000 </a>
     </li>
-  {% endfor %}
+    <li>
+      <a href="/task/0001"> task-0001 </a>
+    </li>
+    <li>
+      <a href="/task/0003"> task-0003 </a>
+    </li>
+{#  {% endfor %}#}
   <h3> 运行中任务: </h3>
-  {% for p in r_processes %}
     <li>
-      <a href="/task/{{ p.get_strid() }}"> {{ p.get_name() }} </a>
+      <a href="/task/0002"> task-0002 </a>
     </li>
-  {% endfor %}
+{#  {% for p in r_processes %}#}
+{#    <li>#}
+{#      <a href="/task/{{ p.get_strid() }}"> {{ p.get_name() }} </a>#}
+{#    </li>#}
+{#  {% endfor %}#}
 
   <form method="post" style="float: top; margin-top: 10px">
     <input type="hidden" name="name" value="next">

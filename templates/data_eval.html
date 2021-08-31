@@ -43,7 +43,7 @@
           </div>
           <div style="float: top; margin-top: 5%">
             <b> 选择正当属性  </b>
-            <input type="button" value="？" onclick="legi_feature_info()">
+            <input type="button" value="?" onclick="legi_feature_info()">
           </div>
           <div class="side_form">
             {% for featr in view.featrs %}
@@ -79,10 +79,10 @@
             <script> get_chart("bar21", "/charts/datacgf/gender") </script>
           </div>
           <p> 以Grade为正当属性对Gender特征进行分析，未发现公平性问题</p>
-          <div id="bar22" style="width:96%; height:360px">
-            <script> get_chart("bar22", "/charts/datacgf/race") </script>
-          </div>
-          <p> 以Grade为正当属性对Race特征进行分析，未发现公平性问题</p>
+{#          <div id="bar22" style="width:96%; height:360px">#}
+{#            <script> get_chart("bar22", "/charts/datacgf/race") </script>#}
+{#          </div>#}
+{#          <p> 以Grade为正当属性对Race特征进行分析，未发现公平性问题</p>#}
         </div>
         <h3>个体公平分析 <input type="submit" value="?" onclick="data_i_fair_info()"></h3>
         <div class="block">

@@ -42,12 +42,14 @@ class DataEvalModel:
             if group_sp_rates[group] < self.theta_gf:
                 cmmts.append(
                     f'{group}群体的正面标签率（标签值为{self.pos_label_val}的频率）'
-                    f'与总体正面标签率的比值过低，建议检查该群体是否收到歧视'
+                    f'与总体正面标签率的比值过低。建议检查该群体是否收到歧视，'
+                    f'以及该特征是否为应当影响标签值的非敏感特征。'
                 )
             elif group_sp_rates[group] > 1 / self.theta_gf:
                 cmmts.append(
                     f'{group}群体的正面标签率（标签值为{self.pos_label_val}的频率）'
-                    f'与总体正面标签率的比值过高，建议检查该群体是否受到优待'
+                    f'与总体正面标签率的比值过高，建议检查该群体是否受到优待，'
+                    f'以及该特征是否为应当影响标签值的非敏感特征。'
                 )
         if not cmmts:
             cmmts.append(f'在{featr}特征上未发现公平性问题')

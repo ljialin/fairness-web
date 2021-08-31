@@ -15,23 +15,26 @@
   {% endif %}
 
   <div style="width: 94%; height: 540px; margin-left: 3%">
+    <div style="float: right">
+      <input type="button" value="回到主页面" onclick="window.location.href='/'">
+    </div>
     <div style="width: 32%; height: 100%; float: left">
       <h4> 选择数据集 </h4>
-        <form action="" method="post" style="width: 100%; height: 48%; float: top">
-          <div style="width: 100%; height: 80%; overflow-y: auto">
-            {% for dataset in view.datasets %}
-              <input type="hidden" name="name" value="select-dataset" />
-              <p><label>
-                {% if dataset == view.selected_dataset %}
-                  <input type="radio" name="dataset" value="{{ dataset }}" checked>
-                {% else %}
-                  <input type="radio" name="dataset" value="{{ dataset }}">
-                {% endif %}
-              </label> {{ dataset }} </p>
-            {% endfor %}
-          </div>
-          <input type="submit" value="确认" style="margin-top: 10px">
-        </form>
+      <form action="" method="post" style="width: 100%; height: 48%; float: top">
+        <div style="width: 100%; height: 80%; overflow-y: auto">
+          {% for dataset in view.datasets %}
+            <input type="hidden" name="name" value="select-dataset" />
+            <p><label>
+              {% if dataset == view.selected_dataset %}
+                <input type="radio" name="dataset" value="{{ dataset }}" checked>
+              {% else %}
+                <input type="radio" name="dataset" value="{{ dataset }}">
+              {% endif %}
+            </label> {{ dataset }} </p>
+          {% endfor %}
+        </div>
+        <input type="submit" value="确认" style="margin-top: 10px">
+      </form>
       <div style="width: 100%; height: 40%; float: top; margin-top: 4%">
         <form action="" enctype='multipart/form-data' method='POST'>
           <input type="hidden" name="name" value="upload-dataset" />

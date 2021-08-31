@@ -5,14 +5,14 @@
 """
 
 import os
+from socket import gethostname
 from flask import Flask, render_template, request, abort, redirect
 from pyecharts.charts import Bar, Radar
 from pyecharts import options as opts
-
-from mvc.model_eval import ModelEvalController
+from src.mvc.model_eval import ModelEvalController
 from root import PRJROOT
-from src.task import Task
-from src.utils import CustomUnpickler
+# from src.task import Task
+# from src.utils import CustomUnpickler
 from src.mvc.data import DataController
 from src.mvc.data_eval import DataEvalController
 
@@ -23,24 +23,7 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if not request.form:
-        kwargs = {
-            'f_processes': [],
-            'r_processes': []
-        }
-
-        path = PRJROOT + 'metadata/processes'
-        for _, _, files in os.walk(path):
-            for fname in files:
-                if fname[-7:] != '.pickle':
-                    continue
-                with open(path + '/' + fname, 'rb') as f:
-                    process = CustomUnpickler(f).load()
-                    Task.count += 1
-                if process.finished:
-                    kwargs['f_processes'].append(process)
-                else:
-                    kwargs['r_processes'].append(process)
-        return render_template('index.html', **kwargs)
+        return render_template('index.html')
     else:
         if request.form['name'] == 'next':
             ip = request.remote_addr
@@ -90,13 +73,13 @@ def data_eval():
             elif form['type'] == '条件性群体公平分析':
                 ctrlr.cgf_eval(sens_featrs, form['legi_featr'])
 
-    return render_template('data_eval.html', view=ctrlr.view, ip=ip)
+    return render_template('data_eval.html', view=ctrlr.view, ip=ip, host=gethostname())
 
 @app.route('/model-upload', methods=['GET', 'POST'])
 def model_upload():
     ip = request.remote_addr
     if request.files:
-        print(request.files)
+        # print(request.files)
         ModelEvalController(ip, request.files['model'])
         return redirect('/model-eval')
     return render_template('model_upload.html')
@@ -113,18 +96,23 @@ def algo_cfg():
 
 @app.route('/task/<pid>')
 def task_page(pid):
-    filepath = PRJROOT + f'metadata/processes/Task-{pid}.pickle'
-    try:
-        with open(filepath, 'rb') as f:
-            process = CustomUnpickler(f).load()
-    except FileNotFoundError:
-        abort(404)
+    # filepath = PRJROOT + f'metadata/processes/Task-{pid}.pickle'
+    # try:
+    #     with open(filepath, 'rb') as f:
+    #         process = CustomUnpickler(f).load()
+    # except FileNotFoundError:
+    #     abort(404)
 
-    kwargs = {
-        'pid': pid,
-        'finished': process.finished
-    }
-    return render_template('task_page.html', **kwargs)
+    # kwargs = {
+    #     'pid': pid,
+    #     'finished': process.finished
+    # }
+    print(pid)
+    if pid == '0002':
+        finish = True
+    else:
+        finish = False
+    return render_template('task_page.html', pid=pid, finished=finish)
 
 # 图表链接
 
@@ -218,4 +206,4 @@ def model_radar_chart(feature):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=False)
