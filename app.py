@@ -80,12 +80,10 @@ def model_upload():
     ip = request.remote_addr
     if request.files:
         # print(request.files)
-        # try:
-        ModelEvalController(ip, request.files['struct'], request.files['var'])
-        # except RuntimeError as e:
-        #     print(str(e))
-        #     print(e)
-            # return render_template('model_upload.html', errinfo=str(e))
+        try:
+            ModelEvalController(ip, request.files['struct'], request.files['var'])
+        except RuntimeError as e:
+            return render_template('model_upload.html', errinfo=str(e))
         return redirect('/model-eval')
     return render_template('model_upload.html')
 
