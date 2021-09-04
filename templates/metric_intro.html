@@ -2,14 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Metric Introduction</title>
+  <title>模型评估指标说明</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="机器学习模型评估指标说明">
 </head>
 <body>
   <div style="float: left; margin-left: 50px">
     <input type="button" value="返回" onclick="window.location.href='/model-eval'">
   </div>
-  <div style="float: left; margin-left: 50px">
-    Put Text Here
+  
+  <div style="margin-left: 150px; margin-right: 150px">
+      <h1><bold>机器学习模型评估指标说明</bold></h1>
+      <p>本页面借助二分类问题解释本平台使用的机器学习模型评估指标。</p>
   </div>
+  <div style="margin-left: 150px; margin-right: 150px">
+      <p><bold>记号（notations）：</bold>
+      <ul>
+          <li>\(g_1\)和\(g_2\)：基于敏感属性划分的两个群组。如：基于性别划分，\(g_1\)指代男性，\(g_2\)指代女性。</li>
+          <li>\(TP\)：True Positive, 即模型判断为正样本且实际是正样本的样本数目。</li>
+          <li>\(TN\)：True Negative, 即模型判断为负样本且实际是负样本的样本数目。</li>
+          <li>\(FP\)：False Positive, 即模型判断为正样本但实际是负样本的样本数目。</li>
+          <li>\(FN\)：False Negative, 即模型判断为负样本但实际是正样本的样本数目。</li>
+          <li>\(P\)：数据集中正样本的数目（\(P=TP+FN\)）。</li>
+          <li>\(F\)：数据集中负样本的数目（\(N=TN+FP\)）。</li>          
+          <li>\(y\)：一个样本的实际类别。\(y=1\)表示该样本的实际类别为正类（\(g_p\)）；否则，\(y=0\)。如雇佣问题中，一位求职者被雇佣，其\(y=1\)；否则，其\(y=0\)。</li>
+          <li>\(\hat y\)：模型对一个样本给出的预测类别。\(\hat y=1\)表示该样本的预测类别为正类；否则\(y=0\)。如雇佣问题中，一个机器学习模型预测一位求职者被雇佣，则其\(\hat y=1\)；否则，其\(\hat y=0\)。</li>
+      </ul>
+      
+  <h2>准确率（Accuracy）</h2>
+  <p>该指标评估模型的在预测任务上的正确率（越高越好），计算方式如下
+  \[Accuracy= TP+FP \over TP+FN+TN+FP\]</p>
+  <h2>群组公平性（Group Fairness），又称为统计均等（Statistical Parity）</h2>
+  <p>当以下述等式成立时（即，当模型对于每个群组中的个体预测为正的概率相同），认为该模型是统计均等的。</p>
+  \[\mathcal{P}(\hat{y}=1|G=g_1)=\mathcal{P}(\hat{y}=1|G=g_2)\]
+  <p>该指标表示，基于敏感属性划分不同群组中的个体应该有同等概率获得相同的预测值，否则此机器学习模型可能对其中一个群组存在偏爱或歧视。更多关于该指标的解释请参考Zemel等人的论文 <cite><a href="http://www.cs.toronto.edu/~zemel/documents/fair-icml-final.pdf">Learning Fair Representations</a></cite>。</p>
+
+  <h2>Positive Predictive Value (PPV）</h2>
+  <p>更多关于该指标的解释请参考Verma和Rubin的论文 <cite><a href="https://fairware.cs.umass.edu/papers/Verma.pdf">Fairness Definitions Explained</a></cite>。</p>
+
+  <h2>False Positive Error Rate (FPR)</h2>
+  <h2>True Negative Error Rate (TNR)</h2>
+  <h2>False Negative Error Rate (FNR)</h2>
+  <h2>Negative Predictive Value (NPV)</h2>
+
+</div>
 </body>
 </html>
