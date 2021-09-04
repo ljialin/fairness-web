@@ -11,33 +11,40 @@ from pyecharts.charts import Bar
 import pyecharts.options as chart_opts
 
 
-class DataEvalModel:
+class DataEvaluator:
     # plr: positive label rate
     theta_gf = 0.8
 
     def __init__(self, data_model):
-        self.data = data_model.get_raw_data()
+        # self.data = data_model.get_raw_data()
         self.label = data_model.label
         self.pos_label_val = data_model.pos_label_val
 
-    def get_global_plr(self):
-        print(self.pos_label_val)
-        pl_cnt = len(self.data[self.data[self.label] == self.pos_label_val])
-        return pl_cnt / len(self.data)
+    def get_global_plr(self, data, label_pos_val=None):
+        if label_pos_val is None:
+            label, pos_val = self.label, self.pos_label_val
+        else:
+            label, pos_val = label_pos_val
+        pl_cnt = len(data[data[label] == pos_val])
+        return pl_cnt / len(data)
 
-    def get_group_plr(self, featr) -> pandas.Series:
-        frame = self.data[[featr, self.label]]
+    def get_group_plr(self, data, featr, label_pos_val=None) -> pandas.Series:
+        if label_pos_val is None:
+            label, pos_val = self.label, self.pos_label_val
+        else:
+            label, pos_val = label_pos_val
+        frame = data[[featr, label]]
         total_cnts = frame[featr].value_counts()
         positive_cnts = (frame
-            [frame[self.label] == self.pos_label_val]
+            [frame[label] == pos_val]
             [featr].value_counts()
         )
         print(total_cnts, positive_cnts)
         return positive_cnts / total_cnts
 
-    def analyze_gf(self, featr) -> (pandas.Series, List[str]):
+    def analyze_gf(self, data, featr) -> (pandas.Series, List[str]):
         cmmts = []
-        group_sp_rates = self.get_group_plr(featr) / self.get_global_plr()
+        group_sp_rates = self.get_group_plr(data, featr) / self.get_global_plr(data)
         for group in group_sp_rates.index:
             if group_sp_rates[group] < self.theta_gf:
                 cmmts.append(
@@ -71,13 +78,13 @@ class DataEvalView:
         self.if_blocks = []
         self.cgf_blocks = []
 
-    def update_gf_res(self, model, sens_featrs):
+    def update_gf_res(self, model, data, sens_featrs):
         self.sens_featrs = sens_featrs
         self.gf_cmmts.clear()
 
         charts = []
         for i, featr in enumerate(sens_featrs):
-            group_sp_rates, cmmts = model.analyze_gf(featr)
+            group_sp_rates, cmmts = model.analyze_gf(data, featr)
             print(group_sp_rates.values)
             chart = (
                 Bar()
@@ -92,15 +99,15 @@ class DataEvalView:
             self.gf_cmmts.append((i, cmmts))
         return charts
 
-    def update_cgf_res(self, model, sens_featrs, legi_featr):
+    def update_cgf_res(self, model, data, sens_featrs, legi_featr):
         self.sens_featrs = sens_featrs
         self.legi_featr = legi_featr
-        data = model.data
+        # data = model.data
         pass
 
-    def update_if_res(self, model, sens_featrs):
+    def update_if_res(self, model, data, sens_featrs):
         self.sens_featrs = sens_featrs
-        data = model.data
+        # data = model.data
         pass
 
     # def get_gp_bar(self, data, featr):
@@ -114,7 +121,8 @@ class DataEvalController:
     insts = {}
 
     def __init__(self, ip, data_model):
-        self.model = DataEvalModel(data_model)
+        self.raw_data = data_model.get_raw_data()
+        self.model = DataEvaluator(data_model)
         self.view = DataEvalView(data_model)
         self.charts = {}
         DataEvalController.insts[ip] = self
@@ -123,7 +131,7 @@ class DataEvalController:
     def gf_eval(self, sens_featrs):
         if not sens_featrs:
             return '必须选择至少一个敏感属性才能进行分析'
-        charts = self.view.update_gf_res(self.model, sens_featrs)
+        charts = self.view.update_gf_res(self.model, self.raw_data, sens_featrs)
         for i, chart in enumerate(charts):
             self.charts[f'0{i}'] = chart
         # self.charts['gf'] = [item[1] for item in charts_with_id]
@@ -134,11 +142,11 @@ class DataEvalController:
             return '必须选择至少一个敏感属性和一个正当属性才能进行分析'
         if set(sens_featrs) & set(legi_featr):
             return '正当特征必须是非敏感特征'
-        self.view.update_cgf_res(self.model, sens_featrs, legi_featr)
+        self.view.update_cgf_res(self.model, self.raw_data, sens_featrs, legi_featr)
         pass
 
     def if_eval(self, sens_featrs):
         if not sens_featrs:
             return '必须选择至少一个敏感属性才能进行分析'
-        self.view.update_if_res(self.model, sens_featrs)
+        self.view.update_if_res(self.model, self.raw_data, sens_featrs)
         pass

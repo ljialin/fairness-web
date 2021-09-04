@@ -5,6 +5,12 @@
   <title>Model Upload</title>
 </head>
 <body>
+  {% if errinfo %}
+    <script>
+      alert("{{ errinfo }}")
+    </script>
+  {% endif %}
+
   <p> <input type="button" value="回到主页面" onclick="window.location.href='/'"> </p>
   <div style="width: 710px; height: 500px; float: left; margin-left: 150px">
     <h3> 模型定义文件示意图 </h3>
@@ -19,12 +25,12 @@
     </h4>
     <form action="" enctype='multipart/form-data' method='POST'>
       <p>
-        选择模型定义文件(.py)
-        <input type="file" name="class">
+        选择模型结构定义文件(.py)
+        <input type="file" name="struct">
       </p>
       <p>
         选择模型参数文件(.pth或.pkl)
-        <input type="file" name="model">
+        <input type="file" name="var">
       </p>
       <input type="submit" value="上传模型并进行模型评估">
     </form>

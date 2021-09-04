@@ -6,7 +6,9 @@
 
 import os
 import glob
+import torch
 import pandas
+import numpy as np
 from root import PRJROOT
 # from utils import FileUtils
 from werkzeug.utils import secure_filename
@@ -29,11 +31,14 @@ class DataModel:
 
         self.errinfo = self.__load_desc(file_path)
         self.__raw_data = None
+        self.__train_data = None
         # print(self.errinfo)
 
     def __load_desc(self, file_path):
+        # 绝对路径
         # self.raw_data = pandas.read_csv(file_path + '.csv').applymap(str)
-        if file_path[len(PRJROOT)].find('data/temp', 0):
+        rela_path = file_path[len(PRJROOT):]
+        if len(rela_path) >=9 and file_path[len(PRJROOT):].find('data/temp', 0):
             # 若为temp文件夹里的文件，则对象释放同时删除对应文件
             self.del_once_free = True
 
@@ -106,8 +111,47 @@ class DataModel:
             self.__raw_data = pandas.read_csv(self.file_path + '.csv').applymap(str)
         return self.__raw_data
 
-    def get_train_data(self):
-        pass
+    def get_groups(self, featr):
+        if featr in self.n_featrs:
+            raise RuntimeError('数值类特征没有群体之分')
+        else:
+            return list(self.categorical_map[featr].keys())
+
+    def get_processed_data(self):
+        if self.__train_data is None:
+            self.__process_train_data()
+        return self.__train_data
+
+    def __process_train_data(self):
+        num_input = len(self.n_featrs) + sum(
+            len(self.categorical_map[c_featr])
+            for c_featr in self.c_featrs
+        )
+        # print(num_input)
+        raw_data = self.get_raw_data()
+        np_data = np.zeros((len(raw_data), num_input), np.float32)
+
+        start = 0
+        for featr in self.featrs:
+            frame = raw_data[featr]
+            if featr in self.n_featrs:
+                # min-max normalization
+                end = start + 1
+                # print(frame.to_numpy().shape)
+                np_data[:, start] = frame.to_numpy()
+                min_val = np_data[:, start].min()
+                max_val = np_data[:, start].max()
+                np_data[:, start] -= min_val
+                np_data[:, start] /= (max_val - min_val)
+            else:
+                # convert onehot
+                featr_map = self.categorical_map[featr]
+                end = start + len(featr_map)
+                row_indexs = list(range(len(raw_data)))
+                col_indexs = list(featr_map[val] + start for val in frame)
+                np_data[row_indexs, col_indexs] = 1
+            start = end
+        self.__train_data = torch.tensor(np_data)
 
 
 class DataService:
@@ -256,4 +300,10 @@ class DataController:
         if item == 'datasets':
             return DataService.inst().datasets
 
-
+#
+# if __name__ == '__main__':
+#     data_model = DataModel('German', PRJROOT + 'data/german1')
+#     train_data = data_model.get_train_data()
+#     print()
+#     # print(data_model.get_train_data())
+#

@@ -80,7 +80,12 @@ def model_upload():
     ip = request.remote_addr
     if request.files:
         # print(request.files)
-        ModelEvalController(ip, request.files['model'])
+        # try:
+        ModelEvalController(ip, request.files['struct'], request.files['var'])
+        # except RuntimeError as e:
+        #     print(str(e))
+        #     print(e)
+            # return render_template('model_upload.html', errinfo=str(e))
         return redirect('/model-eval')
     return render_template('model_upload.html')
 
@@ -89,6 +94,12 @@ def model_eval():
     ip = request.remote_addr
     ctrlr = ModelEvalController.insts[ip]
     return render_template('model_eval.html', view=ctrlr.view)
+
+@app.route('/model-eval/intro')
+def metric_intro():
+    ip = request.remote_addr
+    ctrlr = ModelEvalController.insts[ip]
+    return render_template('metric_intro.html', view=ctrlr.view)
 
 @app.route('/algo-cfg')
 def algo_cfg():
@@ -114,14 +125,21 @@ def task_page(pid):
         finish = False
     return render_template('task_page.html', pid=pid, finished=finish)
 
-# 图表链接
-
+# 向前端js发送图表数据
 @app.route('/data-eval/charts/<cid>')
 def data_eval_charts(cid):
     ip = request.remote_addr
     charts = DataEvalController.insts[ip].charts
     return charts[cid].dump_options_with_quotes()
 
+# 向前端js发送图表数据
+@app.route('/model-eval/charts/<cid>')
+def model_eval_charts(cid):
+    ip = request.remote_addr
+    charts = ModelEvalController.insts[ip].charts
+    return charts[cid].dump_options_with_quotes()
+
+####### Hard-encoding charts #######
 @app.route('/charts/datagf/<feature>')
 def datagf_chart(feature):
     chart = Bar()
@@ -201,7 +219,7 @@ def model_radar_chart(feature):
             label_opts=opts.LabelOpts(is_show=False)
         )
     return chart.dump_options_with_quotes()
-
+####################################
 # @app.route('')
 
 
