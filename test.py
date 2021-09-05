@@ -24,7 +24,18 @@ class MyObj:
         MyObj.insts[ip] = self
 
 
+def prt(*args):
+    for item in args:
+        print(item)
+
 if __name__ == '__main__':
-    mydict = {'a': 1, 'b': 2}
-    print(list(mydict.keys()))
+    frame = pandas.read_csv('./data/german1.csv').applymap(str)
+    subframe = frame[frame['status'] == 'A12']
+    print(subframe.size)
+    print(subframe.shape[1])
+    print(subframe.columns)
+    # a = (1, 2, 3)
+    # print(*a)
+    # mydict = {'a': 1, 'b': 2}
+    # print(list(mydict.keys()))
     pass

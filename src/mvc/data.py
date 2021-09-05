@@ -27,6 +27,7 @@ class DataModel:
         self.del_once_free = False
         self.label = ''
         self.pos_label_val = ''
+        self.neg_label_val = ''
         self.label_map = {}
 
         self.errinfo = self.__load_desc(file_path)
@@ -95,6 +96,7 @@ class DataModel:
                 return '描述文件中LABEL:之后一行必须为逗号分隔的三个字段'
             self.label = fields[0]
             self.pos_label_val = fields[1]
+            self.neg_label_val = fields[2]
             self.label_map[fields[1]] = 1
             self.label_map[fields[2]] = 0
         except EOFError:
@@ -151,7 +153,10 @@ class DataModel:
                 col_indexs = list(featr_map[val] + start for val in frame)
                 np_data[row_indexs, col_indexs] = 1
             start = end
-        self.__train_data = torch.tensor(np_data)
+
+        labels = list(map(int, (self.label_map[val] for val in raw_data[self.label].values)))
+
+        self.__train_data = (torch.tensor(np_data), torch.tensor(labels))
 
 
 class DataService:

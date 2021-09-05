@@ -87,10 +87,22 @@ def model_upload():
         return redirect('/model-eval')
     return render_template('model_upload.html')
 
-@app.route('/model-eval')
+@app.route('/model-eval', methods=['GET', 'POST'])
 def model_eval():
     ip = request.remote_addr
+    form = request.form
+    if ModelEvalController.insts[ip] is None:
+        return '必须在选择数据集页面选择数据集，并在上传模型页面上传模型后才能访问该页面'
     ctrlr = ModelEvalController.insts[ip]
+    if form:
+        if form['name'] == 'eval':
+            sens_featrs = form.getlist('sens-featrs')
+            if form['type'] == '群体公平分析':
+                ctrlr.radar_eval(sens_featrs)
+            elif form['type'] == '条件性群体公平分析':
+                ctrlr.cgf_eval(sens_featrs, form['legi_featr'])
+
+        pass
     return render_template('model_eval.html', view=ctrlr.view)
 
 @app.route('/model-eval/intro')
@@ -130,7 +142,6 @@ def data_eval_charts(cid):
     charts = DataEvalController.insts[ip].charts
     return charts[cid].dump_options_with_quotes()
 
-# 向前端js发送图表数据
 @app.route('/model-eval/charts/<cid>')
 def model_eval_charts(cid):
     ip = request.remote_addr

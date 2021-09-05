@@ -15,11 +15,14 @@ from pyecharts.charts import Radar
 from werkzeug.utils import secure_filename
 from src.mvc.data_eval import DataEvaluator
 from src.mvc.data import DataController
+from src.utils import get_rgb_hex
 from root import PRJROOT
 
 
-METRICS = ('PLR', 'Acc', 'PPV', 'FPR', 'FNR', 'NPV')
+METRICS = ('Acc', 'PLR', 'PPV', 'FPR', 'FNR', 'NPV')
+METRIC_UBS = {'Acc': 1, 'PLR': 1, 'PPV': 1, 'FPR': 1, 'FNR': 1, 'NPV': 1}
 NUM_METRICS = len(METRICS)
+assert set(METRICS) == set(METRIC_UBS.keys())
 # PLR: Positive Label Rate. Statistical Parity requeirs PLR of each group close to global PLR.
 
 
@@ -67,25 +70,25 @@ class Predictor:
         res = []
         start = 0
         while start < len(data):
-            predictions = self.model(data[start: min(len(data), start+batch)])
+            x, _ = data[start: min(len(data), start+batch)]
+            predictions = self.model(x)
             res += predictions.tolist()
             start += batch
         res = np.array(res)
         if to_binary:
             res = np.where(res > 0.5, 1, 0)
         return res
-        # print(self.model)
-        # pass
 
 
 class ModelEvaluator:
     def __init__(self, predictor, data_model, data_evaltr):
-        # self.data_model = data_model
         self.data_evaltr = data_evaltr
         self.predictor = predictor
 
         self.label = data_model.label
         self.label_map = data_model.label_map
+        self.label_pval = data_model.pos_label_val
+        self.label_nval = data_model.neg_label_val
         self.processed_data = data_model.get_processed_data()
         # TODO: Predict only 1 times can reduce time cost
         raw_data = data_model.get_raw_data()
@@ -102,95 +105,118 @@ class ModelEvaluator:
         self.__global_acc = None
         self.__global_plr = None
 
-    def get_glb_acc(self):
-        if self.__global_acc is None:
-            ground_truth = [
-                self.label_map(item[self.label])
-                for item in self.data_with_prediction[self.label]
-            ]
-            predictions = self.data_with_prediction['binary prediction']
-            num_correct = np.where(
-                predictions - ground_truth == 0,
-                1, 0
-            ).sum()
-            self.__global_acc = num_correct / len(self.data_with_prediction)
-        return self.__global_acc
+    # def get_glb_acc(self):
+    #     if self.__global_acc is None:
+    #         ground_truth = [
+    #             self.label_map[label_val]
+    #             for label_val in self.data_with_prediction[self.label]
+    #         ]
+    #         predictions = self.data_with_prediction['binary prediction']
+    #         num_correct = np.where(
+    #             predictions - ground_truth == 0,
+    #             1, 0
+    #         ).sum()
+    #         self.__global_acc = num_correct / len(self.data_with_prediction)
+    #     return self.__global_acc
+    #
+    # def get_grp_acc(self, featr) -> pds.Series:
+    #     frame = self.data_with_prediction[
+    #         [featr, self.label, 'binary prediction']
+    #     ]
+    #     total_cnts = frame[featr].value_counts()
+    #     positive_cnts = (frame
+    #         [frame[self.label] == frame['binary prediction']]
+    #         [featr].value_counts()
+    #     )
+    #     return positive_cnts / total_cnts
+    #
+    # def get_glb_plr(self):
+    #     if self.__global_plr is None:
+    #         self.__global_plr = self.data_evaltr.get_global_plr(
+    #             self.data_with_prediction,
+    #             ('binary prediction', 1)
+    #         )
+    #     return self.__global_plr
+    #
+    # def get_grp_plr(self, featr):
+    #     return self.data_evaltr.get_group_plr(
+    #         self.data_with_prediction, featr,
+    #         ('binary prediction', 1)
+    #     )
 
-    def get_grp_acc(self, featr) -> pds.Series:
-        frame = self.data_with_prediction[
-            [featr, self.label, 'binary prediction']
-        ]
-        total_cnts = frame[featr].value_counts()
-        positive_cnts = (frame
-            [frame[self.label] == frame['binary prediction']]
-            [featr].value_counts()
-        )
-        return positive_cnts / total_cnts
+    def get_glb_metrivals(self):
+        return self.compute_metrics(**self.__get_confus_vals())
 
-    def get_glb_plr(self):
-        if self.__global_plr is None:
-            self.__global_plr = self.data_evaltr.get_glb_plr(
-                self.data_with_prediction,
-                ('binary_prediction', 1)
-            )
-        return self.__global_plr
-
-    def get_grp_plr(self, featr):
-        return self.data_evaltr.get_glb_plr(
-            self.data_with_prediction, featr,
-            ('binary_prediction', 1)
-        )
-
-    def get_glb_confus_metrics(self):
-        tp_cnt, fp_cnt, fn_cnt, tn_cnt = self.get_glb_plr()
-        return self.get_confus_metrics(tp_cnt, fp_cnt, fn_cnt, tn_cnt)
-
-    def get_grp_confus_metrics(self, featr):
-        pass
-        # for grp in self.data
-        # tp_cnt, fp_cnt, fn_cnt, tn_cnt = self.get_glb_plr()
-        # return 0, 0, 0, 0
+    def get_grp_metrivals(self, featr):
+        res = {}
+        confus_vals = self.__get_grp_confus_vals(featr)
+        for grp in confus_vals.keys():
+            res[grp] = self.compute_metrics(**confus_vals[grp])
+        return res
 
     @staticmethod
-    def get_confus_metrics(tp_cnt, fp_cnt, fn_cnt, tn_cnt):
-        PPV = tp_cnt / (tp_cnt + fp_cnt)
-        FPR = fp_cnt / (fp_cnt + tn_cnt)
-        FNR = fn_cnt / (tp_cnt + fn_cnt)
-        NPV = tn_cnt / (tn_cnt + fn_cnt)
-        return PPV, FPR, FNR, NPV
+    def compute_metrics(TP, FP, FN, TN):
+        total = TP + FP + FN + TN + 1e-8
+        res = {
+            'Acc': (TP + TN) / total,
+            'PLR': (TP + FP) / total,
+            'PPV': TP / total,
+            'FPR': FP / total,
+            'FNR': FN / total,
+            'NPV': TN / total
+        }
+        return res
 
-    def __get_glb_confus(self):
-        # Return tp, fp, fn, tn
-        return 1, 1, 1, 1
+    def __get_confus_vals(self, frame=None):
+        if frame is None:
+            frame = self.data_with_prediction
 
-    def __get_grp_confus(self, featr):
-        # Return {'<grp_name>': (tp, fp, fn, tn)} for all group of <featr>
-        return 0, 0, 0, 0
+        T_subframe = frame[frame[self.label] == self.label_pval]
+        F_subframe = frame[frame[self.label] == self.label_nval]
+        res = {
+            'TP': T_subframe[T_subframe['binary prediction'] == 1].shape[0],
+            'FP': T_subframe[T_subframe['binary prediction'] == 0].shape[0],
+            'FN': F_subframe[F_subframe['binary prediction'] == 1].shape[0],
+            'TN': F_subframe[F_subframe['binary prediction'] == 0].shape[0]
+        }
+        print(res)
+        return res
+
+    def __get_grp_confus_vals(self, featr):
+        res = {}
+        groups = self.data_with_prediction[featr].unique()
+        for grp in groups:
+            frame = self.data_with_prediction
+            subframe = frame[frame[featr] == grp]
+            res[grp] = self.__get_confus_vals(subframe)
+        return res
 
 
 class ModelEvalView:
-    def __init__(self, name):
+    def __init__(self, name, data_model):
         self.name = name
+        self.featrs = data_model.featrs
+        self.n_featrs = data_model.n_featrs
+        self.c_featrs = data_model.c_featrs
+
+        self.sens_featrs = []
+        self.legi_featr = None
+
+        self.gf_cmmts = []
 
     def update_radar(self, evaltr: ModelEvaluator, sens_featrs, theta=0.8):
+        self.sens_featrs = sens_featrs
         charts = []
+        glb_metrics = evaltr.get_glb_metrivals()
         for i, featr in enumerate(sens_featrs):
-            glb_acc = evaltr.get_glb_acc()
-            grp_acc = evaltr.get_grp_acc(featr)
-            glb_plr = evaltr.get_glb_plr()
-            grp_plr = evaltr.get_grp_plr(featr)
+            grp_metrivals = evaltr.get_grp_metrivals(featr)
 
             chart = (
                 Radar()
                 .add_schema(
                     schema=[
-                        chopts.RadarIndicatorItem(name="PLR", max_=2),
-                        # chopts.RadarIndicatorItem(name="Well-calibration", min_=-2, max_=2),
-                        chopts.RadarIndicatorItem(name="Acc", max_=1),
-                        chopts.RadarIndicatorItem(name="PPV", max_=2),
-                        chopts.RadarIndicatorItem(name="FPR", max_=2),
-                        chopts.RadarIndicatorItem(name="FNR", max_=2),
-                        chopts.RadarIndicatorItem(name="NPV", max_=2),
+                        chopts.RadarIndicatorItem(mtrc, max_=METRIC_UBS[mtrc])
+                        for mtrc in METRICS
                     ],
                     splitarea_opt=chopts.SplitAreaOpts(
                         is_show=True, areastyle_opts=chopts.AreaStyleOpts(opacity=1)
@@ -198,30 +224,35 @@ class ModelEvalView:
                 )
                 .add(
                     '公平范围', [
-                        [glb_plr * theta, glb_acc * theta, 1 * theta,
-                         1 * theta, 1 * theta, 1 * theta],      # 下界
-                        [glb_plr / theta, glb_acc / theta, 1 / theta,
-                         1 / theta, 1 / theta, 1 / theta],      # 上界
-                    ]
+                        [glb_metrics[mtrc] * theta for mtrc in METRICS],      # Lower Bound
+                        [min(glb_metrics[mtrc] / theta, METRIC_UBS[mtrc]) for mtrc in METRICS],      # Upper Bound
+                    ],
+                    label_opts=chopts.LabelOpts(is_show=False),
+                    linestyle_opts=chopts.LineStyleOpts(color='red', width=2)
                 )
             )
 
-            groups = grp_plr.index
-            grp_metrivals = np.zeros([len(groups), NUM_METRICS])    # rows: metric values of group i
-            grp_metrivals[:, 0] = grp_plr.values
-            grp_metrivals[:, 1] = grp_acc.values
-            grp_metrivals[:, 2] = 1
-            grp_metrivals[:, 3] = 1
-            grp_metrivals[:, 4] = 1
-            grp_metrivals[:, 5] = 1
+            for j, grp in enumerate(grp_metrivals.keys()):
+                # Compute linear gradient RGB
+                alpha = 0.75 * j / (len(grp_metrivals) - 1)
+                g, b = round(alpha * 255 + 63), round((0.75 - alpha) * 255 + 63)
+                color = f'#{get_rgb_hex(0, g, b)}'
 
-            for i, grp in enumerate(groups):
                 chart.add(
-                    grp, grp_metrivals[i],
-                    label_opts=chopts.LabelOpts(is_show=False)
+                    grp, [[grp_metrivals[grp][mtrc] for mtrc in METRICS]],
+                    label_opts=chopts.LabelOpts(is_show=False),
+                    linestyle_opts=chopts.LineStyleOpts(width=2),
+                    areastyle_opts = chopts.AreaStyleOpts(opacity=0.2),
+                    color=color
                 )
-
+            charts.append(chart)
+            self.gf_cmmts.append((i, ['建议功能暂未实现']))
         return charts
+
+    def update_cgf_res(self, model, data, sens_featrs, legi_featr):
+        self.sens_featrs = sens_featrs
+        self.legi_featr = legi_featr
+        pass
 
 
 class ModelEvalController:
@@ -234,7 +265,7 @@ class ModelEvalController:
             Predictor(model), self.data_model,
             DataEvaluator(self.data_model)
         )
-        self.view = ModelEvalView(name)
+        self.view = ModelEvalView(name, self.data_model)
         self.charts = {}
         ModelEvalController.insts[ip] = self
 
@@ -242,7 +273,6 @@ class ModelEvalController:
         charts = self.view.update_radar(self.model_evaltr, sens_featrs)
         for i, chart in enumerate(charts):
             self.charts[f'0{i}'] = chart
-        # accuracy = self.model_evaltr.accuracy()
 
     def cgf_eval(self, sens_featr, legi):
         pass

@@ -7,6 +7,17 @@ import pickle
 import os
 
 
+def get_rgb_hex(*rgb):
+    assert len(rgb) == 3 and max(rgb) <= 255 and min(rgb) >= 0
+    res = ''
+    for item in rgb:
+        temp = hex(item)
+        if len(temp) == 4:
+            res += temp[2:]
+        else:
+            res += f'0{temp[2]}'
+    return res
+
 class CustomUnpickler(pickle.Unpickler):
     def find_class(self, module, name):
         try:
@@ -26,5 +37,6 @@ class FileUtils:
         return files
 
 if __name__ == '__main__':
-    print(FileUtils.list_files('F:\\research group\Huawei Project\\fariness-web\data'))
-    print(FileUtils.list_files('../data'))
+    print(get_rgb_hex(0, 100, 200))
+    # print(FileUtils.list_files('F:\\research group\Huawei Project\\fariness-web\data'))
+    # print(FileUtils.list_files('../data'))
