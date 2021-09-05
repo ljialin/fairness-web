@@ -13,7 +13,7 @@
   <div class="container">
     <div class="header">
       <div style="width: 90%; float: left"><h1>数据集{{ view.name }}公平性分析</h1></div>
-      <div style="width: 10%; float: left; margin-top: 16px">
+      <div style="width: 10%; float: left; margin-top: 30px">
         <input type="button" value="回到主页面" onclick="window.location.href='/'">
       </div>
     </div>
@@ -73,16 +73,12 @@
             {%  endfor %}
           {% endfor %}
         </div>
-        <h3>条件性群体公平分析 <input type="submit" value="?" onclick="data_cg_fair_info()"></h3>
+        <h3>条件性群体公平分析（待开发） <input type="submit" value="?" onclick="data_cg_fair_info()"></h3>
         <div class="block">
           <div id="bar21" style="width:96%; height:360px">
             <script> get_chart("bar21", "/charts/datacgf/gender") </script>
           </div>
           <p> 以Grade为正当属性对Gender特征进行分析，未发现公平性问题</p>
-{#          <div id="bar22" style="width:96%; height:360px">#}
-{#            <script> get_chart("bar22", "/charts/datacgf/race") </script>#}
-{#          </div>#}
-{#          <p> 以Grade为正当属性对Race特征进行分析，未发现公平性问题</p>#}
         </div>
         <h3>个体公平分析(待开发) <input type="submit" value="?" onclick="data_i_fair_info()"></h3>
         <div class="block">
