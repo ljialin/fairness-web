@@ -21,6 +21,8 @@ from root import PRJROOT
 
 METRICS = ('Acc', 'PLR', 'PPV', 'FPR', 'FNR', 'NPV')
 METRIC_UBS = {'Acc': 1, 'PLR': 1, 'PPV': 1, 'FPR': 1, 'FNR': 1, 'NPV': 1}
+THRESHOLDS = {'Acc': 0.8, 'PLR': 0.8, 'PPV': 0.8, 'FPR': 0.8, 'FNR': 0.8, 'NPV': 0.8}
+PREFER_HIGH = {'Acc': 1, 'PLR': 1, 'PPV': 1, 'FPR': 1, 'FNR': 0, 'NPV': 0}
 NUM_METRICS = len(METRICS)
 assert set(METRICS) == set(METRIC_UBS.keys())
 # PLR: Positive Label Rate. Statistical Parity requeirs PLR of each group close to global PLR.
@@ -81,6 +83,11 @@ class Predictor:
 
 
 class ModelEvaluator:
+    fairness_cmmt_fmt = (
+        '根据%s指标，%s群体可能受到了%s，建议考虑将%s指标作为算法优化的目标之一对该模型进行优化，'
+        '或考察%s特征是否对%s有正当影响。若有，建议将该特征从敏感特征列表中去除。'
+    )
+
     def __init__(self, predictor, data_model, data_evaltr):
         self.data_evaltr = data_evaltr
         self.predictor = predictor
@@ -102,57 +109,54 @@ class ModelEvaluator:
             self.predictor.predict(self.processed_data, to_binary=True)
         )
 
-        self.__global_acc = None
-        self.__global_plr = None
-
-    # def get_glb_acc(self):
-    #     if self.__global_acc is None:
-    #         ground_truth = [
-    #             self.label_map[label_val]
-    #             for label_val in self.data_with_prediction[self.label]
-    #         ]
-    #         predictions = self.data_with_prediction['binary prediction']
-    #         num_correct = np.where(
-    #             predictions - ground_truth == 0,
-    #             1, 0
-    #         ).sum()
-    #         self.__global_acc = num_correct / len(self.data_with_prediction)
-    #     return self.__global_acc
-    #
-    # def get_grp_acc(self, featr) -> pds.Series:
-    #     frame = self.data_with_prediction[
-    #         [featr, self.label, 'binary prediction']
-    #     ]
-    #     total_cnts = frame[featr].value_counts()
-    #     positive_cnts = (frame
-    #         [frame[self.label] == frame['binary prediction']]
-    #         [featr].value_counts()
-    #     )
-    #     return positive_cnts / total_cnts
-    #
-    # def get_glb_plr(self):
-    #     if self.__global_plr is None:
-    #         self.__global_plr = self.data_evaltr.get_global_plr(
-    #             self.data_with_prediction,
-    #             ('binary prediction', 1)
-    #         )
-    #     return self.__global_plr
-    #
-    # def get_grp_plr(self, featr):
-    #     return self.data_evaltr.get_group_plr(
-    #         self.data_with_prediction, featr,
-    #         ('binary prediction', 1)
-    #     )
+        self.__glb_metrivals = None
+        self.__fair_range = None
 
     def get_glb_metrivals(self):
-        return self.compute_metrics(**self.__get_confus_vals())
+        if self.__glb_metrivals is None:
+            self.__glb_metrivals = self.compute_metrics(**self.__get_confus_vals())
+        return self.__glb_metrivals
 
-    def get_grp_metrivals(self, featr):
-        res = {}
+    def get_fair_range(self):
+        if self.__fair_range is None:
+            glb_metrivals = self.get_glb_metrivals()
+            self.__fair_range = [
+                [glb_metrivals[mtrc] * THRESHOLDS[mtrc]
+                 for mtrc in METRICS],  # Lower Bound
+                [min(glb_metrivals[mtrc] / THRESHOLDS[mtrc], METRIC_UBS[mtrc])
+                 for mtrc in METRICS],  # Upper Bound
+            ]
+        return self.__fair_range
+
+    def analyze_gf(self, featr):
+        metrivals = {}
         confus_vals = self.__get_grp_confus_vals(featr)
+        cmmts = []
         for grp in confus_vals.keys():
-            res[grp] = self.compute_metrics(**confus_vals[grp])
-        return res
+            metrivals[grp] = self.compute_metrics(**confus_vals[grp])
+            cmmts += self.make_fairness_cmmts(featr, grp, metrivals[grp])
+        if not cmmts:
+            cmmts.append(f'对{featr}特征进行分析，未发现公平性问题')
+        return metrivals, cmmts
+
+    def make_fairness_cmmts(self, featr, grp, metrivals):
+        # make for a single group
+        cmmts = []
+        fair_range = self.get_fair_range()
+        for i, mtrc in enumerate(METRICS):
+            metrival = metrivals[mtrc]
+            discrimination = ''
+            if metrival < fair_range[0][i]:
+                discrimination = '歧视' if PREFER_HIGH[mtrc] else '偏爱'
+            elif metrival > fair_range[1][i]:
+                discrimination = '偏爱' if PREFER_HIGH[mtrc] else '歧视'
+            metric = mtrc + '和Equalized Odds' if mtrc in {'FPR', 'FNR'} else mtrc
+            if discrimination != '':
+                cmmts.append(
+                    ModelEvaluator.fairness_cmmt_fmt %
+                    (metric, grp, discrimination, metric, featr, featr)
+                )
+        return cmmts
 
     @staticmethod
     def compute_metrics(TP, FP, FN, TN):
@@ -160,10 +164,10 @@ class ModelEvaluator:
         res = {
             'Acc': (TP + TN) / total,
             'PLR': (TP + FP) / total,
-            'PPV': TP / total,
-            'FPR': FP / total,
-            'FNR': FN / total,
-            'NPV': TN / total
+            'PPV': TP / (TP + FP),
+            'FPR': FP / (FP + TN),
+            'FNR': FN / (TP + FN),
+            'NPV': TN / (TN + FN)
         }
         return res
 
@@ -179,7 +183,6 @@ class ModelEvaluator:
             'FN': F_subframe[F_subframe['binary prediction'] == 1].shape[0],
             'TN': F_subframe[F_subframe['binary prediction'] == 0].shape[0]
         }
-        print(res)
         return res
 
     def __get_grp_confus_vals(self, featr):
@@ -204,12 +207,14 @@ class ModelEvalView:
 
         self.gf_cmmts = []
 
-    def update_radar(self, evaltr: ModelEvaluator, sens_featrs, theta=0.8):
+    def update_gf_res(self, evaltr: ModelEvaluator, sens_featrs):
+        self.gf_cmmts.clear()
+
         self.sens_featrs = sens_featrs
         charts = []
-        glb_metrics = evaltr.get_glb_metrivals()
+        fair_range = evaltr.get_fair_range()
         for i, featr in enumerate(sens_featrs):
-            grp_metrivals = evaltr.get_grp_metrivals(featr)
+            grp_metrivals, cmmts = evaltr.analyze_gf(featr)
 
             chart = (
                 Radar()
@@ -223,10 +228,7 @@ class ModelEvalView:
                     )
                 )
                 .add(
-                    '公平范围', [
-                        [glb_metrics[mtrc] * theta for mtrc in METRICS],      # Lower Bound
-                        [min(glb_metrics[mtrc] / theta, METRIC_UBS[mtrc]) for mtrc in METRICS],      # Upper Bound
-                    ],
+                    '公平范围', fair_range,
                     label_opts=chopts.LabelOpts(is_show=False),
                     linestyle_opts=chopts.LineStyleOpts(color='red', width=2)
                 )
@@ -246,7 +248,7 @@ class ModelEvalView:
                     color=color
                 )
             charts.append(chart)
-            self.gf_cmmts.append((i, ['建议功能暂未实现']))
+            self.gf_cmmts.append((i, cmmts))
         return charts
 
     def update_cgf_res(self, model, data, sens_featrs, legi_featr):
@@ -270,7 +272,7 @@ class ModelEvalController:
         ModelEvalController.insts[ip] = self
 
     def radar_eval(self, sens_featrs):
-        charts = self.view.update_radar(self.model_evaltr, sens_featrs)
+        charts = self.view.update_gf_res(self.model_evaltr, sens_featrs)
         for i, chart in enumerate(charts):
             self.charts[f'0{i}'] = chart
 
