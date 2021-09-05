@@ -108,46 +108,46 @@ class ModelEvaluator:
             self.predictor.predict(self.processed_data, to_binary=True)
         )
 
-        self.__glb_metrivals = None
+        self.__glb_metric_vals = None
         self.__fair_range = None
 
-    def get_glb_metrivals(self):
-        if self.__glb_metrivals is None:
-            self.__glb_metrivals = self.compute_metrics(**self.__get_confus_vals())
-        return self.__glb_metrivals
+    def get_glb_metric_vals(self):
+        if self.__glb_metric_vals is None:
+            self.__glb_metric_vals = self.compute_metrics(**self.__get_confus_vals())
+        return self.__glb_metric_vals
 
     def get_fair_range(self):
         if self.__fair_range is None:
-            glb_metrivals = self.get_glb_metrivals()
+            glb_metric_vals = self.get_glb_metric_vals()
             self.__fair_range = [
-                [glb_metrivals[mtrc] * THRESHOLDS[mtrc]
+                [glb_metric_vals[mtrc] * THRESHOLDS[mtrc]
                  for mtrc in METRICS],  # Lower Bound
-                [min(glb_metrivals[mtrc] / THRESHOLDS[mtrc], METRIC_UBS[mtrc])
+                [min(glb_metric_vals[mtrc] / THRESHOLDS[mtrc], METRIC_UBS[mtrc])
                  for mtrc in METRICS],  # Upper Bound
             ]
         return self.__fair_range
 
     def analyze_gf(self, featr):
-        metrivals = {}
+        metric_vals = {}
         confus_vals = self.__get_grp_confus_vals(featr)
         cmmts = []
         for grp in confus_vals.keys():
-            metrivals[grp] = self.compute_metrics(**confus_vals[grp])
-            cmmts += self.make_fairness_cmmts(featr, grp, metrivals[grp])
+            metric_vals[grp] = self.compute_metrics(**confus_vals[grp])
+            cmmts += self.make_fairness_cmmts(featr, grp, metric_vals[grp])
         if not cmmts:
             cmmts.append(f'对{featr}特征进行分析，未发现公平性问题')
-        return metrivals, cmmts
+        return metric_vals, cmmts
 
-    def make_fairness_cmmts(self, featr, grp, metrivals):
+    def make_fairness_cmmts(self, featr, grp, metric_vals):
         # make for a single group
         cmmts = []
         fair_range = self.get_fair_range()
         for i, mtrc in enumerate(METRICS):
-            metrival = metrivals[mtrc]
+            metric_val = metric_vals[mtrc]
             discrimination = ''
-            if metrival < fair_range[0][i]:
+            if metric_val < fair_range[0][i]:
                 discrimination = '歧视' if PREFER_HIGH[mtrc] else '偏爱'
-            elif metrival > fair_range[1][i]:
+            elif metric_val > fair_range[1][i]:
                 discrimination = '偏爱' if PREFER_HIGH[mtrc] else '歧视'
             metric = mtrc + '和Equalized Odds' if mtrc in {'FPR', 'FNR'} else mtrc
             if discrimination != '':
@@ -214,7 +214,7 @@ class ModelEvalView:
         charts = []
         fair_range = evaltr.get_fair_range()
         for i, featr in enumerate(sens_featrs):
-            grp_metrivals, cmmts = evaltr.analyze_gf(featr)
+            grp_metric_vals, cmmts = evaltr.analyze_gf(featr)
 
             chart = (
                 Radar()
@@ -234,14 +234,14 @@ class ModelEvalView:
                 )
             )
 
-            for j, grp in enumerate(grp_metrivals.keys()):
+            for j, grp in enumerate(grp_metric_vals.keys()):
                 # Compute linear gradient RGB
-                alpha = 0.75 * j / (len(grp_metrivals) - 1)
+                alpha = 0.75 * j / (len(grp_metric_vals) - 1)
                 g, b = round(alpha * 255 + 63), round((0.75 - alpha) * 255 + 63)
                 color = f'#{get_rgb_hex(0, g, b)}'
 
                 chart.add(
-                    grp, [[grp_metrivals[grp][mtrc] for mtrc in METRICS]],
+                    grp, [[grp_metric_vals[grp][mtrc] for mtrc in METRICS]],
                     label_opts=chopts.LabelOpts(is_show=False),
                     linestyle_opts=chopts.LineStyleOpts(width=2),
                     areastyle_opts = chopts.AreaStyleOpts(opacity=0.2),
