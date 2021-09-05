@@ -84,13 +84,13 @@
 {#          </div>#}
 {#          <p> 以Grade为正当属性对Race特征进行分析，未发现公平性问题</p>#}
         </div>
-        <h3>个体公平分析 <input type="submit" value="?" onclick="data_i_fair_info()"></h3>
+        <h3>个体公平分析(待开发) <input type="submit" value="?" onclick="data_i_fair_info()"></h3>
         <div class="block">
           <h4> 根据Causal Discrimination指标，发现一下个体可能受到了区别对待：</h4>
-          <p> 编号xxx：其92%的近似个体标签值为1，但该个体标签属性为0。建议检查该个体的标签值。 </p>
-          <p> 编号xxx：其95%的近似个体标签值为0，但该个体标签属性为1。建议检查该个体的标签值。 </p>
-          <p> 编号xxx：其92%的近似个体标签值为1，但该个体标签属性为0。建议检查该个体的标签值。 </p>
-          <p> 编号xxx：其94%的近似个体标签值为0，但该个体标签属性为1。建议检查该个体的标签值。 </p>
+          <p> 编号xxx：其92%的employ特征为true，但该个体的employ特征为false。建议检查该个体的employ特征。 </p>
+          <p> 编号xxx：其96%的employ特征为false，但该个体的employ特征为true。建议检查该个体的标签employ特征。 </p>
+          <p> 编号xxx：其92%的employ特征为true，但该个体的employ特征为false。建议检查该个体的标签employ特征。 </p>
+          <p> 编号xxx：其94%的employ特征为false，但该个体的employ特征为true。建议检查该个体的标签employ特征。 </p>
         </div>
       </div>
     </div>

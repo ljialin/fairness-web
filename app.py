@@ -98,10 +98,9 @@ def model_eval():
         if form['name'] == 'eval':
             sens_featrs = form.getlist('sens-featrs')
             if form['type'] == '群体公平分析':
-                ctrlr.radar_eval(sens_featrs)
+                ctrlr.gf_eval(sens_featrs)
             elif form['type'] == '条件性群体公平分析':
                 ctrlr.cgf_eval(sens_featrs, form['legi_featr'])
-
         pass
     return render_template('model_eval.html', view=ctrlr.view)
 

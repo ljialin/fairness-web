@@ -88,8 +88,7 @@ class ModelEvaluator:
         '或考察%s特征是否对%s有正当影响。若有，建议将该特征从敏感特征列表中去除。'
     )
 
-    def __init__(self, predictor, data_model, data_evaltr):
-        self.data_evaltr = data_evaltr
+    def __init__(self, predictor, data_model):
         self.predictor = predictor
 
         self.label = data_model.label
@@ -206,11 +205,12 @@ class ModelEvalView:
         self.legi_featr = None
 
         self.gf_cmmts = []
+        self.cgf_cmmts = []
 
     def update_gf_res(self, evaltr: ModelEvaluator, sens_featrs):
+        self.sens_featrs = sens_featrs
         self.gf_cmmts.clear()
 
-        self.sens_featrs = sens_featrs
         charts = []
         fair_range = evaltr.get_fair_range()
         for i, featr in enumerate(sens_featrs):
@@ -251,10 +251,13 @@ class ModelEvalView:
             self.gf_cmmts.append((i, cmmts))
         return charts
 
-    def update_cgf_res(self, model, data, sens_featrs, legi_featr):
+    def update_cgf_res(self, model, sens_featrs, legi_featr):
         self.sens_featrs = sens_featrs
         self.legi_featr = legi_featr
-        pass
+        self.cgf_cmmts.clear()
+
+
+        return []
 
 
 class ModelEvalController:
@@ -265,17 +268,23 @@ class ModelEvalController:
         self.data_model = DataController.insts[ip].model
         self.model_evaltr = ModelEvaluator(
             Predictor(model), self.data_model,
-            DataEvaluator(self.data_model)
         )
         self.view = ModelEvalView(name, self.data_model)
         self.charts = {}
         ModelEvalController.insts[ip] = self
 
-    def radar_eval(self, sens_featrs):
+    def gf_eval(self, sens_featrs):
         charts = self.view.update_gf_res(self.model_evaltr, sens_featrs)
         for i, chart in enumerate(charts):
             self.charts[f'0{i}'] = chart
 
-    def cgf_eval(self, sens_featr, legi):
+    def cgf_eval(self, sens_featrs, legi_featr):
+        if not legi_featr:
+            raise RuntimeError('必须选择一个正当属性才能进行条件性群体公平分析')
+        if legi_featr in sens_featrs:
+            raise RuntimeError('正当特征必须是非敏感特征')
+        charts = self.view.update_cgf_res(self.model_evaltr, sens_featrs, legi_featr)
+        for i, chart in enumerate(charts):
+            self.charts[f'1{i}'] = chart
         pass
 
