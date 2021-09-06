@@ -10,7 +10,7 @@ from flask import Flask, render_template, request, abort, redirect
 from pyecharts.charts import Bar, Radar
 from pyecharts import options as opts
 from src.mvc.model_eval import ModelEvalController
-from root import PRJROOT
+# from root import HOSTIP
 # from src.task import Task
 # from src.utils import CustomUnpickler
 from src.mvc.data import DataController
@@ -73,7 +73,7 @@ def data_eval():
             elif form['type'] == '条件性群体公平分析':
                 ctrlr.cgf_eval(sens_featrs, form['legi_featr'])
 
-    return render_template('data_eval.html', view=ctrlr.view, ip=ip, host=gethostname())
+    return render_template('data_eval.html', view=ctrlr.view, ip=ip)
 
 @app.route('/model-upload', methods=['GET', 'POST'])
 def model_upload():

@@ -215,7 +215,7 @@ class DataService:
         if name in self.datasets.keys():
             os.remove(desc_path)
             os.remove(data_path)
-            return '上传数据集与已有数据集重名'
+            return '上传失败：上传数据集与已有数据集重名'
         self.datasets[name] = desc_path[:-4]
         return f'OK:{name}'
 
@@ -228,7 +228,7 @@ class DataService:
 
 class DataView:
     def __init__(self, datasets):
-        self.datasets = datasets
+        self.datasets = [item for item in datasets.keys()]
         self.selected_dataset = None
         self.c_featr_texts = []
         self.n_featr_texts = []
