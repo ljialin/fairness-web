@@ -6,18 +6,19 @@
   <script type = "text/javascript" src = "/static/charts.js" > </script>
   <script src="/static/extlib/jquery.js"></script>
   <script type="text/javascript" src="/static/extlib/echarts.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='style.css')}}"/>
 </head>
 <body>
-  <div class="headerpage"></div>
-  
+   <div class="headerpage"></div>
+
   {% if errinfo %}
     <script>
       alert("{{ errinfo }}")
     </script>
   {% endif %}
 
-  <div style="width: 94%; height: 540px; margin-left: 3%">
-    <div style="float: right">
+     <div style="width: 94%; height: 740px; margin-left: 3%">
+     <div style="float: right">
       <input type="button" value="回到主页面" onclick="window.location.href='/'">
     </div>
     <div style="width: 32%; height: 100%; float: left">
@@ -37,7 +38,7 @@
         </div>
         <input type="submit" value="确认" style="margin-top: 10px">
       </form>
-      <div style="width: 100%; height: 40%; float: top; margin-top: 4%">
+      <div style="width: 100%; height: 30%; float: top; margin-top: 4%">
         <form action="" enctype='multipart/form-data' method='POST'>
           <input type="hidden" name="name" value="upload-dataset" />
           <p>
@@ -58,7 +59,7 @@
         </form>
       </div>
     </div>
-    <div style="width: 64%; height: 100%; float: left; margin-left: 4%">
+    <div style="width: 64%; height: 80%; float: left; margin-left: 4%">
       <h4> 离散属性 </h4>
         <div style="width: 100%; height: 36%; float: top; overflow-y: auto">
           {% for line_text in view.c_featr_texts %}
