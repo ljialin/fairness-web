@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Model Upload</title>
+  <title>上传机器学习模型</title>
 </head>
 <body>
+  <div class="headerpage"></div>
   {% if errinfo %}
     <script>
       alert("{{ errinfo }}")
@@ -64,5 +65,15 @@
 {#      <input type="submit" value="上传模型并进行模型评估">#}
 {#    </form>#}
 {#  </div>#}
+
+
+  <div class="footerpage"></div>
+  <script src="{{url_for('static',filename='extlib/jquery.js')}}"></script>
+  <script>
+    $(function() {
+      $(".headerpage").load("{{url_for('static',filename='header.html')}}");
+      $(".footerpage").load("{{url_for('static',filename='footer.html')}}");
+    });
+  </script>
 </body>
 </html>

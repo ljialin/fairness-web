@@ -9,17 +9,16 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="机器学习模型评估指标说明">
+  <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='style.css')}}"/>
 </head>
 <body>
   <div style="float: right; margin-right: 100px">
     <input type="button" value="返回" onclick="window.location.href='/model-eval'">
   </div>
-  
-  <div style="margin-left: 100px; margin-right: 100px">
+  <div class="headerpage"></div>
+  <div>
     <h1><b>机器学习模型评估指标说明</b></h1>
     <p>本页面借助二分类问题解释本平台使用的机器学习模型评估指标。</p>
-  </div>
-  <div style="margin-left: 100px; margin-right: 100px">
     <p><b>记号（notations）：</b>
     <ul>
       <li>\(g_1\)和\(g_2\)：基于敏感属性划分的两个群组。如：基于性别划分，\(g_1\)指代男性，\(g_2\)指代女性。</li>
@@ -90,6 +89,13 @@
       <cite><a href="https://www.researchgate.net/publication/313107433_Algorithmic_decision_making_and_the_cost_of_fairness">Algorithmic decision making and the cost of fairness</a></cite>
   </div>
 
-  <div style="margin-left: 100px; margin-right: 100px; margin-bottom: 50px"><hr></div>
+  <div class="footerpage"></div>
+  <script src="{{url_for('static',filename='extlib/jquery.js')}}"></script>
+  <script>
+    $(function() {
+      $(".headerpage").load("{{url_for('static',filename='header.html')}}");
+      $(".footerpage").load("{{url_for('static',filename='footer.html')}}");
+    });
+  </script>
 </body>
 </html>

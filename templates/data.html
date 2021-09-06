@@ -2,12 +2,14 @@
 <html lang="cn">
 <head>
   <meta charset="UTF-8">
-  <title>模型评估</title>
+  <title>机器学习模型评估</title>
   <script type = "text/javascript" src = "/static/charts.js" > </script>
   <script src="/static/extlib/jquery.js"></script>
   <script type="text/javascript" src="/static/extlib/echarts.min.js"></script>
 </head>
 <body>
+  <div class="headerpage"></div>
+  
   {% if errinfo %}
     <script>
       alert("{{ errinfo }}")
@@ -76,7 +78,15 @@
       <input type="hidden" name="name" value="next" />
       <input type="submit" value="下一步" style="float: top; margin-top: 40px">
     </form>
-	</div>
-
+  </div>
+  
+  <div class="footerpage"></div>
+  <script src="{{url_for('static',filename='extlib/jquery.js')}}"></script>
+  <script>
+    $(function() {
+      $(".headerpage").load("{{url_for('static',filename='header.html')}}");
+      $(".footerpage").load("{{url_for('static',filename='footer.html')}}");
+    });
+  </script>
 </body>
 </html>

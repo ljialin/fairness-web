@@ -2,11 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Algorithm Configuration</title>
+    <title>算法配置</title>
 </head>
 <body>
+  <div class="headerpage"></div>
   <p> <input type="button" value="回到主页面" onclick="window.location.href='/'"> </p>
   <p> 待开发 </p>
   <p> <input type="button" value="运行任务"> </p>
+  
+  <div class="footerpage"></div>
+  <script src="{{url_for('static',filename='extlib/jquery.js')}}"></script>
+  <script>
+    $(function() {
+      $(".headerpage").load("{{url_for('static',filename='header.html')}}");
+      $(".footerpage").load("{{url_for('static',filename='footer.html')}}");
+    });
+  </script>
 </body>
 </html>

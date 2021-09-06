@@ -2,12 +2,13 @@
 <html lang="cn">
 <head>
   <meta charset="UTF-8">
-  <title>Process Detial</title>
+  <title>进程情况</title>
   <script type = "text/javascript"
     src = "{{ url_for('static', filename = 'script.js') }}" >
   </script>
 </head>
 <body>
+  <div class="headerpage"></div>
   <p> <input type="button" value="回到主页面" onclick="window.location.href='/'"> </p>
   <h2>
     优化过程-{{ pid }}（
@@ -32,5 +33,14 @@
     {% endif %}
     <input type="submit" value="下载模型" onclick="downloadModels()">
   </p>
+
+  <div class="footerpage"></div>
+  <script src="{{url_for('static',filename='extlib/jquery.js')}}"></script>
+  <script>
+    $(function() {
+      $(".headerpage").load("{{url_for('static',filename='header.html')}}");
+      $(".footerpage").load("{{url_for('static',filename='footer.html')}}");
+    });
+  </script>
 </body>
 </html>

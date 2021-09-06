@@ -2,11 +2,12 @@
 <html lang="cn">
 <head>
   <meta charset="UTF-8">
-  <title>Fairness Platform</title>
+  <title>机器学习公平性评估和建议平台</title>
   <script type = "text/javascript" src = "/static/redirect.js" > </script>
+  <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='style.css')}}"/>
 </head>
 <body>
-  <h1> 简介... </h1>
+  <div class="headerpage"></div>
   <h3> 历史任务: </h3>
 {#  {% for p in f_processes %}#}
     <li>
@@ -44,5 +45,14 @@
     <input type="hidden" name="tar" value="/algo-cfg">
     <input type="submit" value="创建新任务">
   </form>
+
+  <div class="footerpage"></div>
+  <script src="{{url_for('static',filename='extlib/jquery.js')}}"></script>
+  <script>
+    $(function() {
+      $(".headerpage").load("{{url_for('static',filename='header.html')}}");
+      $(".footerpage").load("{{url_for('static',filename='footer.html')}}");
+    });
+  </script>
 </body>
 </html>
