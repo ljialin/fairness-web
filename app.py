@@ -49,7 +49,10 @@ def data_page():
                 request.form['dataset']
             )
         elif request.form['name'] == 'next':
-            return redirect(ctrlr.target)
+            if ctrlr.model is None:
+                errinfo = '必须选择数据集并确认后才能进行下一步'
+            else:
+                return redirect(ctrlr.target)
         return render_template('data.html', view=ctrlr.view, errinfo=errinfo)
 
 @app.route('/data-eval', methods=['GET', 'POST'])
