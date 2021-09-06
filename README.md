@@ -8,7 +8,7 @@ This demo is implemented by Ziqi Wang from the Research Institute of Trustworthy
 pip install numpy
 pip install pandas
 pip install torch
-pip installl flask
+pip install flask
 pip install pyecharts
 ```
 
@@ -25,4 +25,4 @@ Verified versions:
 python app.py
 ```
 
-2. Copy the ip shown in the terminal and paste it into a web browser.
+2. Copy the ip shown in the terminal and paste it into a web browser (Chrome is recommended, we have not tested other browsers).
