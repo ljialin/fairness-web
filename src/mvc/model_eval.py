@@ -163,11 +163,12 @@ class ModelEvaluator:
         res = {
             'Acc': (TP + TN) / total,
             'PLR': (TP + FP) / total,
-            'PPV': TP / (TP + FP),
-            'FPR': FP / (FP + TN),
-            'FNR': FN / (TP + FN),
-            'NPV': TN / (TN + FN)
+            'PPV': TP / (TP + FP + 1e-8),
+            'FPR': FP / (FP + TN + 1e-8),
+            'FNR': FN / (TP + FN + 1e-8),
+            'NPV': TN / (TN + FN + 1e-8)
         }
+
         return res
 
     def __get_confus_vals(self, frame=None):
@@ -206,6 +207,7 @@ class ModelEvalView:
 
         self.gf_cmmts = []
         self.cgf_cmmts = []
+        self.errinfo = ''
 
     def update_gf_res(self, evaltr: ModelEvaluator, sens_featrs):
         self.sens_featrs = sens_featrs

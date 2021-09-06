@@ -235,6 +235,7 @@ class DataView:
         self.label_text = ''
 
     def add_dataset(self, dataset):
+        print(dataset)
         self.datasets.append(dataset)
 
     def update_model(self, data_model):
