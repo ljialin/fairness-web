@@ -26,3 +26,7 @@ python app.py
 ```
 
 2. Copy the ip shown in the terminal and paste it into a web browser (Chrome is recommended, we have not tested other browsers).
+
+## Samples
+* Sample dataset can be found in "test_cases/data".
+* Sample models can be found in "test_cases/model".
