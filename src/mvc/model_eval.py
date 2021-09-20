@@ -95,6 +95,7 @@ class ModelEvaluator:
         self.label_map = data_model.label_map
         self.label_pval = data_model.pos_label_val
         self.label_nval = data_model.neg_label_val
+        self.n_featrs = data_model.n_featrs
         self.processed_data = data_model.get_processed_data()
         # TODO: Predict only 1 times can reduce time cost
         raw_data = data_model.get_raw_data()
@@ -138,6 +139,30 @@ class ModelEvaluator:
             cmmts.append(f'对{featr}特征进行分析，未发现公平性问题')
         return metric_vals, cmmts
 
+    def analyze_cgf(self, featr, legi_featr):
+        res = {}
+        cmmts = []
+
+        data = self.data_with_prediction
+        if featr in self.n_featrs:
+            pass
+        else:
+            legi_groups = data[legi_featr].index()
+            sens_groups = data[featr].index()
+            for sens_grp in sens_groups:
+                res[sens_grp] = {}
+                frame = data[data[featr] == sens_grp]
+                for legi_grp in legi_groups:
+                    subframe = frame[frame[legi_featr] == legi_grp]
+                    confus_vals = self.__get_confus_vals(subframe)
+                    PLR = ModelEvaluator.compute_metrics(**confus_vals)['PLR']
+                    res[sens_grp][legi_grp] = PLR
+                    flb, fub = self.get_fair_range()[1]
+                    if PLR < flb:
+                        cmmts.append(f'{sens_grp}群体中{legi_featr}为{legi_grp}的部分可能受到了歧视')
+                    elif PLR > fub:
+                        cmmts.append(f'{sens_grp}群体中{legi_featr}为{legi_grp}的部分可能受到了偏爱')
+
     def make_fairness_cmmts(self, featr, grp, metric_vals):
         # make for a single group
         cmmts = []
@@ -168,7 +193,6 @@ class ModelEvaluator:
             'FNR': FN / (TP + FN + 1e-8),
             'NPV': TN / (TN + FN + 1e-8)
         }
-
         return res
 
     def __get_confus_vals(self, frame=None):
@@ -253,10 +277,12 @@ class ModelEvalView:
             self.gf_cmmts.append((i, cmmts))
         return charts
 
-    def update_cgf_res(self, model, sens_featrs, legi_featr):
+    def update_cgf_res(self, evaltr, sens_featrs, legi_featr):
         self.sens_featrs = sens_featrs
         self.legi_featr = legi_featr
         self.cgf_cmmts.clear()
+
+        charts = []
 
 
         return []

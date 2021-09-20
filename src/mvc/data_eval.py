@@ -19,6 +19,7 @@ class DataEvaluator:
         self.data = data_model.get_raw_data()
         self.label = data_model.label
         self.pos_label_val = data_model.pos_label_val
+        self.n_featrs = data_model.n_featrs
 
     def get_global_plr(self):
         data = self.data
@@ -58,6 +59,23 @@ class DataEvaluator:
         return group_sp_rates, cmmts
 
     def analyze_cgf(self, featr, legi_featr):
+        # if featr in self.n_featrs:
+        #     pass
+        # else:
+        #     legi_groups = self.data[legi_featr].index()
+        #     sens_groups = self.data[featr].index()
+        #     res = {}
+        #     for sens_grp in sens_groups:
+        #         res[sens_grp] = {}
+        #         frame = self.data[
+        #             self.data[featr] == sens_grp
+        #         ]
+        #         for legi_grp in legi_groups:
+        #
+        #             res[sens_grp][legi_grp] = (
+        #                 self.data[]
+        #             )
+        #
         pass
 
 
