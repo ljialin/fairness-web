@@ -1,0 +1,9 @@
+NAME:
+xxx
+NUMBER OF ATTRIBUTES:
+n
+ATTRIBUTES:
+attr1, categorical, category1, category1, category1
+attr2, numberical
+LABEL:
+xxxx, 0, 1

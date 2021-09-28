@@ -5,10 +5,12 @@
 """
 import random
 from typing import List
-
+from fair_analyze import THRESHOLDS, N_SPLIT, CgfAnalyzeRes
 import pandas as pds
 from pyecharts.charts import Bar
 import pyecharts.options as chart_opts
+
+from utils import get_count_from_series
 
 
 class DataEvaluator:
@@ -19,6 +21,7 @@ class DataEvaluator:
         self.data = data_model.get_raw_data()
         self.label = data_model.label
         self.pos_label_val = data_model.pos_label_val
+        self.neg_label_val = data_model.neg_label_val
         self.n_featrs = data_model.n_featrs
 
     def get_global_plr(self):
@@ -58,25 +61,60 @@ class DataEvaluator:
             cmmts.append(f'在{featr}特征上未发现公平性问题')
         return group_sp_rates, cmmts
 
-    def analyze_cgf(self, featr, legi_featr):
-        # if featr in self.n_featrs:
-        #     pass
-        # else:
-        #     legi_groups = self.data[legi_featr].index()
-        #     sens_groups = self.data[featr].index()
-        #     res = {}
-        #     for sens_grp in sens_groups:
-        #         res[sens_grp] = {}
-        #         frame = self.data[
-        #             self.data[featr] == sens_grp
-        #         ]
-        #         for legi_grp in legi_groups:
-        #
-        #             res[sens_grp][legi_grp] = (
-        #                 self.data[]
-        #             )
-        #
-        pass
+    def analyze_cgf(self, sens_featr, legi_featr):
+        res = CgfAnalyzeRes(sens_featr)
+        data = self.data
+        res.sens_groups = list(data[sens_featr].unique())
+        if legi_featr in self.n_featrs:
+            col_name = f'{legi_featr} groups'
+            if col_name not in data.columns:
+                vmax = data[legi_featr].max()
+                vmin = data[legi_featr].min()
+                print(type(vmin), vmin, type(vmax), vmax)
+                d = (vmax - vmin + 1e-5) / N_SPLIT
+                legi_groups = [
+                    f'{vmin + i * d:.2}-{vmin + (i + 1) * d:.2}'
+                    for i in range(N_SPLIT)
+                ]
+                res.legi_groups = legi_groups
+                original_vals = data[legi_featr].values
+                new_col = [
+                    legi_groups[int((val - vmin) / d)]
+                    for val in original_vals
+                ]
+                data.insert(0, col_name, new_col)
+            counts = data[[col_name, sens_featr, self.label]].value_counts()
+        else:
+            res.legi_groups = list(data[legi_featr].unique())
+            counts = data[[legi_featr, sens_featr, self.label]].value_counts()
+        pval = self.pos_label_val
+        nval = self.neg_label_val
+        for legi_grp in res.legi_groups:
+            p_tcnt = sum(
+                get_count_from_series(counts, (legi_grp, sens_grp, pval))
+                for sens_grp in res.sens_groups
+            )
+            n_tcnt = sum(
+                get_count_from_series(counts, (legi_grp, sens_grp, nval))
+                for sens_grp in res.sens_groups
+            )
+            total_plr = p_tcnt / (p_tcnt + n_tcnt + 1e-5)
+            res.data[legi_grp] = {}
+            for sens_grp in res.sens_groups:
+                p_cnt = get_count_from_series(counts, (legi_grp, sens_grp, pval))
+                n_cnt = get_count_from_series(counts, (legi_grp, sens_grp, nval))
+                plr = p_cnt / (p_cnt + n_cnt + 1e-5)
+                ratio = plr / total_plr
+                res.data[legi_grp][sens_grp] = ratio
+                if ratio < THRESHOLDS['PLR']:
+                    res.cmmts.append(
+                        f'{sens_grp}群体在{legi_featr}为{legi_grp}的部分可能受到了歧视'
+                    )
+                elif ratio > 1 / THRESHOLDS['PLR']:
+                    res.cmmts.append(
+                        f'{sens_grp}群体在{legi_featr}为{legi_grp}的部分可能受到了偏爱'
+                    )
+        return res
 
 
 class DataEvalView:
@@ -120,16 +158,15 @@ class DataEvalView:
         self.cgf_cmmts.clear()
 
         charts = []
-        for i, featr in enumerate(sens_featrs):
-            rates, cmmts = model.analyze_cgf()
-            self.cgf_cmmts.append((i, cmmts))
-
+        for i, sens_featr in enumerate(sens_featrs):
+            res = model.analyze_cgf(sens_featr, legi_featr)
+            self.cgf_cmmts.append((i, res.cmmts))
+            charts.append(res.get_chart())
         return charts
 
     def update_if_res(self, model, sens_featrs):
         self.sens_featrs = sens_featrs
         pass
-
 
 
 class DataEvalController:
@@ -155,7 +192,9 @@ class DataEvalController:
             return '必须选择至少一个敏感属性和一个正当属性才能进行分析'
         if legi_featr in sens_featrs:
             return '正当特征必须是非敏感特征'
-        self.view.update_cgf_res(self.model, sens_featrs, legi_featr)
+        charts = self.view.update_cgf_res(self.model, sens_featrs, legi_featr)
+        for i, chart in enumerate(charts):
+            self.charts[f'1{i}'] = chart
 
     def if_eval(self, sens_featrs):
         if not sens_featrs:

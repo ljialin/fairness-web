@@ -11,8 +11,8 @@
     <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='style.css')}}"/>
 </head>
 <body>
-    <div class="headerpage"></div>
-    <div class="container">
+  <div class="headerpage"></div>
+  <div class="container">
     <div class="header">
       <div style="width: 90%; float: left"><h1>模型{{ view.name }}公平性分析</h1></div>
       <div style="width: 10%; float: left; margin-top: 30px">
@@ -50,15 +50,15 @@
             {% for featr in view.featrs %}
               <p><label>
                 {% if featr == view.legi_featr %}
-                  <input type="radio" name="legi-featrs" value="{{ featr }}" checked>
+                  <input type="radio" name="legi-featr" value="{{ featr }}" checked>
                 {% else %}
-                  <input type="radio" name="legi-featrs" value="{{ featr }}">
+                  <input type="radio" name="legi-featr" value="{{ featr }}">
                 {% endif %}
               </label> {{ featr }} </p>
             {% endfor %}
           </div>
           <div style="float: top">
-            <input type="button" name="type" value="条件性群体公平分析(待开发)">
+            <input type="submit" name="type" value="条件性群体公平分析">
           </div>
         </form>
       </div>
@@ -76,12 +76,14 @@
         </div>
         <h3>条件性群体公平分析(待开发) <input type="submit" value="?" onclick="data_cg_fair_info()"></h3>
         <div class="block">
-          <div id="bar21" style="width:96%; height:360px">
-            <script> get_chart("bar21", "/charts/datacgf/gender") </script>
-          </div>
-          <div id="bar22" style="width:96%; height:360px">
-            <script> get_chart("bar22", "/charts/datacgf/race") </script>
-          </div>
+          {% for i, cmmts in view.cgf_cmmts %}
+            <div id="1{{ i }}" style="width:90%; height:480px">
+              <script> get_chart("1{{ i }}", "/model-eval/charts/1{{ i }}") </script>
+            </div>
+            {% for cmmt in cmmts %}
+              <p> {{ cmmt }} </p>
+            {%  endfor %}
+          {% endfor %}
         </div>
       </div>
     </div>

@@ -8,6 +8,16 @@
 </head>
 <body>
   <div class="headerpage"></div>
+
+  <p>
+    本平台提供分析机器学习数据、模型中存在的公平性问题，并通过多目标算法优化模型减轻模型的不公平性的功能。机器学习中的公平性一般指：<br>
+    <li>在非敏感特征上相同的人，其预测结果（或标签）应相似。例如成绩相同的学生，不论性别，模型对其录取结果的预测应相同。</li>
+    <li>不同人群之间的预测结果（或标签）的差异不应大于他们的非敏感特征之间的差异。</li>
+  </p>
+  <p>
+    敏感特征指在公平性问题上敏感，不应对预测结果（或标签）产生影响的特征。如对犯罪判别的预测不应与人种有关，则人中为敏感特征。
+  </p>
+
   <h3> 历史任务: </h3>
 {#  {% for p in f_processes %}#}
     <li>
@@ -19,16 +29,10 @@
     <li>
       <a href="/task/0003"> task-0003 </a>
     </li>
-{#  {% endfor %}#}
   <h3> 运行中任务: </h3>
     <li>
       <a href="/task/0002"> task-0002 </a>
     </li>
-{#  {% for p in r_processes %}#}
-{#    <li>#}
-{#      <a href="/task/{{ p.get_strid() }}"> {{ p.get_name() }} </a>#}
-{#    </li>#}
-{#  {% endfor %}#}
 
   <form method="post" style="float: top; margin-top: 10px">
     <input type="hidden" name="name" value="next">

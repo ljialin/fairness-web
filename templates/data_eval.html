@@ -51,15 +51,15 @@
             {% for featr in view.featrs %}
               <p><label>
                 {% if featr == view.legi_featr %}
-                  <input type="radio" name="legi-featrs" value="{{ featr }}" checked>
+                  <input type="radio" name="legi-featr" value="{{ featr }}" checked>
                 {% else %}
-                  <input type="radio" name="legi-featrs" value="{{ featr }}">
+                  <input type="radio" name="legi-featr" value="{{ featr }}">
                 {% endif %}
               </label> {{ featr }} </p>
             {% endfor %}
           </div>
           <div style="float: top">
-            <input type="button" name="type" value="条件性群体公平分析(待开发)">
+            <input type="submit" name="type" value="条件性群体公平分析">
           </div>
         </form>
       </div>
@@ -77,10 +77,14 @@
         </div>
         <h3>条件性群体公平分析（待开发） <input type="submit" value="?" onclick="data_cg_fair_info()"></h3>
         <div class="block">
-          <div id="bar21" style="width:96%; height:360px">
-            <script> get_chart("bar21", "/charts/datacgf/gender") </script>
-          </div>
-          <p>以Grade为正当属性对Gender特征进行分析，未发现公平性问题</p>
+          {% for i, cmmts in view.cgf_cmmts %}
+            <div id="1{{ i }}" style="width:90%; height:360px">
+              <script> get_chart("1{{ i }}", "/data-eval/charts/1{{ i }}") </script>
+            </div>
+            {% for cmmt in cmmts %}
+              <p> {{ cmmt }} </p>
+            {%  endfor %}
+          {% endfor %}
         </div>
         <h3>个体公平分析(待开发)<input type="submit" value="?" onclick="data_i_fair_info()"></h3>
         <div class="block">

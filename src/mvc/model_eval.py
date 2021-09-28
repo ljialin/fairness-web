@@ -6,26 +6,19 @@
 import importlib
 import inspect
 import os
+
 import numpy as np
-import pandas as pds
 import torch
 # from typing import List
 import pyecharts.options as chopts
 from pyecharts.charts import Radar
 from werkzeug.utils import secure_filename
-from src.mvc.data_eval import DataEvaluator
+
+from fair_analyze import METRICS, METRIC_UBS, THRESHOLDS, PREFER_HIGH, N_SPLIT, CgfAnalyzeRes
 from src.mvc.data import DataController
-from src.utils import get_rgb_hex
+from src.utils import get_rgb_hex, get_count_from_series
 from root import PRJROOT
 
-
-METRICS = ('Acc', 'PLR', 'PPV', 'FPR', 'FNR', 'NPV')
-METRIC_UBS = {'Acc': 1, 'PLR': 1, 'PPV': 1, 'FPR': 1, 'FNR': 1, 'NPV': 1}
-THRESHOLDS = {'Acc': 0.8, 'PLR': 0.8, 'PPV': 0.8, 'FPR': 0.8, 'FNR': 0.8, 'NPV': 0.8}
-PREFER_HIGH = {'Acc': 1, 'PLR': 1, 'PPV': 1, 'FPR': 1, 'FNR': 0, 'NPV': 0}
-NUM_METRICS = len(METRICS)
-assert set(METRICS) == set(METRIC_UBS.keys())
-# PLR: Positive Label Rate. Statistical Parity requeirs PLR of each group close to global PLR.
 
 
 def upload_model(ip, struct_file, var_file):
@@ -139,29 +132,58 @@ class ModelEvaluator:
             cmmts.append(f'对{featr}特征进行分析，未发现公平性问题')
         return metric_vals, cmmts
 
-    def analyze_cgf(self, featr, legi_featr):
-        res = {}
-        cmmts = []
-
+    def analyze_cgf(self, sens_featr, legi_featr):
+        res = CgfAnalyzeRes(sens_featr)
         data = self.data_with_prediction
-        if featr in self.n_featrs:
-            pass
+        res.sens_groups = list(data[sens_featr].unique())
+        if legi_featr in self.n_featrs:
+            col_name = f'{legi_featr} groups'
+            if col_name not in data.columns:
+                vmax = data[legi_featr].max()
+                vmin = data[legi_featr].min()
+                print(type(vmin), vmin, type(vmax), vmax)
+                d = (vmax - vmin + 1e-5) / N_SPLIT
+                legi_groups = [
+                    f'{vmin + i * d:.2}-{vmin + (i + 1) * d:.2}'
+                    for i in range(N_SPLIT)
+                ]
+                res.legi_groups = legi_groups
+                original_vals = data[legi_featr].values
+                new_col = [
+                    legi_groups[int((val - vmin) / d)]
+                    for val in original_vals
+                ]
+                data.insert(0, col_name, new_col)
+            counts = data[[col_name, sens_featr, 'binary prediction']].value_counts()
         else:
-            legi_groups = data[legi_featr].index()
-            sens_groups = data[featr].index()
-            for sens_grp in sens_groups:
-                res[sens_grp] = {}
-                frame = data[data[featr] == sens_grp]
-                for legi_grp in legi_groups:
-                    subframe = frame[frame[legi_featr] == legi_grp]
-                    confus_vals = self.__get_confus_vals(subframe)
-                    PLR = ModelEvaluator.compute_metrics(**confus_vals)['PLR']
-                    res[sens_grp][legi_grp] = PLR
-                    flb, fub = self.get_fair_range()[1]
-                    if PLR < flb:
-                        cmmts.append(f'{sens_grp}群体中{legi_featr}为{legi_grp}的部分可能受到了歧视')
-                    elif PLR > fub:
-                        cmmts.append(f'{sens_grp}群体中{legi_featr}为{legi_grp}的部分可能受到了偏爱')
+            res.legi_groups = list(data[legi_featr].unique())
+            counts = data[[legi_featr, sens_featr, 'binary prediction']].value_counts()
+        for legi_grp in res.legi_groups:
+            p_tcnt = sum(
+                get_count_from_series(counts, (legi_grp, sens_grp, 1))
+                for sens_grp in res.sens_groups
+            )
+            n_tcnt = sum(
+                get_count_from_series(counts, (legi_grp, sens_grp, 0))
+                for sens_grp in res.sens_groups
+            )
+            total_plr = p_tcnt / (p_tcnt + n_tcnt + 1e-5)
+            res.data[legi_grp] = {}
+            for sens_grp in res.sens_groups:
+                p_cnt = get_count_from_series(counts, (legi_grp, sens_grp, 1))
+                n_cnt = get_count_from_series(counts, (legi_grp, sens_grp, 0))
+                plr = p_cnt / (p_cnt + n_cnt + 1e-5)
+                ratio = plr / total_plr
+                res.data[legi_grp][sens_grp] = ratio
+                if ratio < THRESHOLDS['PLR']:
+                    res.cmmts.append(
+                        f'{sens_grp}群体在{legi_featr}为{legi_grp}的部分可能受到了歧视'
+                    )
+                elif ratio > 1 / THRESHOLDS['PLR']:
+                    res.cmmts.append(
+                        f'{sens_grp}群体在{legi_featr}为{legi_grp}的部分可能受到了偏爱'
+                    )
+        return res
 
     def make_fairness_cmmts(self, featr, grp, metric_vals):
         # make for a single group
@@ -283,9 +305,12 @@ class ModelEvalView:
         self.cgf_cmmts.clear()
 
         charts = []
-
-
-        return []
+        for i, sens_featr in enumerate(sens_featrs):
+            bar_info = evaltr.analyze_cgf(sens_featr, legi_featr)
+            # print(bar_info.data)
+            charts.append(bar_info.get_chart())
+            self.cgf_cmmts.append((i, bar_info.cmmts))
+        return charts
 
 
 class ModelEvalController:

@@ -24,7 +24,7 @@ class DataModel:
         self.c_featrs = set()
         self.numberical_bounds = {}
         self.categorical_map = {}
-        self.del_once_free = False
+        self.temporal = False
         self.label = ''
         self.pos_label_val = ''
         self.neg_label_val = ''
@@ -41,7 +41,7 @@ class DataModel:
         rela_path = file_path[len(PRJROOT):]
         if len(rela_path) >=9 and file_path[len(PRJROOT):].find('data/temp', 0):
             # 若为temp文件夹里的文件，则对象释放同时删除对应文件
-            self.del_once_free = True
+            self.temporal = True
 
         f = open(file_path + '.txt', 'r')       # 可认为不会出现文件不存在
         try:
@@ -104,13 +104,14 @@ class DataModel:
         f.close()
         return ''
 
-    def get_ctgrs(self, ctgr):
+    def get_ctgrs(self, featr):
         # print(ctgr)
-        return [key for key in self.categorical_map[ctgr].keys()]
+        return [key for key in self.categorical_map[featr].keys()]
 
     def get_raw_data(self):
         if self.__raw_data is None:
             self.__raw_data = pandas.read_csv(self.file_path + '.csv').applymap(str)
+            self.__raw_data[list(self.n_featrs)] = self.__raw_data[list(self.n_featrs)].applymap(float)
         return self.__raw_data
 
     def get_groups(self, featr):
@@ -157,6 +158,11 @@ class DataModel:
         labels = list(map(int, (self.label_map[val] for val in raw_data[self.label].values)))
 
         self.__train_data = (torch.tensor(np_data), torch.tensor(labels))
+
+    def free(self):
+        if self.temporal:
+            os.remove(self.file_path + '.txt')
+            os.remove(self.file_path + '.csv')
 
 
 class DataService:
@@ -295,6 +301,8 @@ class DataController:
 
     def select_dataset(self, dataset):
         file_path = DataService.inst().datasets[dataset]
+        if self.model:
+            del self.model
         self.model = DataModel(dataset, file_path)
         # print(self.models.numberical_bounds)
         # print(self.models.categorical_map)
@@ -305,6 +313,11 @@ class DataController:
     def __getattr__(self, item):
         if item == 'datasets':
             return DataService.inst().datasets
+
+    def refresh(self):
+        print('deleted')
+        if self.model:
+            self.model.free()
 
 #
 # if __name__ == '__main__':

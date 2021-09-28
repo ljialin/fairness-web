@@ -14,6 +14,7 @@ import pandas
 from werkzeug.datastructures import ImmutableMultiDict
 
 from root import PRJROOT
+import socket
 
 
 class MyObj:
@@ -29,13 +30,27 @@ def prt(*args):
         print(item)
 
 if __name__ == '__main__':
-    frame = pandas.read_csv('./data/german1.csv').applymap(str)
-    subframe = frame[frame['status'] == 'A12']
-    print(subframe.size)
-    print(subframe.shape[1])
-    print(subframe.columns)
-    # a = (1, 2, 3)
-    # print(*a)
-    # mydict = {'a': 1, 'b': 2}
-    # print(list(mydict.keys()))
+    v = 0.00018432
+    print(f'{v:.2}')
+    # data = pandas.read_csv('data/german1.csv').applymap(str)
+    # data
+    # print(data)
+    # data['age'] = data[['age']].applymap(float)
+    # print(data['age'])
+    # tmp = data['age'].apply(float)
+    # tmp = data['age']
+    # tmp.apply(float)
+    # print(tmp)
+    # print(data['status'])
+    # frame = data[['status', 'age']]
+
+    # counts = frame.value_counts()
+    # print(counts[('A11', '45')])
+    # print(type(counts))
+    # print(counts.index)
+    # for status, age in counts.index:
+    #     print(status, age)
+    # print(frame)
+    # print(frame.value_counts())
+    # print(socket.gethostbyname(socket.gethostname()))
     pass

@@ -18,6 +18,13 @@ def get_rgb_hex(*rgb):
             res += f'0{temp[2]}'
     return res
 
+def get_count_from_series(data, key):
+    try:
+        return data[key]
+    except KeyError:
+        return 0
+
+
 class CustomUnpickler(pickle.Unpickler):
     def find_class(self, module, name):
         try:
