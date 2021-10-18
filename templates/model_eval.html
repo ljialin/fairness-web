@@ -29,7 +29,7 @@
         <form method="post" style="width: 100%; height: 100%; float: top">
           <input type="hidden" name="name" value="eval" />
           <div class="side_form">
-            {% for featr in view.c_featrs %}
+            {% for featr in view.featrs %}
               <p><label>
                 {% if featr in view.sens_featrs %}
                   <input type="checkbox" name="sens-featrs" value="{{ featr }}" checked>

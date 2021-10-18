@@ -79,7 +79,7 @@ def data_eval():
             if form['type'] == '群体公平分析':
                 ctrlr.gf_eval(sens_featrs)
             elif form['type'] == '个体公平分析':
-                ctrlr.if_eval(sens_featrs)
+                ctrlr.if_eval(form['legi-featr'])
             elif form['type'] == '条件性群体公平分析':
                 ctrlr.cgf_eval(sens_featrs, form['legi-featr'])
 

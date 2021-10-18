@@ -14,11 +14,10 @@ import pyecharts.options as chopts
 from pyecharts.charts import Radar
 from werkzeug.utils import secure_filename
 
-from fair_analyze import METRICS, METRIC_UBS, THRESHOLDS, PREFER_HIGH, N_SPLIT, CgfAnalyzeRes
+from common_fair_analyze import METRICS, METRIC_UBS, THRESHOLDS, PREFER_HIGH, N_SPLIT, CgfAnalyzeRes
 from src.mvc.data import DataController
 from src.utils import get_rgb_hex, get_count_from_series
 from root import PRJROOT
-
 
 
 def upload_model(ip, struct_file, var_file):
@@ -51,9 +50,6 @@ def upload_model(ip, struct_file, var_file):
     model = func()
     model.load_state_dict(torch.load(var_path))
 
-    # model = torch.load(path)
-    # os.remove(struct_path)
-    # os.remove(var_path)
     return var_file.filename[:-4], model
 
 
@@ -83,7 +79,6 @@ class ModelEvaluator:
 
     def __init__(self, predictor, data_model):
         self.predictor = predictor
-
         self.label = data_model.label
         self.label_map = data_model.label_map
         self.label_pval = data_model.pos_label_val
@@ -91,16 +86,8 @@ class ModelEvaluator:
         self.n_featrs = data_model.n_featrs
         self.processed_data = data_model.get_processed_data()
         # TODO: Predict only 1 times can reduce time cost
-        raw_data = data_model.get_raw_data()
-        self.data_with_prediction = raw_data
-        self.data_with_prediction.insert(
-            len(raw_data.columns), 'prediction',
-            self.predictor.predict(self.processed_data)
-        )
-        self.data_with_prediction.insert(
-            len(raw_data.columns), 'binary prediction',
-            self.predictor.predict(self.processed_data, to_binary=True)
-        )
+        data_model.update_prediction(self.predictor.predict(self.processed_data))
+        self.data = data_model.get_raw_data()
 
         self.__glb_metric_vals = None
         self.__fair_range = None
@@ -133,31 +120,14 @@ class ModelEvaluator:
         return metric_vals, cmmts
 
     def analyze_cgf(self, sens_featr, legi_featr):
-        res = CgfAnalyzeRes(sens_featr)
-        data = self.data_with_prediction
-        res.sens_groups = list(data[sens_featr].unique())
-        if legi_featr in self.n_featrs:
-            col_name = f'{legi_featr} groups'
-            if col_name not in data.columns:
-                vmax = data[legi_featr].max()
-                vmin = data[legi_featr].min()
-                print(type(vmin), vmin, type(vmax), vmax)
-                d = (vmax - vmin + 1e-5) / N_SPLIT
-                legi_groups = [
-                    f'{vmin + i * d:.2}-{vmin + (i + 1) * d:.2}'
-                    for i in range(N_SPLIT)
-                ]
-                res.legi_groups = legi_groups
-                original_vals = data[legi_featr].values
-                new_col = [
-                    legi_groups[int((val - vmin) / d)]
-                    for val in original_vals
-                ]
-                data.insert(0, col_name, new_col)
-            counts = data[[col_name, sens_featr, 'binary prediction']].value_counts()
-        else:
-            res.legi_groups = list(data[legi_featr].unique())
-            counts = data[[legi_featr, sens_featr, 'binary prediction']].value_counts()
+        res = CgfAnalyzeRes(sens_featr, legi_featr)
+        data = self.data
+        legi_key = f'{legi_featr} groups' if legi_featr in self.n_featrs else legi_featr
+        sens_key = f'{sens_featr} groups' if sens_featr in self.n_featrs else sens_featr
+
+        counts = data[[legi_key, sens_key, 'binary prediction']].value_counts()
+        res.legi_groups = list(data[legi_key].unique())
+        res.sens_groups = list(data[sens_key].unique())
         for legi_grp in res.legi_groups:
             p_tcnt = sum(
                 get_count_from_series(counts, (legi_grp, sens_grp, 1))
@@ -177,12 +147,16 @@ class ModelEvaluator:
                 res.data[legi_grp][sens_grp] = ratio
                 if ratio < THRESHOLDS['PLR']:
                     res.cmmts.append(
-                        f'{sens_grp}群体在{legi_featr}为{legi_grp}的部分可能受到了歧视'
+                        f'{sens_featr}为{sens_grp}的群体在{legi_featr}为{legi_grp}的部分{self.label}预测值'
+                        f'为{self.pos_label_val}的比例过低，可能受到了歧视'
                     )
                 elif ratio > 1 / THRESHOLDS['PLR']:
                     res.cmmts.append(
-                        f'{sens_grp}群体在{legi_featr}为{legi_grp}的部分可能受到了偏爱'
+                        f'{sens_featr}为{sens_grp}的群体在{legi_featr}为{legi_grp}的部分{self.label}预测值'
+                        f'为{self.pos_label_val}的比例过高，可能受到了偏爱'
                     )
+            if not res.cmmts:
+                res.cmmts.append(f'以{legi_featr}为正当特征对{sens_featr}进行分析，未发现公平性问题')
         return res
 
     def make_fairness_cmmts(self, featr, grp, metric_vals):
@@ -219,7 +193,7 @@ class ModelEvaluator:
 
     def __get_confus_vals(self, frame=None):
         if frame is None:
-            frame = self.data_with_prediction
+            frame = self.data
 
         T_subframe = frame[frame[self.label] == self.label_pval]
         F_subframe = frame[frame[self.label] == self.label_nval]
@@ -233,10 +207,11 @@ class ModelEvaluator:
 
     def __get_grp_confus_vals(self, featr):
         res = {}
-        groups = self.data_with_prediction[featr].unique()
+        key = f'{featr} groups' if featr in self.n_featrs else featr
+        groups = self.data[key].unique()
         for grp in groups:
-            frame = self.data_with_prediction
-            subframe = frame[frame[featr] == grp]
+            frame = self.data
+            subframe = frame[frame[key] == grp]
             res[grp] = self.__get_confus_vals(subframe)
         return res
 
@@ -289,7 +264,7 @@ class ModelEvalView:
                 color = f'#{get_rgb_hex(0, g, b)}'
 
                 chart.add(
-                    grp, [[grp_metric_vals[grp][mtrc] for mtrc in METRICS]],
+                    f'{grp}群组', [[grp_metric_vals[grp][mtrc] for mtrc in METRICS]],
                     label_opts=chopts.LabelOpts(is_show=False),
                     linestyle_opts=chopts.LineStyleOpts(width=2),
                     areastyle_opts = chopts.AreaStyleOpts(opacity=0.2),

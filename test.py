@@ -15,7 +15,7 @@ from werkzeug.datastructures import ImmutableMultiDict
 
 from root import PRJROOT
 import socket
-
+import time
 
 class MyObj:
     insts = {}
@@ -30,11 +30,38 @@ def prt(*args):
         print(item)
 
 if __name__ == '__main__':
-    v = 0.00018432
-    print(f'{v:.2}')
-    # data = pandas.read_csv('data/german1.csv').applymap(str)
-    # data
+    # arr = [1, -2]
+    # print(', '.join(map(str, arr)))
+    data = pandas.read_csv('data/N-IF-100000.csv').applymap(str)
+    data = data.sort_values('grade')[['grade', 'acceptance']]
+
+    start = time.perf_counter_ns()
+    for i in range(100000):
+        tmp = data.iloc[i]['grade']
+        # print(data.iloc[i]['age'])
+    print((time.perf_counter_ns() - start) // 1000000)
+
+    start = time.perf_counter_ns()
+    for i in range(100000):
+        tmp = data.iat[i, 0]
+    print((time.perf_counter_ns() - start) // 1000000)
     # print(data)
+    # print(data[['age', 'credit']])
+    # for i, item in data.iterrows():
+    #     print(i, item['age'])
+    # for i in range(1000):
+    #     print(data[['age', 'credit']].loc[i])
+    # all_counts = data['status'].value_counts()
+    # pos_counts = data[data['credit'] == '1']['status'].value_counts()
+    # print(pos_counts)
+    # print(all_counts)
+    # pos_ratios = pos_counts / all_counts
+    # print(pos_ratios.index)
+    # for item in pos_ratios:
+    #     print(item)
+    # print()
+    # data
+    # print(data['credit'].value_counts())
     # data['age'] = data[['age']].applymap(float)
     # print(data['age'])
     # tmp = data['age'].apply(float)

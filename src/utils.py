@@ -3,6 +3,8 @@
 @Author: Ziqi Wang
 @File: utils.py
 """
+
+import math
 import pickle
 import os
 
@@ -44,6 +46,6 @@ class FileUtils:
         return files
 
 if __name__ == '__main__':
-    print(get_rgb_hex(0, 100, 200))
+    print(str_upright('abc'))
     # print(FileUtils.list_files('F:\\research group\Huawei Project\\fariness-web\data'))
     # print(FileUtils.list_files('../data'))

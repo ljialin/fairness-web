@@ -3,13 +3,13 @@
   @Author: Ziqi Wang
   @File: data_eval.py
 """
-import random
-from typing import List
-from fair_analyze import THRESHOLDS, N_SPLIT, CgfAnalyzeRes
-import pandas as pds
-from pyecharts.charts import Bar
-import pyecharts.options as chart_opts
 
+import random
+import pandas as pds
+import pyecharts.options as chart_opts
+from typing import List
+from common_fair_analyze import THRESHOLDS, N_SPLIT, CgfAnalyzeRes
+from pyecharts.charts import Bar
 from utils import get_count_from_series
 
 
@@ -19,10 +19,19 @@ class DataEvaluator:
 
     def __init__(self, data_model):
         self.data = data_model.get_raw_data()
+        # self.processed_data = data_model.get_processed_data()
         self.label = data_model.label
         self.pos_label_val = data_model.pos_label_val
         self.neg_label_val = data_model.neg_label_val
+        self.featrs = data_model.featrs
+        self.c_featrs = data_model.c_featrs
         self.n_featrs = data_model.n_featrs
+        self.categorical_map = data_model.categorical_map
+        self.size = len(self.data)
+
+        self.n_featr_span = {}
+        for featr in self.n_featrs:
+            self.n_featr_span[featr] = self.data[featr].max() - self.data[featr].min()
 
     def get_global_plr(self):
         data = self.data
@@ -43,7 +52,8 @@ class DataEvaluator:
 
     def analyze_gf(self, featr) -> (pds.Series, List[str]):
         cmmts = []
-        group_sp_rates = self.get_group_plr(featr) / self.get_global_plr()
+        key = f'{featr} groups' if featr in self.n_featrs else featr
+        group_sp_rates = self.get_group_plr(key) / self.get_global_plr()
         for group in group_sp_rates.index:
             if group_sp_rates[group] < self.theta_gf:
                 cmmts.append(
@@ -58,35 +68,18 @@ class DataEvaluator:
                     f'以及该特征是否为应当影响标签值的非敏感特征。'
                 )
         if not cmmts:
-            cmmts.append(f'在{featr}特征上未发现公平性问题')
+            cmmts.append(f'对{featr}特征进行群体公平分析，未发现公平性问题')
         return group_sp_rates, cmmts
 
     def analyze_cgf(self, sens_featr, legi_featr):
-        res = CgfAnalyzeRes(sens_featr)
+        res = CgfAnalyzeRes(sens_featr, legi_featr)
         data = self.data
-        res.sens_groups = list(data[sens_featr].unique())
-        if legi_featr in self.n_featrs:
-            col_name = f'{legi_featr} groups'
-            if col_name not in data.columns:
-                vmax = data[legi_featr].max()
-                vmin = data[legi_featr].min()
-                print(type(vmin), vmin, type(vmax), vmax)
-                d = (vmax - vmin + 1e-5) / N_SPLIT
-                legi_groups = [
-                    f'{vmin + i * d:.2}-{vmin + (i + 1) * d:.2}'
-                    for i in range(N_SPLIT)
-                ]
-                res.legi_groups = legi_groups
-                original_vals = data[legi_featr].values
-                new_col = [
-                    legi_groups[int((val - vmin) / d)]
-                    for val in original_vals
-                ]
-                data.insert(0, col_name, new_col)
-            counts = data[[col_name, sens_featr, self.label]].value_counts()
-        else:
-            res.legi_groups = list(data[legi_featr].unique())
-            counts = data[[legi_featr, sens_featr, self.label]].value_counts()
+        legi_key = f'{legi_featr} groups' if legi_featr in self.n_featrs else legi_featr
+        sens_key = f'{sens_featr} groups' if sens_featr in self.n_featrs else sens_featr
+
+        counts = data[[legi_key, sens_key, self.label]].value_counts()
+        res.legi_groups = list(data[legi_key].unique())
+        res.sens_groups = list(data[sens_key].unique())
         pval = self.pos_label_val
         nval = self.neg_label_val
         for legi_grp in res.legi_groups:
@@ -108,13 +101,92 @@ class DataEvaluator:
                 res.data[legi_grp][sens_grp] = ratio
                 if ratio < THRESHOLDS['PLR']:
                     res.cmmts.append(
-                        f'{sens_grp}群体在{legi_featr}为{legi_grp}的部分可能受到了歧视'
+                        f'{sens_featr}为{sens_grp}的群体在{legi_featr}为{legi_grp}的部分{self.label}'
+                        f'为{self.pos_label_val}的比例过低，可能受到了歧视'
                     )
                 elif ratio > 1 / THRESHOLDS['PLR']:
                     res.cmmts.append(
-                        f'{sens_grp}群体在{legi_featr}为{legi_grp}的部分可能受到了偏爱'
+                        f'{sens_featr}为{sens_grp}的群体在{legi_featr}为{legi_grp}的部分{self.label}为{self.pos_label_val}'
+                        f'的比例过高，可能受到了偏爱'
                     )
+            if not res.cmmts:
+                res.cmmts.append(f'以{legi_featr}为正当特征对{sens_featr}进行分析，未发现公平性问题')
         return res
+
+    def analyze_if(self, legi_featr):
+        if legi_featr in self.n_featrs:
+            neg_discriminated, pos_discriminated = self.__analyze_if_numberical(legi_featr)
+        else:
+            neg_discriminated, pos_discriminated = self.__analyze_if_categorical(legi_featr)
+        cmmts = []
+        if neg_discriminated:
+            cmmts.append(f'以{legi_featr}作为正当特征分析，数据集中以下{len(neg_discriminated)}个个体可能受到了歧视：')
+            cmmts.append(', '.join(map(str, neg_discriminated)))
+        if pos_discriminated:
+            cmmts.append(f'以{legi_featr}作为正当特征分析，数据集中以下{len(pos_discriminated)}个个体可能受到了偏爱：')
+            cmmts.append(', '.join(map(str, pos_discriminated)))
+            # cmmts.append(
+            #     f'以{legi_featr}作为正当特征分析，数据集中以下{len(pos_discriminated)}个个体可能'
+            #     f'受到了偏爱：\n' + ', '.join(map(str, pos_discriminated))
+            # )
+        if not cmmts:
+            cmmts.append('当前数据集中未发现个体公平问题。')
+        return cmmts
+
+    def __analyze_if_categorical(self, legi_featr):
+        neg_discrminated = []
+        pos_discrminated = []
+        all_counts = self.data[legi_featr].value_counts()
+        pos_counts = self.data[self.data[self.label] == self.pos_label_val][legi_featr].value_counts()
+        pos_ratios = pos_counts / all_counts
+        for grp in pos_ratios.index:
+            group_frame = self.data[self.data[legi_featr] == grp]
+            if pos_ratios[grp] > 0.9:
+                neg_discrminated += [
+                    i for i in group_frame
+                    [self.data[self.label] == self.neg_label_val]
+                    ['ID']
+                ]
+            elif pos_ratios[grp] < 0.1:
+                pos_discrminated += [
+                    i for i in group_frame
+                    [self.data[self.label] == self.pos_label_val]
+                    ['ID']
+                ]
+        return neg_discrminated, pos_discrminated
+
+    def __analyze_if_numberical(self, legi_featr):
+        neg_discriminated, pos_discriminated = [], []
+        frame = self.data[[legi_featr, self.label, 'ID']].sort_values(legi_featr)
+        i = 0
+        p, q = 0, 0
+        p_cnt, n_cnt = 0, 0
+        span = 0.05 * (frame[legi_featr].max() - frame[legi_featr].min())
+        while i < len(self.data):
+            cur_val = frame.iat[i, 0]
+            cur_label = frame.iat[i, 1]
+            while frame.iat[p, 0] < cur_val - span:
+                if frame.iat[p, 1] == self.pos_label_val:
+                    p_cnt -= 1
+                else:
+                    n_cnt -= 1
+                p += 1
+            while q < len(frame) and frame.iat[q, 0] <= cur_val + span:
+                if frame.iat[q, 1] == self.pos_label_val:
+                    p_cnt += 1
+                else:
+                    n_cnt += 1
+                q += 1
+            n = q - p - 1
+            if n > 10:
+                p_cnt_expect_self = p_cnt if cur_label == self.neg_label_val else p_cnt - 1
+                p_rate = p_cnt_expect_self / n
+                if p_rate > 0.9 and cur_label == self.neg_label_val:
+                    neg_discriminated.append(frame.iat[i, 2])
+                elif p_rate < 0.1 and cur_label == self.pos_label_val:
+                    pos_discriminated.append(frame.iat[i, 2])
+            i += 1
+        return neg_discriminated, pos_discriminated
 
 
 class DataEvalView:
@@ -146,7 +218,10 @@ class DataEvalView:
                     '', list(map(float, group_sp_rates.values)),
                     label_opts=chart_opts.LabelOpts(is_show=False)
                 )
-                .set_global_opts(title_opts=chart_opts.TitleOpts(title=featr))
+                .set_global_opts(
+                    title_opts=chart_opts.TitleOpts(title=featr),
+                    xaxis_opts=chart_opts.AxisOpts(name=f'基于{featr}划分的群组')
+                )
             )
             charts.append(chart)
             self.gf_cmmts.append((i, cmmts))
@@ -164,9 +239,9 @@ class DataEvalView:
             charts.append(res.get_chart())
         return charts
 
-    def update_if_res(self, model, sens_featrs):
-        self.sens_featrs = sens_featrs
-        pass
+    def update_if_res(self, model, legi_featr):
+        self.legi_featr = legi_featr
+        self.if_cmmts = model.analyze_if(legi_featr)
 
 
 class DataEvalController:
@@ -196,7 +271,7 @@ class DataEvalController:
         for i, chart in enumerate(charts):
             self.charts[f'1{i}'] = chart
 
-    def if_eval(self, sens_featrs):
-        if not sens_featrs:
+    def if_eval(self, legi_featr):
+        if not legi_featr:
             return '必须选择至少一个敏感属性才能进行分析'
-        self.view.update_if_res(self.model, sens_featrs)
+        self.view.update_if_res(self.model, legi_featr)

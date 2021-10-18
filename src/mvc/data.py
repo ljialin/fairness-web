@@ -12,6 +12,7 @@ import numpy as np
 from root import PRJROOT
 # from utils import FileUtils
 from werkzeug.utils import secure_filename
+from common_fair_analyze import N_SPLIT
 
 
 class DataModel:
@@ -31,15 +32,14 @@ class DataModel:
         self.label_map = {}
 
         self.errinfo = self.__load_desc(file_path)
-        self.__raw_data = None
+        self.data = None
         self.__train_data = None
-        # print(self.errinfo)
 
     def __load_desc(self, file_path):
         # 绝对路径
         # self.raw_data = pandas.read_csv(file_path + '.csv').applymap(str)
         rela_path = file_path[len(PRJROOT):]
-        if len(rela_path) >=9 and file_path[len(PRJROOT):].find('data/temp', 0):
+        if len(rela_path) >= 9 and file_path[len(PRJROOT):].find('data/temp', 0):
             # 若为temp文件夹里的文件，则对象释放同时删除对应文件
             self.temporal = True
 
@@ -104,15 +104,42 @@ class DataModel:
         f.close()
         return ''
 
+    def __group_n_featr(self, featr):
+        vmax = self.data[featr].max()
+        vmin = self.data[featr].min()
+        d = (vmax - vmin + 1e-5) / N_SPLIT
+
+        legi_groups = [
+            f'{vmin + i * d:.3g}-{vmin + (i + 1) * d:.3g}'
+            for i in range(N_SPLIT)
+        ]
+        original_vals = self.data[featr].values
+        new_col = [
+            legi_groups[int((val - vmin) / d)]
+            for val in original_vals
+        ]
+        self.data.insert(0, f'{featr} groups', new_col)
+
+    def update_prediction(self, predictions):
+        self.data.insert(len(self.data.columns), 'prediction', predictions)
+        binary_predictions = [
+            1 if prediction > 0.5 else 0
+            for prediction in self.data['prediction'].values
+        ]
+        self.data.insert(len(self.data.columns), 'binary prediction', binary_predictions)
+
     def get_ctgrs(self, featr):
         # print(ctgr)
         return [key for key in self.categorical_map[featr].keys()]
 
     def get_raw_data(self):
-        if self.__raw_data is None:
-            self.__raw_data = pandas.read_csv(self.file_path + '.csv').applymap(str)
-            self.__raw_data[list(self.n_featrs)] = self.__raw_data[list(self.n_featrs)].applymap(float)
-        return self.__raw_data
+        if self.data is None:
+            self.data = pandas.read_csv(self.file_path + '.csv').applymap(str)
+            self.data[list(self.n_featrs)] = self.data[list(self.n_featrs)].applymap(float)
+            self.data.insert(0, 'ID', [*range(len(self.data))])
+            for n_featr in self.n_featrs:
+                self.__group_n_featr(n_featr)
+        return self.data
 
     def get_groups(self, featr):
         if featr in self.n_featrs:
@@ -156,7 +183,6 @@ class DataModel:
             start = end
 
         labels = list(map(int, (self.label_map[val] for val in raw_data[self.label].values)))
-
         self.__train_data = (torch.tensor(np_data), torch.tensor(labels))
 
     def free(self):

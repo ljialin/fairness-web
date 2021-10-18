@@ -29,7 +29,7 @@
         <form method="post" style="width: 100%; height: 100%; float: top">
           <input type="hidden" name="name" value="eval" />
           <div class="side_form">
-            {% for featr in view.c_featrs %}
+            {% for featr in view.featrs %}
               <p><label>
                 {% if featr in view.sens_featrs %}
                   <input type="checkbox" name="sens-featrs" value="{{ featr }}" checked>
@@ -41,7 +41,6 @@
           </div>
           <div style="float: top">
             <input type="submit" name="type" value="群体公平分析">
-            <input type="button" name="type" value="个体公平分析(待开发)">
           </div>
           <div style="float: top; margin-top: 5%">
             <b>选择正当属性</b>
@@ -60,6 +59,7 @@
           </div>
           <div style="float: top">
             <input type="submit" name="type" value="条件性群体公平分析">
+            <input type="submit" name="type" value="个体公平分析">
           </div>
         </form>
       </div>
@@ -75,7 +75,7 @@
             {%  endfor %}
           {% endfor %}
         </div>
-        <h3>条件性群体公平分析（待开发） <input type="submit" value="?" onclick="data_cg_fair_info()"></h3>
+        <h3>条件性群体公平分析 <input type="submit" value="?" onclick="data_cg_fair_info()"></h3>
         <div class="block">
           {% for i, cmmts in view.cgf_cmmts %}
             <div id="1{{ i }}" style="width:90%; height:360px">
@@ -86,13 +86,11 @@
             {%  endfor %}
           {% endfor %}
         </div>
-        <h3>个体公平分析(待开发)<input type="submit" value="?" onclick="data_i_fair_info()"></h3>
+        <h3>个体公平分析<input type="submit" value="?" onclick="data_i_fair_info()"></h3>
         <div class="block">
-          <h4> 根据Causal Discrimination指标，发现一下个体可能受到了区别对待：</h4>
-          <p> 编号xxx：其92%的employ特征为true，但该个体的employ特征为false。建议检查该个体的employ特征。 </p>
-          <p> 编号xxx：其96%的employ特征为false，但该个体的employ特征为true。建议检查该个体的标签employ特征。 </p>
-          <p> 编号xxx：其92%的employ特征为true，但该个体的employ特征为false。建议检查该个体的标签employ特征。 </p>
-          <p> 编号xxx：其94%的employ特征为false，但该个体的employ特征为true。建议检查该个体的标签employ特征。 </p>
+          {% for cmmt in view.if_cmmts %}
+            <p>{{ cmmt }}</p>
+          {% endfor %}
         </div>
       </div>
     </div>
