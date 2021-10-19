@@ -46,6 +46,7 @@ class FileUtils:
         return files
 
 if __name__ == '__main__':
-    print(str_upright('abc'))
+    pass
+    # print(str_upright('abc'))
     # print(FileUtils.list_files('F:\\research group\Huawei Project\\fariness-web\data'))
     # print(FileUtils.list_files('../data'))

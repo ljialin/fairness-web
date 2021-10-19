@@ -33,18 +33,26 @@ if __name__ == '__main__':
     # arr = [1, -2]
     # print(', '.join(map(str, arr)))
     data = pandas.read_csv('data/N-IF-100000.csv').applymap(str)
+    data[['grade']] = data[['grade']].applymap(float)
     data = data.sort_values('grade')[['grade', 'acceptance']]
 
-    start = time.perf_counter_ns()
-    for i in range(100000):
-        tmp = data.iloc[i]['grade']
-        # print(data.iloc[i]['age'])
-    print((time.perf_counter_ns() - start) // 1000000)
+    start = time.time()
+    for i in range(10):
+        # tmp = data.iloc[i]['grade']
+        print(data.iloc[i]['grade'], end=' ')
+    print((time.time() - start))
 
-    start = time.perf_counter_ns()
-    for i in range(100000):
-        tmp = data.iat[i, 0]
-    print((time.perf_counter_ns() - start) // 1000000)
+    start = time.time()
+    for i in range(10):
+        # tmp = data.iat[i, 0]
+        print(data.iat[i, 0], end=' ')
+    print((time.time() - start))
+
+    start = time.time()
+    grades = data['grade'].to_numpy()
+    for i in range(10):
+        print(grades[i], end=' ')
+    print((time.time() - start))
     # print(data)
     # print(data[['age', 'credit']])
     # for i, item in data.iterrows():

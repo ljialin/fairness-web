@@ -5,6 +5,8 @@
 """
 
 import random
+import time
+
 import pandas as pds
 import pyecharts.options as chart_opts
 from typing import List
@@ -156,23 +158,28 @@ class DataEvaluator:
         return neg_discrminated, pos_discrminated
 
     def __analyze_if_numberical(self, legi_featr):
+        start_time = time.time()
         neg_discriminated, pos_discriminated = [], []
         frame = self.data[[legi_featr, self.label, 'ID']].sort_values(legi_featr)
         i = 0
         p, q = 0, 0
         p_cnt, n_cnt = 0, 0
         span = 0.05 * (frame[legi_featr].max() - frame[legi_featr].min())
+
+        val_arr = frame[legi_featr].to_numpy()
+        label_arr = frame[self.label].to_numpy()
+        id_arr = frame['ID'].to_numpy()
         while i < len(self.data):
-            cur_val = frame.iat[i, 0]
-            cur_label = frame.iat[i, 1]
-            while frame.iat[p, 0] < cur_val - span:
-                if frame.iat[p, 1] == self.pos_label_val:
+            cur_val = val_arr[i]
+            cur_label = label_arr[i]
+            while val_arr[p] < cur_val - span:
+                if label_arr[p] == self.pos_label_val:
                     p_cnt -= 1
                 else:
                     n_cnt -= 1
                 p += 1
-            while q < len(frame) and frame.iat[q, 0] <= cur_val + span:
-                if frame.iat[q, 1] == self.pos_label_val:
+            while q < len(frame) and val_arr[q] <= cur_val + span:
+                if label_arr[q] == self.pos_label_val:
                     p_cnt += 1
                 else:
                     n_cnt += 1
@@ -182,10 +189,11 @@ class DataEvaluator:
                 p_cnt_expect_self = p_cnt if cur_label == self.neg_label_val else p_cnt - 1
                 p_rate = p_cnt_expect_self / n
                 if p_rate > 0.9 and cur_label == self.neg_label_val:
-                    neg_discriminated.append(frame.iat[i, 2])
+                    neg_discriminated.append(id_arr[i])
                 elif p_rate < 0.1 and cur_label == self.pos_label_val:
-                    pos_discriminated.append(frame.iat[i, 2])
+                    pos_discriminated.append(id_arr[i])
             i += 1
+        print(f'{time.time() - start_time:.3f}s')
         return neg_discriminated, pos_discriminated
 
 
@@ -210,17 +218,24 @@ class DataEvalView:
         charts = []
         for i, featr in enumerate(sens_featrs):
             group_sp_rates, cmmts = model.analyze_gf(featr)
-            print(group_sp_rates.values)
+            # print(group_sp_rates.values)
             chart = (
                 Bar()
+                .set_global_opts(
+                    title_opts=chart_opts.TitleOpts(title=f'对{featr}属性的分析结果'),
+                    xaxis_opts=chart_opts.AxisOpts(
+                        name=f'基于{featr}划分的群组', name_location='middle',
+                        name_gap=25
+                    ),
+                    yaxis_opts=chart_opts.AxisOpts(
+                        name='\n'.join('群组正标签率与总体正标签率之比'), name_location='center',
+                        name_gap=25, name_rotate=0
+                    ),
+                )
                 .add_xaxis(list(group_sp_rates.index))
                 .add_yaxis(
                     '', list(map(float, group_sp_rates.values)),
                     label_opts=chart_opts.LabelOpts(is_show=False)
-                )
-                .set_global_opts(
-                    title_opts=chart_opts.TitleOpts(title=featr),
-                    xaxis_opts=chart_opts.AxisOpts(name=f'基于{featr}划分的群组')
                 )
             )
             charts.append(chart)
