@@ -14,7 +14,7 @@ import pyecharts.options as chopts
 from pyecharts.charts import Radar
 from werkzeug.utils import secure_filename
 
-from common_fair_analyze import METRICS, METRIC_UBS, THRESHOLDS, PREFER_HIGH, N_SPLIT, CgfAnalyzeRes
+from src.common_fair_analyze import METRICS, METRIC_UBS, THRESHOLDS, PREFER_HIGH, N_SPLIT, CgfAnalyzeRes
 from src.mvc.data import DataController
 from src.utils import get_rgb_hex, get_count_from_series
 from root import PRJROOT

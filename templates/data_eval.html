@@ -11,6 +11,13 @@
   <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='style.css')}}"/>
 </head>
 <body>
+
+  {% if errinfo %}
+    <script>
+      alert("{{ errinfo }}")
+    </script>
+  {% endif %}
+
   <div class="headerpage"></div>
   <div class="container">
     <div class="header">

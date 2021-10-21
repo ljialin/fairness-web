@@ -48,9 +48,12 @@ def data_page():
                 request.form['keep-or-not'] == 'T'
             )
         elif request.form['name'] == 'select-dataset':
-            errinfo = ctrlr.select_dataset(
-                request.form['dataset']
-            )
+            if request.form.get("dataset") is None:
+                errinfo = "请选择数据集"
+            else:
+                errinfo = ctrlr.select_dataset(
+                    request.form['dataset']
+                )
         elif request.form['name'] == 'next':
             if ctrlr.model is None:
                 errinfo = '必须选择数据集并确认后才能进行下一步'
@@ -66,6 +69,7 @@ def download_desc_template():
 def data_eval():
     ip = request.remote_addr
     form = request.form
+    errinfo = None
     if not form:
         if DataController.insts[ip] is None:
             return '必须在选择数据集页面选择数据集后才能访问该页面'
@@ -79,11 +83,17 @@ def data_eval():
             if form['type'] == '群体公平分析':
                 ctrlr.gf_eval(sens_featrs)
             elif form['type'] == '个体公平分析':
-                ctrlr.if_eval(form['legi-featr'])
+                if form.get("legi-featr") is None:
+                    errinfo = "请选择正当属性"
+                else:
+                    ctrlr.if_eval(form['legi-featr'])
             elif form['type'] == '条件性群体公平分析':
-                ctrlr.cgf_eval(sens_featrs, form['legi-featr'])
+                if form.get("legi-featr") is None:
+                    errinfo = "请选择正当属性"
+                else:
+                    ctrlr.cgf_eval(sens_featrs, form['legi-featr'])
 
-    return render_template('data_eval.html', view=ctrlr.view, ip=ip)
+    return render_template('data_eval.html', view=ctrlr.view, ip=ip, errinfo=errinfo)
 
 @app.route('/model-upload', methods=['GET', 'POST'])
 def model_upload():
