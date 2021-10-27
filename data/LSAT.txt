@@ -1,0 +1,14 @@
+NAME:
+LSAT
+NUMBER OF ATTRIBUTES:
+7
+ATTRIBUTES:
+race, categorical, White, Hispanic, Asian, Black, Mexican, Other, Amerindian, Puertorican
+sex, categorical, 1, 2
+LSAT, numberical
+UGPA, numberical
+region_first, categorical, FW, GL, MS, Mt, MW NE, NG, NW, PO, SC, SE
+ZFYA, numberical
+sander_index, numberical
+LABEL:
+first_pf, 0, 1

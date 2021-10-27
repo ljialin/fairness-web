@@ -1,0 +1,53 @@
+NAME:
+propublica-recidivism
+NUMBER OF ATTRIBUTES:
+46
+ATTRIBUTES:
+compas_screening_date, numberical
+sex, categorical, Female, Male
+age_cat, categorical, 25 - 45, Greater than 45, Less than 25
+race, categorical, Asian, Hispanic, Native American, Other, African-American, Caucasian
+juv_fel_count, categorical, 1, 6, 8, 3, 10, 9, 20, 0, 4, 2, 5
+decile_score, categorical, 1, 6, 3, 10, 9, 2, 4, 7, 8, 5
+juv_misd_count, categorical, 1, 6, 8, 3, 12, 0, 4, 2, 13, 5
+juv_other_count, categorical, 1, 6, 3, 17, 9, 0, 4, 7, 2, 5
+priors_count, categorical, 30, 10, 20, 11, 8, 21, 35, 33, 6, 23, 3, 25, 18, 15, 12, 9, 4, 2, 5, 26, 1, 29, 14, 27, 19, 0, 22, 31, 13, 37, 36, 28, 24, 17, 38, 7, 16
+days_b_screening_arrest, numberical
+c_jail_in, numberical
+c_jail_out, numberical
+c_case_number, numberical
+c_offense_date, numberical
+c_arrest_date, numberical
+c_days_from_compas, numberical
+c_charge_degree, categorical, M, F
+c_charge_desc, numberical
+is_recid, categorical, 1, Punish", 4 Methylenediox", 4 MDMA (Ecstasy)", 4Methylenediox", 4-Butanediol", 0, 4 Methylenedioxymethcath"
+r_case_number, numberical
+r_charge_degree, numberical
+r_days_from_arrest, numberical
+r_offense_date, numberical
+r_charge_desc, numberical
+r_jail_in, numberical
+r_jail_out, numberical
+violent_recid, categorical, , 2015-02-09, 2014-01-16, 2013-10-31, 2014-10-19, 2014-02-24, 2014-04-29, 2a, 2014-02-01, 2015-03-20, 2015-07-16, 2015-03-27, 2014-03-23, 2014-06-06, 2014-10-09, 2013-11-18, 2014-04-02, 2014-12-05, 2013-03-27, 2014-01-23, 2015-03-06, 2014-03-27, 2014-02-04, 2014-03-13, 2013-11-13, 2014-05-24, 2014-06-24, 2014-07-04, 2014-06-13, 2014-08-01, 2015-04-10, 2015-01-09, 2014-12-19, 2013-07-27, 2013-10-26, 2014-02-28, 2014-01-11, 2013-10-15, 2014-05-29, 2014-01-10, 2015-05-27, 2014-09-18
+is_violent_recid, categorical, 1, , 2b", 0
+vr_case_number, numberical
+vr_charge_degree, categorical, , (M2), 14009209CF10A, 13023901MM10A, (F5), 15012748CF10A, (F2), (M1), 2014-12-16, (F7), 14011594MM10A, (F3), 14004270CF10A, (F6), 13017649CF10A, (MO3), (F1), 15010952CF10A, 14004265CF10A
+vr_offense_date, numberical
+vr_charge_desc, numberical
+type_of_assessment, categorical, , Robbery / No Weapon, Aggrav Child Abuse-Agg Battery, Risk of Recidivism, Battery, Battery on Law Enforc Officer, Felony Battery (Dom Strang)
+decile_score, categorical, 1, , 6, 3, 10, Risk of Recidivism, 9, 2, 4, 7, 8, 5
+score_text, categorical, 1, , High, 6, 8, 3, 10, Low, 9, Medium, 4, 7, 2, 5
+screening_date, numberical
+v_type_of_assessment, numberical
+v_decile_score, categorical, 1, 6, 8, 3, 10, 9, Risk of Violence, 4, 7, 2, 5
+v_score_text, categorical, 1, High, 6, 8, 3, 10, Low, 7, 9, 4, Medium, 2, 5
+v_screening_date, numberical
+in_custody, numberical
+out_custody, numberical
+priors_count, numberical
+start, numberical
+end, numberical
+event, numberical
+LABEL:
+two_year_recid, 1, 0

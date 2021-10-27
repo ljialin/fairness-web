@@ -1,0 +1,21 @@
+NAME:
+adult
+NUMBER OF ATTRIBUTES:
+14
+ATTRIBUTES:
+age, numberical
+workclass, categorical, ?, Self-emp-not-inc, Self-emp-inc, Federal-gov, Local-gov, State-gov, Private, Never-worked, Without-pay
+fnlwgt, numberical
+education, categorical, 1st-4th, Some-college, Assoc-acdm, Doctorate, 7th-8th, Masters, 9th, 5th-6th, Assoc-voc, 11th, HS-grad, 10th, Preschool, Prof-school, 12th, Bachelors
+education-num, categorical, 9, 2, 10, 13, 8, 4, 11, 1, 5, 7, 12, 6, 15, 14, 16, 3
+marital-status, categorical, Married-spouse-absent, Married-civ-spouse, Widowed, Separated, Divorced, Never-married, Married-AF-spouse
+occupation, categorical, ?, Protective-serv, Adm-clerical, Machine-op-inspct, Other-service, Farming-fishing, Craft-repair, Priv-house-serv, Sales, Transport-moving, Tech-support, Prof-specialty, Handlers-cleaners, Armed-Forces, Exec-managerial
+relationship, categorical, Unmarried, Wife, Not-in-family, Husband, Own-child, Other-relative
+race, categorical, Other, Black, Asian-Pac-Islander, White, Amer-Indian-Eskimo
+sex, categorical, Male, Female
+capital-gain, numberical
+capital-loss, numberical
+hours-per-week, numberical
+native-country, categorical, France, Taiwan, Italy, Thailand, England, Outlying-US(Guam-USVI-etc), Cuba, Holand-Netherlands, Puerto-Rico, United-States, Haiti, Jamaica, Dominican-Republic, Yugoslavia, China, Poland, Portugal, Scotland, India, Trinadad&Tobago, Mexico, Guatemala, ?, Laos, Columbia, Hong, Philippines, Germany, Japan, Peru, South, Honduras, Ecuador, Canada, Cambodia, El-Salvador, Iran, Vietnam, Ireland, Greece, Nicaragua, Hungary
+LABEL:
+income-per-year, >50K, <=50K
