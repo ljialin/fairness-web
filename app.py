@@ -141,9 +141,9 @@ def algo_cfg():
 def task_page(pid):
     print(pid)
     if pid == '0002':
-        finish = True
-    else:
         finish = False
+    else:
+        finish = True
     return render_template('task_page.html', pid=pid, finished=finish)
 
 # 向前端js发送图表数据

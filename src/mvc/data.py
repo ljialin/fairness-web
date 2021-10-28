@@ -236,7 +236,7 @@ class DataService:
             tar_path += '/temp'
         desc_path = os.path.join(tar_path, secure_filename(desc.filename))
         data_path = os.path.join(tar_path, secure_filename(data.filename))
-        if os.path.isfile(desc_path) or os.path.isfile(data_path):
+        if keepfile and (os.path.isfile(desc_path) or os.path.isfile(data_path)):
             return '文件名冲突'
         desc.save(desc_path)
         data.save(data_path)
@@ -310,7 +310,7 @@ class DataController:
     def __init__(self, ip, target):
         if target not in DataController.tar_urls:
             raise RuntimeError(f'Unknown target page: {target}')
-        # self.service = DataService()
+        # self.service = DataService() self.datasets的获取通过重写__getattr__实现
         self.model = None
         self.view = DataView(self.datasets)
         DataController.insts[ip] = self
@@ -318,9 +318,10 @@ class DataController:
         pass
 
     def upload_dataset(self, desc_fname, data_fname, keepfile=False):
-        res = DataService.upload_dataset(desc_fname, data_fname, keepfile)
+        res = DataService.upload_dataset(desc_fname, data_fname, keepfile) #合法性检查
         if res[:3] == 'OK:':
-            self.view.add_dataset(res[3:])
+            self.view.add_dataset(res[3:]) #调用上传
+            self.select_dataset(res[3:])
             return ''
         else:
             return res
