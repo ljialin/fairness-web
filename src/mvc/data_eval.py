@@ -288,5 +288,5 @@ class DataEvalController:
 
     def if_eval(self, legi_featr):
         if not legi_featr:
-            return '必须选择至少一个敏感属性才能进行分析'
+            return '必须选择至少一个正当属性才能进行分析'
         self.view.update_if_res(self.model, legi_featr)

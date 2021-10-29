@@ -80,18 +80,13 @@ def data_eval():
         ctrlr = DataEvalController.insts[ip]
         if form['name'] == 'eval':
             sens_featrs = form.getlist('sens-featrs')
+            legi_featr = form.get('legi-featr')
             if form['type'] == '群体公平分析':
-                ctrlr.gf_eval(sens_featrs)
+                errinfo = ctrlr.gf_eval(sens_featrs)
             elif form['type'] == '个体公平分析':
-                if form.get("legi-featr") is None:
-                    errinfo = "请选择正当属性"
-                else:
-                    ctrlr.if_eval(form['legi-featr'])
+                errinfo = ctrlr.if_eval(legi_featr)
             elif form['type'] == '条件性群体公平分析':
-                if form.get("legi-featr") is None:
-                    errinfo = "请选择正当属性"
-                else:
-                    ctrlr.cgf_eval(sens_featrs, form['legi-featr'])
+                errinfo = ctrlr.cgf_eval(sens_featrs, legi_featr)
 
     return render_template('data_eval.html', view=ctrlr.view, ip=ip, errinfo=errinfo)
 
