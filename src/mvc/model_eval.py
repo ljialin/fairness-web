@@ -148,12 +148,12 @@ class ModelEvaluator:
                 if ratio < THRESHOLDS['PLR']:
                     res.cmmts.append(
                         f'{sens_featr}为{sens_grp}的群体在{legi_featr}为{legi_grp}的部分{self.label}预测值'
-                        f'为{self.pos_label_val}的比例过低，可能受到了歧视'
+                        f'为{self.label_pval}的比例过低，可能受到了歧视'
                     )
                 elif ratio > 1 / THRESHOLDS['PLR']:
                     res.cmmts.append(
                         f'{sens_featr}为{sens_grp}的群体在{legi_featr}为{legi_grp}的部分{self.label}预测值'
-                        f'为{self.pos_label_val}的比例过高，可能受到了偏爱'
+                        f'为{self.label_pval}的比例过高，可能受到了偏爱'
                     )
             if not res.cmmts:
                 res.cmmts.append(f'以{legi_featr}为正当特征对{sens_featr}进行分析，未发现公平性问题')
