@@ -10,9 +10,9 @@ import time
 import pandas as pds
 import pyecharts.options as chart_opts
 from typing import List
-from common_fair_analyze import THRESHOLDS, N_SPLIT, CgfAnalyzeRes
+from src.common_fair_analyze import THRESHOLDS, N_SPLIT, CgfAnalyzeRes
 from pyecharts.charts import Bar
-from utils import get_count_from_series
+from src.utils import get_count_from_series
 
 
 class DataEvaluator:

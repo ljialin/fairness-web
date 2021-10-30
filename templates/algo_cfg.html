@@ -8,9 +8,73 @@
 <body>
   <div class="headerpage"></div>
   <p> <input type="button" value="回到主页面" onclick="window.location.href='/'"> </p>
-  <p> 待开发 </p>
-  <p> <input type="button" value="运行任务"> </p>
-  
+  <h2> 配置算法参数 </h2>
+  <form style="width: 1200px; height: 700px">
+    <div style="width: 30%; height: 100%; float: left; overflow-y: auto">
+      {% for featr in featrs %}
+        <p><label>
+{#          {% if featr in view.sens_featrs %}#}
+{#            <input type="checkbox" name="sens-featrs" value="{{ featr }}" checked>#}
+{#          {% else %}#}
+            <input type="checkbox" name="sens-featrs" value="{{ featr }}">
+{#          {% endif %}#}
+        </label> {{ featr }} </p>
+      {% endfor %}
+    </div>
+    <div style="width: 68%; height: 100%; margin-left: 2%; float: left">
+      <div style="width: 100%; height: 60%; float: top">
+        <div style="width: 48%; float: left">
+          准确度指标
+          <label>
+            <input type="radio" name="optimizer" value="100">
+          </label> MSE
+          <label>
+            <input type="radio" name="optimizer" value="100">
+          </label> Accuracy
+          <label>
+            <input type="radio" name="optimizer" value="100">
+          </label> AUC
+        </div>
+        <div style="width: 48%; float: left; margin-left: 4%">
+        <div style="width: 48%; float: left">
+          准确度指标
+          <label>
+            <input type="radio" name="optimizer" value="100">
+          </label> Disparate Impact
+          <label>
+            <input type="radio" name="optimizer" value="100">
+          </label> Statistical Parity
+          <label>
+            <input type="radio" name="optimizer" value="100">
+          </label> Equal Opportunity
+        </div>
+        <div style="width: 48%; float: left; margin-left: 4%">
+
+        </div>
+      </div>
+      <div style="width: 100%; height: 37%; margin-top: 3%; float: top">
+        种群大小:
+        <label>
+          <input type="text" name="popsize" value="25">
+        </label>
+        迭代次数:
+        <label>
+          <input type="text" name="generations" value="100">
+        </label>
+        多目标优化器:
+        <label>
+          <input type="radio" name="optimizer" value="100">
+        </label> NSGA-II
+        <label>
+          <input type="radio" name="optimizer" value="100">
+        </label> MOEA
+      </div>
+    </div>
+    </div>
+    <input type="button" value="上传初始模型">
+    <input type="submit" value="运行任务">
+  </form>
+
   <div class="footerpage"></div>
   <script src="{{url_for('static',filename='extlib/jquery.js')}}"></script>
   <script>

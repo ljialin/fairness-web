@@ -7,7 +7,7 @@
 from pyecharts import options as chopts
 from pyecharts.charts import Bar
 
-from utils import get_count_from_series
+from src.utils import get_count_from_series
 
 METRICS = ('Acc', 'PLR', 'PPV', 'FPR', 'FNR', 'NPV')
 METRIC_UBS = {'Acc': 1, 'PLR': 1, 'PPV': 1, 'FPR': 1, 'FNR': 1, 'NPV': 1}

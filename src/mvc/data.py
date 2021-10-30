@@ -12,7 +12,7 @@ import numpy as np
 from root import PRJROOT
 # from utils import FileUtils
 from werkzeug.utils import secure_filename
-from common_fair_analyze import N_SPLIT
+from src.common_fair_analyze import N_SPLIT
 
 
 class DataModel:
