@@ -30,62 +30,30 @@ def prt(*args):
         print(item)
 
 if __name__ == '__main__':
+    a = 13
+    s = '0023'
+    print(int(s) + a)
     # arr = [1, -2]
     # print(', '.join(map(str, arr)))
-    data = pandas.read_csv('data/N-IF-100000.csv').applymap(str)
-    data[['grade']] = data[['grade']].applymap(float)
-    data = data.sort_values('grade')[['grade', 'acceptance']]
-
-    start = time.time()
-    for i in range(10):
-        # tmp = data.iloc[i]['grade']
-        print(data.iloc[i]['grade'], end=' ')
-    print((time.time() - start))
-
-    start = time.time()
-    for i in range(10):
-        # tmp = data.iat[i, 0]
-        print(data.iat[i, 0], end=' ')
-    print((time.time() - start))
-
-    start = time.time()
-    grades = data['grade'].to_numpy()
-    for i in range(10):
-        print(grades[i], end=' ')
-    print((time.time() - start))
-    # print(data)
-    # print(data[['age', 'credit']])
-    # for i, item in data.iterrows():
-    #     print(i, item['age'])
-    # for i in range(1000):
-    #     print(data[['age', 'credit']].loc[i])
-    # all_counts = data['status'].value_counts()
-    # pos_counts = data[data['credit'] == '1']['status'].value_counts()
-    # print(pos_counts)
-    # print(all_counts)
-    # pos_ratios = pos_counts / all_counts
-    # print(pos_ratios.index)
-    # for item in pos_ratios:
-    #     print(item)
-    # print()
-    # data
-    # print(data['credit'].value_counts())
-    # data['age'] = data[['age']].applymap(float)
-    # print(data['age'])
-    # tmp = data['age'].apply(float)
-    # tmp = data['age']
-    # tmp.apply(float)
-    # print(tmp)
-    # print(data['status'])
-    # frame = data[['status', 'age']]
-
-    # counts = frame.value_counts()
-    # print(counts[('A11', '45')])
-    # print(type(counts))
-    # print(counts.index)
-    # for status, age in counts.index:
-    #     print(status, age)
-    # print(frame)
-    # print(frame.value_counts())
-    # print(socket.gethostbyname(socket.gethostname()))
+    # data = pandas.read_csv('data/N-IF-100000.csv').applymap(str)
+    # data[['grade']] = data[['grade']].applymap(float)
+    # data = data.sort_values('grade')[['grade', 'acceptance']]
+    #
+    # start = time.time()
+    # for i in range(10):
+    #     # tmp = data.iloc[i]['grade']
+    #     print(data.iloc[i]['grade'], end=' ')
+    # print((time.time() - start))
+    #
+    # start = time.time()
+    # for i in range(10):
+    #     # tmp = data.iat[i, 0]
+    #     print(data.iat[i, 0], end=' ')
+    # print((time.time() - start))
+    #
+    # start = time.time()
+    # grades = data['grade'].to_numpy()
+    # for i in range(10):
+    #     print(grades[i], end=' ')
+    # print((time.time() - start))
     pass

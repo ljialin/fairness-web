@@ -8,28 +8,27 @@
 # from src.algorithm import Algorithm
 #
 #
-# class Task:
-#     # 不要重写 __getattr__ 函数!
-#     count = 0
-#
-#     def __init__(self):
-#         self.id = Task.count
-#         Task.count += 1
-#         self.name = 'Task-%04d' % self.id
-#         self.ready = False
-#         self.finished = False
-#         self.problem = None
-#         self.algorithm = Algorithm()
-#
-#     def get_name(self):
-#         return self.name
-#
-#     def get_strid(self):
-#         return '%04d' % self.id
-#
-#     def __str__(self):
-#         return 'Task-%04d' % self.id
-#
+class Task:
+    # 不要重写 __getattr__ 函数!
+
+    def __init__(self, task_id):
+        self.id = task_id
+        # Task.count += 1
+        # self.name = 'Task-%04d' % self.id
+        # self.ready = False
+        # self.finished = False
+        # self.problem = None
+        # self.algorithm = Algorithm()
+
+    # def get_name(self):
+    #     return self.name
+    #
+    # def get_strid(self):
+    #     return '%04d' % self.id
+    #
+    # def __str__(self):
+    #     return 'Task-%04d' % self.id
+
 #
 # class TaskBuilder:
 #     __building_process = None

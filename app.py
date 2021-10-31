@@ -10,6 +10,7 @@ from flask import Flask, render_template, request, redirect, send_from_directory
 from pyecharts.charts import Bar, Radar
 from pyecharts import options as opts
 from src.mvc.model_eval import ModelEvalController
+from src.mvc.algo_cfg import AlgoCfgController
 # from root import HOSTIP
 # from src.task import Task
 # from src.utils import CustomUnpickler
@@ -128,9 +129,49 @@ def metric_intro():
     ctrlr = ModelEvalController.insts[ip]
     return render_template('metric_intro.html', view=ctrlr.view)
 
-@app.route('/algo-cfg')
+@app.route('/algo-cfg', methods=['GET', 'POST'])
 def algo_cfg():
-    return render_template('algo_cfg.html')
+    ip = request.remote_addr
+    data_model = DataController.insts[ip].model
+    form = request.form
+    print(form)
+    # errinfo = None
+    if not form:
+        if DataController.insts[ip] is None:
+            return '必须在选择数据集页面选择数据集后才能访问该页面'
+        ctrlr = AlgoCfgController(ip, data_model)
+    else:
+        ctrlr = AlgoCfgController.instances[ip]
+        sens_featrs = form.getlist('sens-featrs')
+        task_id = ctrlr.set(
+            acc_metric=form['acc_metric'],
+            fair_metric=form['fair_metric'],
+            pop_size=int(form['pop_size']),
+            max_gens=int(form['max_gens']),
+            sens_featrs=sens_featrs
+        )
+        if form['type'] == '上传初始化模型':
+            return redirect('/algo-cfg/model-upload')
+        else:
+            return redirect(f'/task/{task_id:04d}')
+        # print(form)
+        # if
+
+    return render_template('algo_cfg.html', view=ctrlr.view, cfg=ctrlr.cfg)
+
+@app.route('/algo-cfg/model-upload', methods=['GET', 'POST'])
+def model_upload_for_algo():
+    ip = request.remote_addr
+    if request.files:
+        try:
+            ctrlr = AlgoCfgController.instances[ip]
+            ctrlr.add_models(request.files['struct'], request.files.getlist('var'))
+            # ModelEvalController(ip, request.files['struct'], request.files['var'])
+        except RuntimeError as e:
+            return render_template('model_upload.html', errinfo=str(e))
+        return redirect(f'/task/{ctrlr.task.id}')
+    return render_template('model_upload_4_algo.html')
+
 
 @app.route('/task/<pid>')
 def task_page(pid):

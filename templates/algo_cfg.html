@@ -9,15 +9,11 @@
   <div class="headerpage"></div>
   <p> <input type="button" value="回到主页面" onclick="window.location.href='/'"> </p>
   <h2> 配置算法参数 </h2>
-  <form style="width: 1200px; height: 700px">
+  <form style="width: 1200px; height: 500px" method="post">
     <div style="width: 30%; height: 100%; float: left; overflow-y: auto">
-      {% for featr in featrs %}
+      {% for featr in view.featrs %}
         <p><label>
-{#          {% if featr in view.sens_featrs %}#}
-{#            <input type="checkbox" name="sens-featrs" value="{{ featr }}" checked>#}
-{#          {% else %}#}
             <input type="checkbox" name="sens-featrs" value="{{ featr }}">
-{#          {% endif %}#}
         </label> {{ featr }} </p>
       {% endfor %}
     </div>
@@ -25,54 +21,90 @@
       <div style="width: 100%; height: 60%; float: top">
         <div style="width: 48%; float: left">
           准确度指标
-          <label>
-            <input type="radio" name="optimizer" value="100">
-          </label> MSE
-          <label>
-            <input type="radio" name="optimizer" value="100">
-          </label> Accuracy
-          <label>
-            <input type="radio" name="optimizer" value="100">
-          </label> AUC
+          <p> <label>
+            {% if cfg.acc_metric == 'MSE' %}
+              <input type="radio" name="acc_metric" value="MSE" checked="checked">
+            {% else %}
+              <input type="radio" name="acc_metric" value="MSE">
+            {% endif %}
+          </label> MSE </p>
+          <p> <label>
+            {% if cfg.acc_metric == 'Accuracy' %}
+              <input type="radio" name="acc_metric" value="Accuracy" checked="checked">
+            {% else %}
+              <input type="radio" name="acc_metric" value="Accuracy">
+            {% endif %}
+          </label> Accuracy </p>
+          <p> <label>
+            {% if cfg.acc_metric == 'AUC' %}
+              <input type="radio" name="acc_metric" value="AUC" checked="checked">
+            {% else %}
+              <input type="radio" name="acc_metric" value="AUC">
+            {% endif %}
+          </label> AUC </p>
         </div>
         <div style="width: 48%; float: left; margin-left: 4%">
-        <div style="width: 48%; float: left">
-          准确度指标
-          <label>
-            <input type="radio" name="optimizer" value="100">
-          </label> Disparate Impact
-          <label>
-            <input type="radio" name="optimizer" value="100">
-          </label> Statistical Parity
-          <label>
-            <input type="radio" name="optimizer" value="100">
-          </label> Equal Opportunity
+{#        <div style="width: 48%; float: left">#}
+          公平性指标
+          <p> <label>
+            {% if cfg.fair_metric == 'Disparate Impact' %}
+              <input type="radio" name="fair_metric" value="Disparate Impact" checked="checked">
+            {% else %}
+              <input type="radio" name="fair_metric" value="Disparate Impact">
+            {% endif %}
+          </label> Disparate Impact </p>
+          <p> <label>
+            {% if cfg.fair_metric == 'AUC' %}
+              <input type="radio" name="fair_metric" value="Statistical Parity" checked="checked">
+            {% else %}
+              <input type="radio" name="fair_metric" value="Statistical Parity">
+            {% endif %}
+          </label> Statistical Parity </p>
+          <p> <label>
+            {% if cfg.fair_metric == 'AUC' %}
+              <input type="radio" name="fair_metric" value="Equal Opportunity" checked="checked">
+            {% else %}
+              <input type="radio" name="fair_metric" value="Equal Opportunity">
+            {% endif %}
+          </label> Equal Opportunity </p>
         </div>
-        <div style="width: 48%; float: left; margin-left: 4%">
-
-        </div>
-      </div>
+{#        <div style="width: 48%; float: left; margin-left: 4%">#}
+{##}
+{#        </div>#}
+{#      </div>#}
+    </div>
       <div style="width: 100%; height: 37%; margin-top: 3%; float: top">
-        种群大小:
-        <label>
-          <input type="text" name="popsize" value="25">
-        </label>
-        迭代次数:
-        <label>
-          <input type="text" name="generations" value="100">
-        </label>
-        多目标优化器:
-        <label>
-          <input type="radio" name="optimizer" value="100">
-        </label> NSGA-II
-        <label>
-          <input type="radio" name="optimizer" value="100">
-        </label> MOEA
+        <p>
+          种群大小:
+          <label>
+            <input type="text" name="pop_size" value="25">
+          </label>
+          迭代次数:
+          <label>
+            <input type="text" name="max_gens" value="100">
+          </label>
+        </p>
+        <p>
+          多目标优化器:
+          <label>
+            {% if cfg.optimizer == 'NSGA-II' %}
+              <input type="radio" name="optimizer" value="NSGA-II" checked="checked">
+            {% else %}
+              <input type="radio" name="optimizer" value="NSGA-II">
+            {% endif %}
+          </label> NSGA-II
+          <label>
+            {% if cfg.optimizer == 'MOEA' %}
+              <input type="radio" name="optimizer" value="MOEA" checked="checked">
+            {% else %}
+              <input type="radio" name="optimizer" value="MOEA">
+            {% endif %}
+          </label> MOEA
+        </p>
       </div>
     </div>
-    </div>
-    <input type="button" value="上传初始模型">
-    <input type="submit" value="运行任务">
+    <input type="submit" name="type" value="上传初始化模型">
+    <input type="submit" name="type" value="运行任务">
   </form>
 
   <div class="footerpage"></div>

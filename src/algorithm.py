@@ -3,7 +3,9 @@
 # @Author: Ziqi Wang
 # @File: algorithm.py
 # """
-#
-# class Algorithm:
-#     def __init__(self):
-#         pass
+
+class Algorithm:
+    def __init__(self):
+        self.pop = []
+        pass
+

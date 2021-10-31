@@ -4,9 +4,10 @@
 @File: utils.py
 """
 
-import math
-import pickle
 import os
+# import math
+import pickle
+from root import PRJROOT
 
 
 def get_rgb_hex(*rgb):
@@ -25,6 +26,18 @@ def get_count_from_series(data, key):
         return data[key]
     except KeyError:
         return 0
+
+def auto_dire(name, path=None, fmtr=''):
+    dire_id = 0
+    prefix = PRJROOT if path is None else f'{PRJROOT}{path}/'
+    tar = f'{prefix}'
+    while os.path.exists(tar):
+        suffix = fmtr % dire_id if fmtr else dire_id
+        tar = f'{prefix}{name}{suffix}'
+        dire_id += 1
+    os.makedirs(tar)
+    print(tar)
+    return tar
 
 
 class CustomUnpickler(pickle.Unpickler):
