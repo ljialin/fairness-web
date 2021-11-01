@@ -6,7 +6,7 @@
 
 from src.utils import auto_dire
 from src.task import Task
-from src.mvc.model_upload import get_pop_from_uploaded
+from src.mvc.model_upload import init_pop_from_uploaded
 from src.algorithm import Algorithm
 
 
@@ -62,5 +62,5 @@ class AlgoCfgController:
         return task_id
 
     def add_models(self, struct_file, var_files):
-        models = get_pop_from_uploaded(self.ip, struct_file, var_files, self.cfg.pop_size)
+        models = init_pop_from_uploaded(self.task.id, struct_file, var_files, self.cfg.pop_size)
         self.algo.pop = models

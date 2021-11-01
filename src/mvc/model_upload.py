@@ -3,15 +3,14 @@
 #   @Author : Ziqi Wang
 #   @File : model_upload.py
 # """
-import importlib
-import inspect
+
 import os
-
 import torch
+import inspect
+import importlib
 from werkzeug.utils import secure_filename
-
 from root import PRJROOT
-
+# from task_space.task0000.model import main
 
 def upload_model(ip, struct_file, var_file):
     if struct_file.filename[-3:] != '.py':
@@ -46,7 +45,7 @@ def upload_model(ip, struct_file, var_file):
     return var_file.filename[:-4], model
 
 
-def get_pop_from_uploaded(ip, struct_file, var_files, n):
+def init_pop_from_uploaded(task_id, struct_file, var_files, n):
     print(type(struct_file))
     # print(var_files.filename)
     if struct_file.filename[-3:] != '.py':
@@ -56,31 +55,29 @@ def get_pop_from_uploaded(ip, struct_file, var_files, n):
         if var_file.filename[-4:] not in {'.pth', '.pkl'}:
             raise RuntimeError('模型参数文件必须是.pth或.pkl后缀')
 
-    prefix = ip.replace('.', '_') + '__'
-    struct_path = os.path.join(
-        PRJROOT + 'models/temp',
-        prefix + secure_filename(struct_file.filename)
-    )
+    # var_file_suffix =
+
+    space_path = PRJROOT + f'task_space/task{task_id:04d}'
+    # struct_path = os.path.join(space_path, secure_filename(struct_file.filename))
+    struct_path = os.path.join(space_path, 'model.py')
     struct_file.save(struct_path)
     var_paths = []
     for i, var_file in enumerate(var_files):
         if i == n:
             break
         var_path = os.path.join(
-            PRJROOT + 'models/temp',
-            prefix + secure_filename(var_file.filename)
+            space_path, f'model_{i}.{var_file.filename[-3:]}'
         )
         var_file.save(var_path)
         var_paths.append(var_path)
 
-
-    module = importlib.import_module(
-        'models.temp.' + secure_filename(prefix + struct_file.filename)[:-3]
-    )
+    module = importlib.import_module(f'task_space.task{task_id:04d}.model')
+    print(inspect.getmembers(module))
     funcs = inspect.getmembers(module, inspect.isfunction)
+    # print(funcs)
 
     if len(funcs) != 1:
-        raise RuntimeError('模型的类定义文件必须只含一个函数')
+        raise RuntimeError('模型的类定义文件必须有且只有一个函数')
 
     func = funcs[0][1]
     models = []
@@ -89,6 +86,11 @@ def get_pop_from_uploaded(ip, struct_file, var_files, n):
         model.load_state_dict(torch.load(var_path))
         models.append(model)
     while len(models) < n:
-        models.append(func())
+        model = func()
+        models.append(model)
+        torch.save(
+            model.state_dict(),
+            space_path + f'/model_{len(models)}.pth'
+        )
 
     return models
