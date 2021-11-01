@@ -1,47 +1,50 @@
 <!DOCTYPE html>
 <html lang="cn">
 <head>
-  <meta charset="UTF-8">
-  <title>进程情况</title>
-  <script type = "text/javascript"
-    src = "{{ url_for('static', filename = 'script.js') }}" >
-  </script>
-    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='style.css')}}"/>
+    <meta charset="UTF-8">
+    <title>进程情况</title>
+    <script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
+    <script type="text/javascript" src="/static/charts.js"></script>
+    <script type="text/javascript" src="/static/script.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}"/>
 </head>
 <body>
-  <div class="headerpage"></div>
-  <p> <input type="button" value="回到主页面" onclick="window.location.href='/'"> </p>
-  <h2>
+<div class="headerpage"></div>
+<p><input type="button" value="回到主页面" onclick="window.location.href='/'"></p>
+<h2>
     优化过程-{{ pid }}（
-      {% if finished %}
+    {% if finished %}
         已结束
-      {% else %}
+    {% else %}
         运行中
-      {% endif %}
+    {% endif %}
     ）（待开发）
-  </h2>
-  <p>
-    <img src="{{ url_for('static', filename= './images/curve.jpg') }}" alt="curve"/>
-  </p>
-  {% if not finished %}
-  <p>
-    <input type="submit" value="终止任务" onclick="killProcess()">
-  </p>
-  {% endif %}
-  <p>
+</h2>
+<div class="block">
+    <div id="{{ pid }}" style="width:640px; height:360px">
+        <script> get_chart("{{ pid }}", "/task/{{ pid }}/chart") </script>
+    </div>
+</div>
+{% if not finished %}
+    <p>
+        <input type="submit" value="终止任务" onclick="killProcess()">
+    </p>
+{% endif %}
+<p>
     {% if not finished %}
-      <input type="submit" value="上传模型" onclick="uploadModels()">
+        <input type="submit" value="上传模型" onclick="uploadModels()">
     {% endif %}
     <input type="submit" value="下载模型" onclick="downloadModels()">
-  </p>
+</p>
 
-  <div class="footerpage"></div>
-  <script src="{{url_for('static',filename='extlib/jquery.js')}}"></script>
-  <script>
-    $(function() {
-      $(".headerpage").load("{{url_for('static',filename='header.html')}}");
-      $(".footerpage").load("{{url_for('static',filename='footer.html')}}");
+<div class="footerpage"></div>
+<script src="{{ url_for('static',filename='extlib/jquery.js') }}"></script>
+<script>
+    $(function () {
+        $(".headerpage").load("{{url_for('static',filename='header.html')}}");
+        $(".footerpage").load("{{url_for('static',filename='footer.html')}}");
     });
-  </script>
+</script>
 </body>
 </html>

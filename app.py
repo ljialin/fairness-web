@@ -195,6 +195,17 @@ def model_eval_charts(cid):
     charts = ModelEvalController.insts[ip].charts
     return charts[cid].dump_options_with_quotes()
 
+@app.route('/task/<pid>/chart')
+def algo_status_chart(pid):
+    # ip = request.remote_addr
+    # chart = AlgoCfgController.instances[ip].chart
+    # return chart.dump_options_with_quotes()
+    chart = Bar()
+    chart.add_xaxis(['Yellow', 'Black', 'White'])
+    chart.add_yaxis('', [1.1, 0.75, 1.1])
+    chart.set_global_opts(title_opts=opts.TitleOpts(title="Race"))
+    return chart.dump_options_with_quotes()
+
 ####### Hard-encoding charts #######
 @app.route('/charts/datagf/<feature>')
 def datagf_chart(feature):
