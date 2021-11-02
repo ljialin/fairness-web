@@ -26,6 +26,24 @@
         <script> get_chart("{{ pid }}", "/task/{{ pid }}/chart") </script>
     </div>
 </div>
+<table border="1" align="center">
+    <tr>
+        <th></th>
+        <th>ID</th>
+        <th>AUC(精确度指标)</th>
+        <th>Disparate Impact(公平性指标)</th>
+    </tr>
+    {% for fpop in fpops %}
+        <tr>
+            <td><label>
+                <input type="checkbox" name="slct{{ i }}" checked>
+            </label></td>
+            <td>{{ loop.index }}</td>
+            <td>{{ fpop[0] }}</td>
+            <td>{{ fpop[1] }}</td>
+        </tr>
+    {% endfor %}
+</table>
 {% if not finished %}
     <p>
         <input type="submit" value="终止任务" onclick="killProcess()">

@@ -7,7 +7,7 @@
 import os
 from socket import gethostname
 from flask import Flask, render_template, request, redirect, send_from_directory
-from pyecharts.charts import Bar, Radar
+from pyecharts.charts import Bar, Radar, Scatter
 from pyecharts import options as opts
 from src.mvc.model_eval import ModelEvalController
 from src.mvc.algo_cfg import AlgoCfgController
@@ -180,7 +180,9 @@ def task_page(pid):
         finish = False
     else:
         finish = True
-    return render_template('task_page.html', pid=pid, finished=finish)
+    #造一些数据
+    fpops = [[13,12],[16,43],[16,86],[26,46]]
+    return render_template('task_page.html', pid=pid, finished=finish, fpops=fpops)
 
 # 向前端js发送图表数据
 @app.route('/data-eval/charts/<cid>')
@@ -200,10 +202,18 @@ def algo_status_chart(pid):
     # ip = request.remote_addr
     # chart = AlgoCfgController.instances[ip].chart
     # return chart.dump_options_with_quotes()
-    chart = Bar()
-    chart.add_xaxis(['Yellow', 'Black', 'White'])
-    chart.add_yaxis('', [1.1, 0.75, 1.1])
-    chart.set_global_opts(title_opts=opts.TitleOpts(title="Race"))
+    fpops = [[13,12],[16,43],[16,86],[26,46]]
+    fpops.sort(key=lambda x: x[0])
+    x_data = [d[0] for d in fpops]
+    y_data = [d[1] for d in fpops]
+
+    chart = Scatter()
+    chart.add_xaxis(xaxis_data=x_data)
+    chart.add_yaxis(series_name="series_name",
+                    y_axis=y_data,
+                    symbol_size=20,
+                    label_opts=opts.LabelOpts(is_show=True))
+    chart.set_series_opts()
     return chart.dump_options_with_quotes()
 
 ####### Hard-encoding charts #######
