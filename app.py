@@ -6,9 +6,12 @@
 
 import os
 from socket import gethostname
+
+import numpy as np
 from flask import Flask, render_template, request, redirect, send_from_directory
 from pyecharts.charts import Bar, Radar, Scatter
 from pyecharts import options as opts
+from pyecharts.commons.utils import JsCode
 from src.mvc.model_eval import ModelEvalController
 from src.mvc.algo_cfg import AlgoCfgController
 # from root import HOSTIP
@@ -202,18 +205,38 @@ def algo_status_chart(pid):
     # ip = request.remote_addr
     # chart = AlgoCfgController.instances[ip].chart
     # return chart.dump_options_with_quotes()
-    fpops = [[13,12],[16,43],[16,86],[26,46]]
-    fpops.sort(key=lambda x: x[0])
-    x_data = [d[0] for d in fpops]
-    y_data = [d[1] for d in fpops]
-
-    chart = Scatter()
-    chart.add_xaxis(xaxis_data=x_data)
-    chart.add_yaxis(series_name="series_name",
-                    y_axis=y_data,
-                    symbol_size=20,
-                    label_opts=opts.LabelOpts(is_show=True))
-    chart.set_series_opts()
+    chart = (Scatter(opts.InitOpts(width="600px", height="600px"))
+               .set_global_opts(xaxis_opts=opts.AxisOpts(name='x-aix',
+                                                         name_location='center',
+                                                         name_gap=20,
+                                                         type_="value"),
+                                yaxis_opts=opts.AxisOpts(name='y-aix',
+                                                         name_gap=20,
+                                                         type_="value"),
+                                title_opts=opts.TitleOpts("公平性指标和准确性指标优化结果"),
+                                )
+               )
+    colors = []
+    for i in range(10):
+        tmp = 20 - i
+        colors.append(str(hex(50 + i * 20))[2:])
+        x = [tmp + v for v in tmp * np.linspace(-0.3, 0.3, 20)]
+        y = [tmp - v for v in tmp * np.linspace(-0.3, 0.3, 20)]
+        chart.add_xaxis(x)
+        chart.add_yaxis(
+            series_name="",
+            y_axis=[each for each in zip(y,x)],
+            symbol_size=7,
+            symbol=None,
+            is_selected=True,
+            color='#00{}FF'.format(colors[i]),
+            label_opts=opts.LabelOpts(is_show=False)
+        )
+    chart.set_global_opts(tooltip_opts=opts.TooltipOpts(
+                                formatter=JsCode(
+                                    "function (params) {return '( '+ params.value[2] +' : '+ params.value[1] + ' )';}"
+                                )
+                        ))
     return chart.dump_options_with_quotes()
 
 ####### Hard-encoding charts #######
