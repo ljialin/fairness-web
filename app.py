@@ -153,7 +153,7 @@ def algo_cfg():
             max_gens=int(form['max_gens']),
             sens_featrs=sens_featrs
         )
-        if form['type'] == '上传初始化模型':
+        if form['type'] == '上传初始化模型簇':
             return redirect('/algo-cfg/model-upload')
         else:
             return redirect(f'/task/{task_id:04d}')
@@ -171,8 +171,8 @@ def model_upload_for_algo():
             ctrlr.add_models(request.files['struct'], request.files.getlist('var'))
             # ModelEvalController(ip, request.files['struct'], request.files['var'])
         except RuntimeError as e:
-            return render_template('model_upload.html', errinfo=str(e))
-        return redirect(f'/task/{ctrlr.task.id}')
+            return render_template('model_upload_4_algo.html', errinfo=str(e))
+        return redirect(f'/task/{ctrlr.task.id:04d}')
     return render_template('model_upload_4_algo.html')
 
 
