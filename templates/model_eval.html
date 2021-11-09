@@ -67,7 +67,7 @@
         <div class="block">
           {% for i, cmmts in view.gf_cmmts %}
             <div id="0{{ i }}" style="width:540px; height:480px">
-              <script> get_chart("0{{ i }}", "/model-eval/charts/0{{ i }}") </script>
+              <script> get_chart("0{{ i }}", "http://127.0.0.1:{{ port }}/model-eval/charts/0{{ i }}") </script>
             </div>
             {% for cmmt in cmmts %}
               <p> {{ cmmt }} </p>
@@ -78,7 +78,7 @@
         <div class="block">
           {% for i, cmmts in view.cgf_cmmts %}
             <div id="1{{ i }}" style="width:90%; height:480px">
-              <script> get_chart("1{{ i }}", "/model-eval/charts/1{{ i }}") </script>
+              <script> get_chart("1{{ i }}", "http://127.0.0.1:{{ port }}/model-eval/charts/1{{ i }}") </script>
             </div>
             {% for cmmt in cmmts %}
               <p> {{ cmmt }} </p>

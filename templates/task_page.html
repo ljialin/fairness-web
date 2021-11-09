@@ -13,7 +13,7 @@
 <div class="headerpage"></div>
 <p><input type="button" value="回到主页面" onclick="window.location.href='/'"></p>
 <h2>
-    优化过程-{{ pid }}（
+    优化过程-{{ pid }}
 {#    {% if finished %}#}
 {#        已结束#}
 {#    {% else %}#}
@@ -24,7 +24,7 @@
 <div>
     <div class="block" style="float:left;width:50%">
         <div id="{{ pid }}" style="width:480px; height:480px">
-            <script> get_chart("{{ pid }}", "/task/{{ pid }}/chart") </script>
+            <script> get_chart("{{ pid }}", "http://127.0.0.1:{{ port }}/task/{{ pid }}/chart") </script>
         </div>
     </div>
     <div style="float:left;width:50%">

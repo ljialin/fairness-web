@@ -20,7 +20,7 @@ from src.mvc.algo_cfg import AlgoCfgController
 from src.mvc.data import DataController
 from src.mvc.data_eval import DataEvalController
 
-
+port = 5000
 app = Flask(__name__)
 
 
@@ -92,7 +92,8 @@ def data_eval():
             elif form['type'] == '条件性群体公平分析':
                 errinfo = ctrlr.cgf_eval(sens_featrs, legi_featr)
 
-    return render_template('data_eval.html', view=ctrlr.view, ip=ip, errinfo=errinfo)
+    # 这里的ip好像没被用到
+    return render_template('data_eval.html', view=ctrlr.view, ip=ip, port=port, errinfo=errinfo)
 
 @app.route('/model-upload', methods=['GET', 'POST'])
 def model_upload():
@@ -124,7 +125,7 @@ def model_eval():
                 ctrlr.gf_eval(sens_featrs)
             elif form['type'] == '条件性群体公平分析':
                 ctrlr.cgf_eval(sens_featrs, form['legi-featr'])
-    return render_template('model_eval.html', view=ctrlr.view)
+    return render_template('model_eval.html', port=port, view=ctrlr.view)
 
 @app.route('/model-eval/intro')
 def metric_intro():
@@ -185,7 +186,7 @@ def task_page(pid):
         finish = True
     #造一些数据
     fpops = [[13,12],[16,43],[16,86],[26,46]]
-    return render_template('task_page.html', pid=pid, finished=finish, fpops=fpops)
+    return render_template('task_page.html', pid=pid, finished=finish, fpops=fpops, port=port)
 
 # 向前端js发送图表数据
 @app.route('/data-eval/charts/<cid>')
@@ -205,6 +206,7 @@ def algo_status_chart(pid):
     # ip = request.remote_addr
     # chart = AlgoCfgController.instances[ip].chart
     # return chart.dump_options_with_quotes()
+
     chart = (Scatter(opts.InitOpts(width="600px", height="600px"))
                .set_global_opts(xaxis_opts=opts.AxisOpts(name='x-aix',
                                                          name_location='center',
@@ -226,7 +228,7 @@ def algo_status_chart(pid):
         chart.add_yaxis(
             series_name="",
             y_axis=[each for each in zip(y,x)],
-            symbol_size=7,
+            symbol_size=5,
             symbol=None,
             is_selected=True,
             color='#00{}FF'.format(colors[i]),
@@ -238,6 +240,7 @@ def algo_status_chart(pid):
                                 )
                         ))
     return chart.dump_options_with_quotes()
+
 
 ####### Hard-encoding charts #######
 @app.route('/charts/datagf/<feature>')
@@ -310,4 +313,4 @@ def datagf_chart(feature):
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=port)

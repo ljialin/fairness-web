@@ -2,7 +2,8 @@ function get_chart(id, path) {
     const chart = echarts.init(document.getElementById(id), 'white', {renderer: 'canvas'});
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:5000" + path,
+        // url: "http://127.0.0.1:5000" + path,
+        url: path,
         dataType: 'json',
         success: function (result) {
             chart.setOption(result);
