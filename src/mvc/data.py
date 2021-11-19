@@ -258,33 +258,24 @@ class DataService:
                 self.datasets[file_name.split('\\')[-1]] = file_name
 
     @staticmethod
-    def upload_dataset(desc, data, keepfile):
+    def upload_dataset(data, keepfile):
         self = DataService.inst()
-        if desc.filename[-4:] != '.txt':
-            return '描述文件的文件类型必须为.txt'
         if data.filename[-4:] != '.csv':
             return '数据文件的文件类型必须为.csv'
-        if desc.filename[:-4] != data.filename[:-4]:
-            return '描述文件与数据文件的文件名必须一致'
 
         tar_path = PRJROOT + 'data'
         if not keepfile:
             tar_path += '/temp'
-        desc_path = os.path.join(tar_path, secure_filename(desc.filename))
         data_path = os.path.join(tar_path, secure_filename(data.filename))
-        if keepfile and (os.path.isfile(desc_path) or os.path.isfile(data_path)):
+        if keepfile and (os.path.isfile(data_path)):
             return '文件名冲突'
-        desc.save(desc_path)
         data.save(data_path)
 
-        with open(desc_path, 'r') as f:
-            next(f)
-            name = f.readline().strip()
+        name = data.filename[:-4]
         if name in self.datasets.keys():
-            os.remove(desc_path)
             os.remove(data_path)
             return '上传失败：上传数据集与已有数据集重名'
-        self.datasets[name] = desc_path[:-4]
+        self.datasets[name] = data_path[:-4]
         return f'OK:{name}'
 
     @staticmethod
@@ -353,8 +344,8 @@ class DataController:
         self.target = target
         pass
 
-    def upload_dataset(self, desc_fname, data_fname, keepfile=False):
-        res = DataService.upload_dataset(desc_fname, data_fname, keepfile) #合法性检查
+    def upload_dataset(self, data_fname, keepfile=False):
+        res = DataService.upload_dataset(data_fname, keepfile) #合法性检查
         if res[:3] == 'OK:':
             self.view.add_dataset(res[3:]) #调用上传
             self.select_dataset(res[3:])
