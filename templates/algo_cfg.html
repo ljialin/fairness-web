@@ -3,117 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <title>算法配置</title>
-      <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='style.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}"/>
 </head>
 <body>
-  <div class="headerpage"></div>
-  <p> <input type="button" value="回到主页面" onclick="window.location.href='/'"> </p>
-  <h2> 配置算法参数 </h2>
-  <form style="width: 1200px; height: 500px" method="post">
+<div class="headerpage"></div>
+<p><input type="button" value="回到主页面" onclick="window.location.href='/'"></p>
+<h2> 配置算法参数 </h2>
+<form style="width: 1200px; height: 500px" method="post">
     <div style="width: 30%; height: 100%; float: left; overflow-y: auto">
-      {% for featr in view.featrs %}
-        <p><label>
-            <input type="checkbox" name="sens-featrs" value="{{ featr }}">
-        </label> {{ featr }} </p>
-      {% endfor %}
+        {% for featr in view.featrs %}
+            <p><label>
+                <input type="checkbox" name="sens-featrs" value="{{ featr }}">
+            </label> {{ featr }} </p>
+        {% endfor %}
     </div>
     <div style="width: 68%; height: 100%; margin-left: 2%; float: left">
-      <div style="width: 100%; height: 60%; float: top">
-        <div style="width: 48%; float: left">
-          准确度指标
-          <p> <label>
-            {% if cfg.acc_metric == 'MSE' %}
-              <input type="radio" name="acc_metric" value="MSE" checked="checked">
-            {% else %}
-              <input type="radio" name="acc_metric" value="MSE">
-            {% endif %}
-          </label> MSE </p>
-          <p> <label>
-            {% if cfg.acc_metric == 'Accuracy' %}
-              <input type="radio" name="acc_metric" value="Accuracy" checked="checked">
-            {% else %}
-              <input type="radio" name="acc_metric" value="Accuracy">
-            {% endif %}
-          </label> Accuracy </p>
-          <p> <label>
-            {% if cfg.acc_metric == 'AUC' %}
-              <input type="radio" name="acc_metric" value="AUC" checked="checked">
-            {% else %}
-              <input type="radio" name="acc_metric" value="AUC">
-            {% endif %}
-          </label> AUC </p>
+        <div style="width: 100%; height: 60%; float: top">
+            <div style="width: 48%; float: left">
+                准确度指标
+                <p><label>
+                    {% if cfg.acc_metric == 'Accuracy' %}
+                        <input type="radio" name="acc_metric" value="Accuracy" checked="checked">
+                    {% else %}
+                        <input type="radio" name="acc_metric" value="Accuracy">
+                    {% endif %}
+                </label> Accuracy </p>
+                <p><label>
+                    {% if cfg.acc_metric == 'Error' %}
+                        <input type="radio" name="acc_metric" value="Error" checked="checked">
+                    {% else %}
+                        <input type="radio" name="acc_metric" value="Error">
+                    {% endif %}
+                </label> Error </p>
+            </div>
+            <div style="width: 48%; float: left; margin-left: 4%">
+                <p><label>
+                    {% if cfg.fair_metric == 'Individual_fairness' %}
+                        <input type="radio" name="fair_metric" value="Individual_fairness" checked="checked">
+                    {% else %}
+                        <input type="radio" name="fair_metric" value="Individual_fairness">
+                    {% endif %}
+                </label> Individual Metric </p>
+                <p><label>
+                    {% if cfg.fair_metric == 'Group_fairness' %}
+                        <input type="radio" name="fair_metric" value="Group_fairness" checked="checked">
+                    {% else %}
+                        <input type="radio" name="fair_metric" value="Group_fairness">
+                    {% endif %}
+                </label> Group Metric </p>
+            </div>
+            {#        <div style="width: 48%; float: left; margin-left: 4%">#}
+            {##}
+            {#        </div>#}
+            {#      </div>#}
         </div>
-        <div style="width: 48%; float: left; margin-left: 4%">
-{#        <div style="width: 48%; float: left">#}
-          公平性指标
-          <p> <label>
-            {% if cfg.fair_metric == 'Disparate Impact' %}
-              <input type="radio" name="fair_metric" value="Disparate Impact" checked="checked">
-            {% else %}
-              <input type="radio" name="fair_metric" value="Disparate Impact">
-            {% endif %}
-          </label> Disparate Impact </p>
-          <p> <label>
-            {% if cfg.fair_metric == 'AUC' %}
-              <input type="radio" name="fair_metric" value="Statistical Parity" checked="checked">
-            {% else %}
-              <input type="radio" name="fair_metric" value="Statistical Parity">
-            {% endif %}
-          </label> Statistical Parity </p>
-          <p> <label>
-            {% if cfg.fair_metric == 'AUC' %}
-              <input type="radio" name="fair_metric" value="Equal Opportunity" checked="checked">
-            {% else %}
-              <input type="radio" name="fair_metric" value="Equal Opportunity">
-            {% endif %}
-          </label> Equal Opportunity </p>
+        <div style="width: 100%; height: 37%; margin-top: 3%; float: top">
+            <p>
+                种群大小:
+                <label>
+                    <input type="text" name="pop_size" value="25">
+                </label>
+                迭代次数:
+                <label>
+                    <input type="text" name="max_gens" value="100">
+                </label>
+            </p>
+            <p>
+                多目标优化器:
+                <label>
+                    {% if cfg.optimizer == 'SRA' %}
+                        <input type="radio" name="optimizer" value="SRA" checked="checked">
+                    {% else %}
+                        <input type="radio" name="optimizer" value="SRA">
+                    {% endif %}
+                </label> SRA
+                <label>
+                    {% if cfg.optimizer == 'NSGA-II' %}
+                        <input type="radio" name="optimizer" value="NSGA2" checked="checked">
+                    {% else %}
+                        <input type="radio" name="optimizer" value="NSGA2">
+                    {% endif %}
+                </label> NSGA-II
+            </p>
         </div>
-{#        <div style="width: 48%; float: left; margin-left: 4%">#}
-{##}
-{#        </div>#}
-{#      </div>#}
-    </div>
-      <div style="width: 100%; height: 37%; margin-top: 3%; float: top">
-        <p>
-          种群大小:
-          <label>
-            <input type="text" name="pop_size" value="25">
-          </label>
-          迭代次数:
-          <label>
-            <input type="text" name="max_gens" value="100">
-          </label>
-        </p>
-        <p>
-          多目标优化器:
-          <label>
-            {% if cfg.optimizer == 'NSGA-II' %}
-              <input type="radio" name="optimizer" value="NSGA-II" checked="checked">
-            {% else %}
-              <input type="radio" name="optimizer" value="NSGA-II">
-            {% endif %}
-          </label> NSGA-II
-          <label>
-            {% if cfg.optimizer == 'MOEA' %}
-              <input type="radio" name="optimizer" value="MOEA" checked="checked">
-            {% else %}
-              <input type="radio" name="optimizer" value="MOEA">
-            {% endif %}
-          </label> MOEA
-        </p>
-      </div>
     </div>
     <input type="submit" name="type" value="上传初始化模型">
     <input type="submit" name="type" value="运行任务">
-  </form>
+</form>
 
-  <div class="footerpage"></div>
-  <script src="{{url_for('static',filename='extlib/jquery.js')}}"></script>
-  <script>
-    $(function() {
-      $(".headerpage").load("{{url_for('static',filename='header.html')}}");
-      $(".footerpage").load("{{url_for('static',filename='footer.html')}}");
+<div class="footerpage"></div>
+<script src="{{ url_for('static',filename='extlib/jquery.js') }}"></script>
+<script>
+    $(function () {
+        $(".headerpage").load("{{url_for('static',filename='header.html')}}");
+        $(".footerpage").load("{{url_for('static',filename='footer.html')}}");
     });
-  </script>
+</script>
 </body>
 </html>

@@ -1,0 +1,17 @@
+NAME:
+propublica-recidivism
+NUMBER OF ATTRIBUTES:
+10
+ATTRIBUTES:
+sex, categorical, Male, Female
+age, numberical
+age_cat, categorical, 25 - 45, Greater than 45, Less than 25
+race, categorical, African-American, Asian, Caucasian, Other, Native American, Hispanic
+juv_fel_count, categorical, 3, 5, 10, 0, 8, 2, 1, 6, 20, 4
+juv_misd_count, categorical, 3, 5, 13, 12, 8, 2, 1, 0, 6, 4
+juv_other_count, categorical, 3, 5, 9, 2, 1, 0, 6, 7, 4
+priors_count, categorical, 22, 36, 33, 26, 25, 16, 31, 28, 3, 5, 18, 37, 8, 27, 0, 1, 24, 4, 23, 38, 13, 15, 10, 30, 9, 17, 11, 6, 19, 20, 14, 12, 2, 7, 21, 29
+c_charge_degree, categorical, M, F
+sex-race, categorical, Male-Asian, Female-Caucasian, Male-Native American, Male-Other, Female-Native American, Female-Other, Female-Hispanic, Female-African-American, Female-Asian, Male-Caucasian, 1, 0, Male-African-American, Male-Hispanic
+LABEL:
+two_year_recid, 1, 0

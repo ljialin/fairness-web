@@ -111,12 +111,12 @@ class ModelEvaluator:
                 if ratio < THRESHOLDS['PLR']:
                     res.cmmts.append(
                         f'{sens_featr}为{sens_grp}的群体在{legi_featr}为{legi_grp}的部分{self.label}预测值'
-                        f'为{self.label_pval}的比例过低，可能受到了歧视'
+                        f'为{self.label_pval}的比例过低，可能受到了歧视\\偏爱'
                     )
                 elif ratio > 1 / THRESHOLDS['PLR']:
                     res.cmmts.append(
                         f'{sens_featr}为{sens_grp}的群体在{legi_featr}为{legi_grp}的部分{self.label}预测值'
-                        f'为{self.label_pval}的比例过高，可能受到了偏爱'
+                        f'为{self.label_pval}的比例过高，可能受到了歧视\\偏爱'
                     )
             if not res.cmmts:
                 res.cmmts.append(f'以{legi_featr}为正当特征对{sens_featr}进行分析，未发现公平性问题')
@@ -130,9 +130,11 @@ class ModelEvaluator:
             metric_val = metric_vals[mtrc]
             discrimination = ''
             if metric_val < fair_range[0][i]:
-                discrimination = '歧视' if PREFER_HIGH[mtrc] else '偏爱'
+                # discrimination = '歧视' if PREFER_HIGH[mtrc] else '偏爱'
+                discrimination = '歧视\\偏爱'
             elif metric_val > fair_range[1][i]:
-                discrimination = '偏爱' if PREFER_HIGH[mtrc] else '歧视'
+                # discrimination = '偏爱' if PREFER_HIGH[mtrc] else '歧视'
+                discrimination = '歧视\\偏爱'
             metric = mtrc + '和Equalized Odds' if mtrc in {'FPR', 'FNR'} else mtrc
             if discrimination != '':
                 cmmts.append(

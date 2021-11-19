@@ -43,6 +43,38 @@ class DataModel:
             # 若为temp文件夹里的文件，则对象释放同时删除对应文件
             self.temporal = True
 
+        #gsh add
+        self.data = pandas.read_csv(self.file_path + '.csv').applymap(str)
+        clazz = self.data.loc[0]
+        self.data = self.data.drop(0)
+        featrs = list(self.data)
+        for featr in featrs:
+            if clazz[featr] == "categorical":
+                values = self.data[featr]
+                values = list(set(values))
+                tmp = {}
+                for i,value in enumerate(values):
+                    tmp[value] = i
+                self.categorical_map[featr] = tmp
+                self.c_featrs.add(featr)
+            elif clazz[featr] == "numberical":
+                self.numberical_bounds[featr] = []
+                self.n_featrs.add(featr)
+            elif clazz[featr] == "label":
+                values = self.data[featr]
+                values = list(set(values))
+                self.label = featr
+                if len(values) != 2:
+                    return f'描述文件中分类属性{featr}的取值类型不足两个'
+                self.pos_label_val = values[0]
+                self.neg_label_val = values[1]
+                self.label_map[values[0]] = 1
+                self.label_map[values[1]] = 0
+        featrs.remove(self.label)
+        self.featrs = featrs
+        exit(-1)
+        #gsh add finish
+
         f = open(file_path + '.txt', 'r')       # 可认为不会出现文件不存在
         try:
             line = next(f).strip()
@@ -135,7 +167,7 @@ class DataModel:
     def get_raw_data(self):
         if self.data is None:
             self.data = pandas.read_csv(self.file_path + '.csv').applymap(str)
-            self.data[list(self.n_featrs)] = self.data[list(self.n_featrs)].applymap(float)
+            self.data[list(self.n_featrs)] = self.data[list(self.n_featrs)].applymap(float) # 数值型的数据转浮点
             self.data.insert(0, 'ID', [*range(len(self.data))])
             for n_featr in self.n_featrs:
                 self.__group_n_featr(n_featr)
@@ -189,6 +221,10 @@ class DataModel:
         if self.temporal:
             os.remove(self.file_path + '.txt')
             os.remove(self.file_path + '.csv')
+
+
+# german_newformet
+data_model = DataModel('german_newformet', PRJROOT + 'data/german_newformet')
 
 
 class DataService:

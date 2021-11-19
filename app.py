@@ -19,6 +19,8 @@ from src.mvc.algo_cfg import AlgoCfgController
 # from src.utils import CustomUnpickler
 from src.mvc.data import DataController
 from src.mvc.data_eval import DataEvalController
+from multiprocessing import Process,Queue
+from Fairness_main import interface4flask
 
 port = 5000
 app = Flask(__name__)
@@ -177,16 +179,33 @@ def model_upload_for_algo():
     return render_template('model_upload_4_algo.html')
 
 
-@app.route('/task/<pid>')
-def task_page(pid):
-    print(pid)
-    if pid == '0002':
+@app.route('/task/<task_id>')
+def task_page(task_id):
+    print(task_id)
+    ip = request.remote_addr
+    data_model = DataController.insts[ip].model
+    ctrlr = AlgoCfgController.instances[ip]
+    algoCfg = ctrlr.cfg
+    if task_id == '0002':
         finish = False
     else:
         finish = True
     #造一些数据
     fpops = [[13,12],[16,43],[16,86],[26,46]]
-    return render_template('task_page.html', pid=pid, finished=finish, fpops=fpops, port=port)
+    # 开多进程运行
+    q = Queue()
+    p = Process(target=interface4flask, args=(
+        data_model.name,  #数据集名称
+        algoCfg.sens_featrs,  #敏感属性列表
+        [algoCfg.acc_metric,algoCfg.fair_metric],  #优化目标列表
+        algoCfg.pop_size,  #种群大小
+        algoCfg.max_gens,  #进化代数
+        algoCfg.optimizer,  #优化器
+        task_id #当前任务编号
+    ))
+    p.start()
+
+    return render_template('task_page.html', pid=task_id, finished=finish, fpops=fpops, port=port)
 
 # 向前端js发送图表数据
 @app.route('/data-eval/charts/<cid>')
@@ -203,17 +222,19 @@ def model_eval_charts(cid):
 
 @app.route('/task/<pid>/chart')
 def algo_status_chart(pid):
-    # ip = request.remote_addr
+    ip = request.remote_addr
+    ctrlr = AlgoCfgController.instances[ip]
     # chart = AlgoCfgController.instances[ip].chart
     # return chart.dump_options_with_quotes()
 
     chart = (Scatter(opts.InitOpts(width="600px", height="600px"))
-               .set_global_opts(xaxis_opts=opts.AxisOpts(name='x-aix',
+               .set_global_opts(xaxis_opts=opts.AxisOpts(name=ctrlr.cfg.acc_metric,
                                                          name_location='center',
                                                          name_gap=20,
                                                          type_="value"),
-                                yaxis_opts=opts.AxisOpts(name='y-aix',
+                                yaxis_opts=opts.AxisOpts(name=ctrlr.cfg.fair_metric,
                                                          name_gap=20,
+                                                         name_location='center',
                                                          type_="value"),
                                 title_opts=opts.TitleOpts("公平性指标和准确性指标优化结果"),
                                 )

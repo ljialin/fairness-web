@@ -60,13 +60,13 @@ class DataEvaluator:
             if group_sp_rates[group] < self.theta_gf:
                 cmmts.append(
                     f'{group}群体的正面标签率（标签值为{self.pos_label_val}的频率）'
-                    f'与总体正面标签率的比值过低。建议检查该群体是否收到歧视，'
+                    f'与总体正面标签率的比值过低。建议检查该群体是否收到歧视\\偏爱，'
                     f'以及该特征是否为应当影响标签值的非敏感特征。'
                 )
             elif group_sp_rates[group] > 1 / self.theta_gf:
                 cmmts.append(
                     f'{group}群体的正面标签率（标签值为{self.pos_label_val}的频率）'
-                    f'与总体正面标签率的比值过高，建议检查该群体是否受到优待，'
+                    f'与总体正面标签率的比值过高，建议检查该群体是否受到歧视\\偏爱，'
                     f'以及该特征是否为应当影响标签值的非敏感特征。'
                 )
         if not cmmts:
@@ -104,12 +104,12 @@ class DataEvaluator:
                 if ratio < THRESHOLDS['PLR']:
                     res.cmmts.append(
                         f'{sens_featr}为{sens_grp}的群体在{legi_featr}为{legi_grp}的部分{self.label}'
-                        f'为{self.pos_label_val}的比例过低，可能受到了歧视'
+                        f'为{self.pos_label_val}的比例过低，可能受到了歧视\\偏爱'
                     )
                 elif ratio > 1 / THRESHOLDS['PLR']:
                     res.cmmts.append(
                         f'{sens_featr}为{sens_grp}的群体在{legi_featr}为{legi_grp}的部分{self.label}为{self.pos_label_val}'
-                        f'的比例过高，可能受到了偏爱'
+                        f'的比例过高，可能受到了歧视\\偏爱'
                     )
             if not res.cmmts:
                 res.cmmts.append(f'以{legi_featr}为正当特征对{sens_featr}进行分析，未发现公平性问题')
@@ -122,10 +122,10 @@ class DataEvaluator:
             neg_discriminated, pos_discriminated = self.__analyze_if_categorical(legi_featr)
         cmmts = []
         if neg_discriminated:
-            cmmts.append(f'以{legi_featr}作为正当特征分析，数据集中以下{len(neg_discriminated)}个个体可能受到了歧视：')
+            cmmts.append(f'以{legi_featr}作为正当特征分析，数据集中以下{len(neg_discriminated)}个个体可能受到了歧视\\偏爱：')
             cmmts.append(', '.join(map(str, neg_discriminated)))
         if pos_discriminated:
-            cmmts.append(f'以{legi_featr}作为正当特征分析，数据集中以下{len(pos_discriminated)}个个体可能受到了偏爱：')
+            cmmts.append(f'以{legi_featr}作为正当特征分析，数据集中以下{len(pos_discriminated)}个个体可能受到了歧视\\偏爱：')
             cmmts.append(', '.join(map(str, pos_discriminated)))
             # cmmts.append(
             #     f'以{legi_featr}作为正当特征分析，数据集中以下{len(pos_discriminated)}个个体可能'

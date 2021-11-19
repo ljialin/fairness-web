@@ -18,11 +18,11 @@ class AlgoCfgView:
 class AlgoCfg:
     def __init__(self):
         self.acc_metric = 'Accuracy'
-        self.fair_metric = 'Disparate Impact'
-        self.optimizer = 'NSGA-II'
+        self.fair_metric = 'Individual_fairness'
+        self.optimizer = 'SRA'
         self.pop_size = 25
         self.max_gens = 100
-        self.sens_featrs = []
+        self.sens_featrs = ['age']
         self.models = []
 
     # def get_models(self):
