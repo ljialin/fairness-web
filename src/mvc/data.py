@@ -30,9 +30,9 @@ class DataModel:
         self.pos_label_val = ''
         self.neg_label_val = ''
         self.label_map = {}
+        self.data = None
 
         self.errinfo = self.__load_desc(file_path)
-        self.data = None
         self.__train_data = None
 
     def __load_desc(self, file_path):
@@ -72,69 +72,76 @@ class DataModel:
                 self.label_map[values[1]] = 0
         featrs.remove(self.label)
         self.featrs = featrs
-        exit(-1)
+
+        # 对data进行处理
+        self.data[list(self.n_featrs)] = self.data[list(self.n_featrs)].applymap(float)  # 数值型的数据转浮点
+        self.data.insert(0, 'ID', [*range(len(self.data))])
+        for n_featr in self.n_featrs:
+            self.__group_n_featr(n_featr) #分五份
+        # exit(-1)
+        return ''
         #gsh add finish
 
-        f = open(file_path + '.txt', 'r')       # 可认为不会出现文件不存在
-        try:
-            line = next(f).strip()
-            while line != 'NUMBER OF ATTRIBUTES:':
-                line = next(f).strip()
-            num_featrs = int(next(f).strip())
-
-            line = next(f).strip()
-            while line != 'ATTRIBUTES:':
-                line = next(f).strip()
-
-            featr_id = 0
-            line = next(f).strip()
-            while line != 'LABEL:':
-                if line == '':
-                    continue
-                fields = [*map(lambda x: x.strip(), line.split(','))]
-                featr_name = fields[0]
-                if len(fields) < 2:
-                    return f'描述文件中属性{featr_name}没有指定类型'
-                featr_type = fields[1]
-                self.featrs.append(featr_name)
-
-                if featr_type == 'numberical':
-                    self.numberical_bounds[featr_name] = []
-                    self.n_featrs.add(featr_name)
-                    for bound in fields[2:]:
-                        try:
-                            lb, ub = map(lambda x: float(x.strip()), bound.split('~'))
-                        except ValueError:
-                            return f'属性{featr_name}的取值范围没有满足 %f ~ %f格式'
-                        self.numberical_bounds[featr_name].append((lb, ub))
-                elif featr_type == 'categorical':
-                    if len(fields) < 4:
-                        return f'描述文件中分类属性{featr_name}的取值类型不足两个'
-                    self.c_featrs.add(featr_name)
-                    self.categorical_map[featr_name] = {}
-                    n = 0
-                    for category in fields[2:]:
-                        self.categorical_map[featr_name][category] = n
-                        n += 1
-                else:
-                    return f'描述文件中属性{featr_name}的类型非法: {fields[1]}'
-                featr_id += 1
-                line = f.readline().strip()
-            if num_featrs != featr_id:
-                return '描述文件指定的属性数量与实际数量不符'
-
-            fields = [*map(lambda x: x.strip(), f.readline().split(','))]
-            if len(fields) != 3:
-                return '描述文件中LABEL:之后一行必须为逗号分隔的三个字段'
-            self.label = fields[0]
-            self.pos_label_val = fields[1]
-            self.neg_label_val = fields[2]
-            self.label_map[fields[1]] = 1
-            self.label_map[fields[2]] = 0
-        except EOFError:
-            return '描述文件信息缺失'
-        f.close()
-        return ''
+        # f = open(file_path + '.txt', 'r')       # 可认为不会出现文件不存在
+        # try:
+        #     line = next(f).strip()
+        #     while line != 'NUMBER OF ATTRIBUTES:':
+        #         line = next(f).strip()
+        #     num_featrs = int(next(f).strip())
+        #
+        #     line = next(f).strip()
+        #     while line != 'ATTRIBUTES:':
+        #         line = next(f).strip()
+        #
+        #     featr_id = 0
+        #     line = next(f).strip()
+        #     while line != 'LABEL:':
+        #         if line == '':
+        #             continue
+        #         fields = [*map(lambda x: x.strip(), line.split(','))]
+        #         featr_name = fields[0]
+        #         if len(fields) < 2:
+        #             return f'描述文件中属性{featr_name}没有指定类型'
+        #         featr_type = fields[1]
+        #         self.featrs.append(featr_name)
+        #
+        #         if featr_type == 'numberical':
+        #             self.numberical_bounds[featr_name] = []
+        #             self.n_featrs.add(featr_name)
+        #             for bound in fields[2:]:
+        #                 try:
+        #                     lb, ub = map(lambda x: float(x.strip()), bound.split('~'))
+        #                 except ValueError:
+        #                     return f'属性{featr_name}的取值范围没有满足 %f ~ %f格式'
+        #                 self.numberical_bounds[featr_name].append((lb, ub))
+        #         elif featr_type == 'categorical':
+        #             if len(fields) < 4:
+        #                 return f'描述文件中分类属性{featr_name}的取值类型不足两个'
+        #             self.c_featrs.add(featr_name)
+        #             self.categorical_map[featr_name] = {}
+        #             n = 0
+        #             for category in fields[2:]:
+        #                 self.categorical_map[featr_name][category] = n
+        #                 n += 1
+        #         else:
+        #             return f'描述文件中属性{featr_name}的类型非法: {fields[1]}'
+        #         featr_id += 1
+        #         line = f.readline().strip()
+        #     if num_featrs != featr_id:
+        #         return '描述文件指定的属性数量与实际数量不符'
+        #
+        #     fields = [*map(lambda x: x.strip(), f.readline().split(','))]
+        #     if len(fields) != 3:
+        #         return '描述文件中LABEL:之后一行必须为逗号分隔的三个字段'
+        #     self.label = fields[0]
+        #     self.pos_label_val = fields[1]
+        #     self.neg_label_val = fields[2]
+        #     self.label_map[fields[1]] = 1
+        #     self.label_map[fields[2]] = 0
+        # except EOFError:
+        #     return '描述文件信息缺失'
+        # f.close()
+        # return ''
 
     def __group_n_featr(self, featr):
         vmax = self.data[featr].max()
@@ -237,25 +244,18 @@ class DataService:
 
     def __scan_datasets(self):
         csv_set = set()
-        txt_set = set()
+        # txt_set = set()
         valid_list = []
-        for file_abspath in glob.glob(PRJROOT + 'data/*.*'):
+        for file_abspath in glob.glob(PRJROOT + 'data\\*.*'):
             file_name = file_abspath[:-4]
-            if file_abspath[-4:] == '.txt':
-                if file_name in csv_set:
-                    valid_list.append(file_name)
-                else:
-                    txt_set.add(file_name)
-            elif file_abspath[-4:] == '.csv':
-                if file_name in txt_set:
-                    valid_list.append(file_name)
-                else:
-                    csv_set.add(file_name)
+            if file_abspath[-4:] == '.csv':
+                valid_list.append(file_name)
+                csv_set.add(file_name)
         valid_list.sort()
         for file_name in valid_list:
-            with open(file_name + '.txt', 'r') as f:
+            with open(file_name + '.csv', 'r') as f:
                 next(f)
-                self.datasets[f.readline().strip()] = file_name
+                self.datasets[file_name.split('\\')[-1]] = file_name
 
     @staticmethod
     def upload_dataset(desc, data, keepfile):
