@@ -1,4 +1,5 @@
 sex,age,age_cat,race,juv_fel_count,juv_misd_count,juv_other_count,priors_count,c_charge_degree,c_charge_desc,two_year_recid,sex-race
+categorical,numberical,categorical,categorical,categorical,categorical,categorical,numberical,categorical,categorical,label,categorical
 Male,69,Greater than 45,Other,0,0,0,0,F,Aggravated Assault w/Firearm,0,Male-Other
 Male,34,25 - 45,African-American,0,0,0,0,F,Felony Battery w/Prior Convict,1,Male-African-American
 Male,24,Less than 25,African-American,0,0,1,4,F,Possession of Cocaine,1,Male-African-American

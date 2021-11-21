@@ -69,7 +69,7 @@ def data_page():
 
 @app.route('/data/desc_template')
 def download_desc_template():
-    return send_from_directory('static/file_templates', 'data_description.txt', as_attachment=True)
+    return send_from_directory('static/file_templates', 'data.csv', as_attachment=True)
 
 @app.route('/data-eval', methods=['GET', 'POST'])
 def data_eval():

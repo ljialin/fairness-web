@@ -14,6 +14,7 @@ import pandas as pd
 import geatpy as ea
 import numpy as np
 from itertools import product
+from mvc.data import DataModel
 import random
 
 
@@ -157,9 +158,11 @@ def load_data(dataname, datatype="numerical-for-NN", test_size=0.25, preserve_se
             # is_make_uniform = 0
             # is_smaller = 0
             if data_obj.dataset_name == dataname:
-                org_data = pd.read_csv(dir + os.sep + "{}.csv".format(dataname))
-                attrs, label = get_header(dataname, dir)
+                # org_data = pd.read_csv(dir + os.sep + "{}.csv".format(dataname))
+                # attrs, label = get_header(dataname, dir)
+
                 data = df2onehot(org_data.copy(), attrs)
+                org_data, attrs, label = DataModel.load_data(dir + os.sep + "{}.csv".format(dataname))
 
                 label_name = label['name']
                 data.reset_index(inplace=True, drop=True)

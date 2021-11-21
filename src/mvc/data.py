@@ -32,10 +32,10 @@ class DataModel:
         self.label_map = {}
         self.data = None
 
-        self.errinfo = self.__load_desc(file_path)
+        self.errinfo = self.__load_data(file_path)
         self.__train_data = None
 
-    def __load_desc(self, file_path):
+    def __load_data(self, file_path):
         # 绝对路径
         # self.raw_data = pandas.read_csv(file_path + '.csv').applymap(str)
         rela_path = file_path[len(PRJROOT):]
@@ -44,42 +44,48 @@ class DataModel:
             self.temporal = True
 
         #gsh add
-        self.data = pandas.read_csv(self.file_path + '.csv').applymap(str)
-        clazz = self.data.loc[0]
-        self.data = self.data.drop(0)
-        featrs = list(self.data)
-        for featr in featrs:
-            if clazz[featr] == "categorical":
-                values = self.data[featr]
-                values = list(set(values))
-                tmp = {}
-                for i,value in enumerate(values):
-                    tmp[value] = i
-                self.categorical_map[featr] = tmp
-                self.c_featrs.add(featr)
-            elif clazz[featr] == "numberical":
-                self.numberical_bounds[featr] = []
-                self.n_featrs.add(featr)
-            elif clazz[featr] == "label":
-                values = self.data[featr]
-                values = list(set(values))
-                self.label = featr
-                if len(values) != 2:
-                    return f'描述文件中分类属性{featr}的取值类型不足两个'
-                self.pos_label_val = values[0]
-                self.neg_label_val = values[1]
-                self.label_map[values[0]] = 1
-                self.label_map[values[1]] = 0
-        featrs.remove(self.label)
-        self.featrs = featrs
+        try:
+            self.data = pandas.read_csv(self.file_path + '.csv').applymap(str)
+            clazz = self.data.loc[0]
+            self.data = self.data.drop(0)
+            featrs = list(self.data)
+            for featr in featrs:
+                if clazz[featr] == "categorical":
+                    values = self.data[featr]
+                    values = list(set(values))
+                    tmp = {}
+                    for i, value in enumerate(values):
+                        tmp[value] = i
+                    self.categorical_map[featr] = tmp
+                    self.c_featrs.add(featr)
+                elif clazz[featr] == "numberical":
+                    self.numberical_bounds[featr] = []
+                    self.n_featrs.add(featr)
+                elif clazz[featr] == "label":
+                    values = self.data[featr]
+                    values = list(set(values))
+                    self.label = featr
+                    if len(values) != 2:
+                        return f'描述文件中分类属性{featr}的取值类型只能是两个'
+                    self.pos_label_val = values[0]
+                    self.neg_label_val = values[1]
+                    self.label_map[values[0]] = 1
+                    self.label_map[values[1]] = 0
+                else:
+                    return f'描述文件中属性{featr}需要指定为numberical、categorical或label'
+            featrs.remove(self.label)
+            self.featrs = featrs
 
-        # 对data进行处理
-        self.data[list(self.n_featrs)] = self.data[list(self.n_featrs)].applymap(float)  # 数值型的数据转浮点
-        self.data.insert(0, 'ID', [*range(len(self.data))])
-        for n_featr in self.n_featrs:
-            self.__group_n_featr(n_featr) #分五份
-        # exit(-1)
-        return ''
+            # 对data进行处理
+            self.data[list(self.n_featrs)] = self.data[list(self.n_featrs)].applymap(float)  # 数值型的数据转浮点
+            self.data.insert(0, 'ID', [*range(len(self.data))])
+            for n_featr in self.n_featrs:
+                self.__group_n_featr(n_featr)  # 分五份
+            # exit(-1)
+            return ''
+        except:
+            return '数据集文件格式不正确，请对照模板文件进行检查！'
+
         #gsh add finish
 
         # f = open(file_path + '.txt', 'r')       # 可认为不会出现文件不存在
@@ -142,6 +148,12 @@ class DataModel:
         #     return '描述文件信息缺失'
         # f.close()
         # return ''
+
+    @staticmethod
+    def load_data(self, file_path):
+        self.__load_data(file_path)
+        return self.data
+
 
     def __group_n_featr(self, featr):
         vmax = self.data[featr].max()
@@ -231,7 +243,7 @@ class DataModel:
 
 
 # german_newformet
-data_model = DataModel('german_newformet', PRJROOT + 'data/german_newformet')
+# data_model = DataModel('german', PRJROOT + 'data/german')
 
 
 class DataService:

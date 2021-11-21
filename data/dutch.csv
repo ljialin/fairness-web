@@ -1,4 +1,5 @@
 sex,age,household_position,household_size,prev_residence_place,citizenship,country_birth,edu_level,economic_status,cur_eco_activity,Marital_status,occupation
+categorical,categorical,categorical,categorical,categorical,categorical,categorical,categorical,categorical,categorical,categorical,label
 1,6,1131,112,1,1,1,5,111,135,1,2_1
 2,10,1122,113,1,1,1,2,111,122,2,5_4_9
 1,8,1122,113,1,1,1,2,111,122,2,2_1

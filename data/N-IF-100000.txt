@@ -1,8 +1,0 @@
-NAME:
-N-IF-100000
-NUMBER OF ATTRIBUTES:
-1
-ATTRIBUTES:
-grade, numberical
-LABEL:
-acceptance, T, F
