@@ -1,4 +1,5 @@
 status,month,credit_history,purpose,credit_amount,savings,employment,investment_as_income_percentage,sex,other_debtors,residence_since,property,age,installment_plans,housing,number_of_credits,skill_level,people_liable_for,telephone,foreign_worker,credit
+categorical,numberical,categorical,categorical,numberical,categorical,categorical,numberical,categorical,categorical,numberical,categorical,categorical,categorical,categorical,numberical,categorical,numberical,categorical,categorical,label
 A11,6,A34,A43,1169,A65,A75,4,male,A101,4,A121,adult,A143,A152,2,A173,1,A192,A201,1
 A12,48,A32,A43,5951,A61,A73,2,female,A101,2,A121,youth,A143,A152,1,A173,1,A191,A201,2
 A14,12,A34,A46,2096,A61,A74,2,male,A101,3,A121,adult,A143,A152,1,A172,2,A191,A201,1

@@ -158,10 +158,10 @@ def load_data(dataname, dataModel, datatype="numerical-for-NN", test_size=0.25, 
             # is_make_uniform = 0
             # is_smaller = 0
             if data_obj.dataset_name == dataname:
-                org_data = pd.read_csv(dir + os.sep + "{}.csv".format(dataname))
-                attrs, label = get_header(dataname, dir)
+                # org_data = pd.read_csv(dir + os.sep + "{}.csv".format(dataname))
+                # attrs, label = get_header(dataname, dir)
 
-                # org_data, attrs, label = dataModel.load_data()
+                org_data, attrs, label = dataModel.load_data()
                 data = df2onehot(org_data.copy(), attrs)
 
 
