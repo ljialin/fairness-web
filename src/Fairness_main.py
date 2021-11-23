@@ -13,16 +13,22 @@ import sys
 def run(parameters):
     start_time = parameters['start_time']
     print('The time is ', start_time)
+    # q = parameters['queue']
+    ctrlr = parameters['ctrlr']
     """===============================实例化问题对象============================"""
+    # q.put('正在实例化问题对象...')
+    ctrlr.progress_info = '正在实例化问题对象...'
     problem = NNProblem_new(M=len(parameters['objectives_class']), learning_rate=parameters['learning_rate'],
                              batch_size=parameters['batch_size'],
                              sensitive_attributions=parameters['sensitive_attributions'],
                              epoches=parameters['epoches'], dataname=parameters['dataname'],
                              objectives_class=parameters['objectives_class'],
                              dirname='Result/' + parameters['start_time'],
-                             seed_split_traintest=parameters['seed_split_traintest']
-                             )  # 生成问题对象
+                             seed_split_traintest=parameters['seed_split_traintest'],
+                             dataModel = parameters['dataModel'])  # 生成问题对象
     """==================================种群设置==============================="""
+    # q.put('正在初始化种群...')
+    ctrlr.progress_info = '正在初始化种群...'
     Encoding = parameters['Encoding']  # 编码方式 --> 假的，其实是NN
     NIND = parameters['NIND']  # 种群规模
     Field = ea.crtfld('BG', problem.varTypes, problem.ranges, problem.borders,
@@ -33,13 +39,15 @@ def run(parameters):
                                parameters=parameters,
                                logits=np.zeros([NIND, problem.test_data.shape[0]]))  # 实例化种群对象（此时种群还没被初始化，仅仅是完成种群对象的实例化）
     """================================算法参数设置============================="""
+    ctrlr.progress_info = '演化中... (0%)'
     myAlgorithm = ea.moea_templet_more_objectives(problem=problem, start_time=start_time,
                                   population=population,
                                   muta_mu=parameters['muta_mu'],
                                   muta_var=parameters['muta_var'],
                                   kfold=parameters['kfold'],
                                   calculmetric=parameters['logMetric'],
-                                  run_id=parameters['run_id'])  # 实例化一个算法模板对象
+                                  run_id=parameters['run_id'],
+                                  ctrlr = ctrlr)  # 实例化一个算法模板对象
     # myAlgorithm.mutOper.Pm = 0.2  # 修改变异算子的变异概率
     # myAlgorithm.recOper.XOVR = 0.9  # 修改交叉算子的交叉概率
     myAlgorithm.MAXGEN = parameters['MAXGEN']  # 最大进化代数
@@ -58,8 +66,18 @@ def run(parameters):
     return NDSet
 
 
-def interface4flask(dataname='german', sensitive_attributions=None, objectives_class=None,
-                    popsize=50, MAXGEN=500, optimizer="NSGA2", pid=0):
+def interface4flask(ctrlr=None, task_id=0): #ctrlr可以认为非空
+    algoCfg = ctrlr.cfg
+
+    dataname = ctrlr.problem.data_model.name # 数据集名称
+    sensitive_attributions = algoCfg.sens_featrs # 敏感属性列表
+    objectives_class = [algoCfg.acc_metric, algoCfg.fair_metric] # 优化目标列表
+    popsize = algoCfg.pop_size # 种群大小
+    MAXGEN = algoCfg.max_gens # 进化代数
+    optimizer = algoCfg.optimizer # 优化器
+    dataModel = ctrlr.problem.data_model #传入的模型#已经改成从AlgoCfgController的problem拿
+    q = ctrlr.inQ
+
     if objectives_class is None:
         objectives_class = ['BCE_loss', 'Individual_fairness']
     if sensitive_attributions is None:
@@ -105,7 +123,7 @@ def interface4flask(dataname='german', sensitive_attributions=None, objectives_c
                   'dataname': dataname, 'sensitive_attributions': sensitive_attributions,
                   'logMetric': logMetric, 'objectives_class': objectives_class, 'kfold': kfold,
                   'preserve_sens_in_net': preserve_sens_in_net, 'seed_split_traintest': seed_split_traintest,
-                  'run_id': pid}
+                  'run_id': task_id, "dataModel": dataModel, "ctrlr":ctrlr}
 
     print(parameters)
     run(parameters)

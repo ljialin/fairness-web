@@ -7,19 +7,27 @@
     <script type="text/javascript" src="/static/extlib/echarts.min.js"></script>
     <script type="text/javascript" src="/static/charts.js"></script>
     <script type="text/javascript" src="/static/script.js"></script>
+    <script type="text/javascript" src="/static/progress_bar.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}"/>
 </head>
+
+{#<script>#}
+{#    $(function () {#}
+{#        start_task({{ pid }})#}
+{#    })#}
+{#</script>#}
+
 <body>
 <div class="headerpage"></div>
 <p><input type="button" value="回到主页面" onclick="window.location.href='/'"></p>
 <h2>
-    优化过程-{{ pid }}
-{#    {% if finished %}#}
-{#        已结束#}
-{#    {% else %}#}
-{#        运行中#}
-{#    {% endif %}#}
-{#    ）#}
+    优化过程-{{ pid }}（
+    {% if finished == 100 %}
+        已结束
+    {% else %}
+        运行中
+    {% endif %}
+    ）
 </h2>
 <div>
     <div class="block" style="float:left;width:50%">
@@ -28,12 +36,14 @@
         </div>
     </div>
     <div style="float:left;width:50%">
+        <h4>敏感属性：{{ cfg.sens_featrs }}</h4>
+        <h4>优化目标：{{ cfg.acc_metric }}, {{ cfg.fair_metric }}</h4>
         <table border="1" align="left">
             <tr>
                 <th></th>
                 <th>ID</th>
-                <th>AUC(精确度指标)</th>
-                <th>Disparate Impact(公平性指标)</th>
+                <th>{{ cfg.acc_metric }}</th>
+                <th>{{ cfg.fair_metric }}</th>
             </tr>
             {% for fpop in fpops %}
                 <tr>
@@ -52,7 +62,7 @@
 <div id="btns" style="float:bottom;width:50%">
     {% if not finished %}
         <p>
-            <input type="submit" value="终止任务" onclick="killProcess()">
+            <input type="submit" value="开始任务" onclick="start_task({{ pid }})">
         </p>
     {% endif %}
     <p>
@@ -63,6 +73,13 @@
     </p>
 </div>
 
+<div class="progress-div">
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0"
+             aria-valuemax="100" style="min-width: 2em; width: 2%;">0%
+        </div>
+    </div>
+</div>
 
 <div class="footerpage" style="float:bottom"></div>
 <script src="{{ url_for('static',filename='extlib/jquery.js') }}"></script>

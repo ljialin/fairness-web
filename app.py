@@ -8,18 +8,18 @@ import os
 from socket import gethostname
 
 import numpy as np
-from flask import Flask, render_template, request, redirect, send_from_directory
+from flask import Flask, render_template, request, redirect, send_from_directory, jsonify
 from pyecharts.charts import Bar, Radar, Scatter
 from pyecharts import options as opts
 from pyecharts.commons.utils import JsCode
 from src.mvc.model_eval import ModelEvalController
-from src.mvc.algo_cfg import AlgoCfgController
+from src.mvc.algo_cfg import AlgoCfgController, AlgoManager
 # from root import HOSTIP
 # from src.task import Task
 # from src.utils import CustomUnpickler
 from src.mvc.data import DataController
 from src.mvc.data_eval import DataEvalController
-from multiprocessing import Process,Queue
+from multiprocessing import Process, Queue
 from Fairness_main import interface4flask
 
 port = 5000
@@ -38,6 +38,7 @@ def index():
             #     DataController.insts[ip].free()
             # else:
             DataController(ip, target)
+            AlgoManager(ip) # 在最初的时候就初始化好AlgoManager
             return redirect('/data')
 
 @app.route('/data', methods=['GET', 'POST'])
@@ -183,29 +184,61 @@ def model_upload_for_algo():
 def task_page(task_id):
     print(task_id)
     ip = request.remote_addr
-    data_model = DataController.insts[ip].model
     ctrlr = AlgoCfgController.instances[ip]
     algoCfg = ctrlr.cfg
-    if task_id == '0002':
-        finish = False
-    else:
-        finish = True
+
+    algomnger = AlgoManager.instances[ip]  # 在新建任务，跳转到运行页面之前，把这个task加入管理者
+    algomnger.add_task(task_id, ctrlr)
+
     #造一些数据
     fpops = [[13,12],[16,43],[16,86],[26,46]]
-    # 开多进程运行
-    q = Queue()
-    p = Process(target=interface4flask, args=(
-        data_model.name,  #数据集名称
-        algoCfg.sens_featrs,  #敏感属性列表
-        [algoCfg.acc_metric,algoCfg.fair_metric],  #优化目标列表
-        algoCfg.pop_size,  #种群大小
-        algoCfg.max_gens,  #进化代数
-        algoCfg.optimizer,  #优化器
-        task_id #当前任务编号
-    ))
-    p.start()
 
-    return render_template('task_page.html', pid=task_id, finished=finish, fpops=fpops, port=port)
+
+    return render_template('task_page.html', pid=task_id, finished=ctrlr.progress,
+                           fpops=fpops, cfg=algoCfg, port=port)
+
+
+
+@app.route('/task/<task_id>/progress')
+def run_task(task_id):
+    # 临时处理JS传参开头带0自动转为八进制的问题
+    task_id = str(oct(int(task_id)))[2:]
+    temp = "".join(['0'] * (4 - len(task_id)))
+    task_id = temp + task_id
+
+    ip = request.remote_addr
+    ctrlr = AlgoCfgController.instances[ip] #这里之后应该改成从AlgoManager拿
+    # 开多进程运行
+    # q = Queue()
+    # ctrlr.inQ = q  # 目前把任务对应的q记下来还没用到
+
+    # p = Process(target=interface4flask, args=(
+    #     ctrlr,
+    #     task_id,  # 当前任务编号
+    # ))
+    # p.start()
+
+    interface4flask(ctrlr, task_id)
+
+    info = ctrlr.progress_info
+    if "100" in info:
+        return jsonify({'res': info})
+    else:
+        return jsonify({'res': 'error'})
+
+
+@app.route('/task/<task_id>/show_progress')
+def show_progress(task_id):
+    #临时处理JS传参开头带0自动转为八进制的问题
+    task_id = str(oct(int(task_id)))[2:]
+    temp = "".join(['0']*(4-len(task_id)))
+    task_id = temp + task_id
+
+    ip = request.remote_addr
+    algomnger = AlgoManager.instances[ip]
+    ctrlr = algomnger.running_tasks[task_id]
+    return jsonify({'res': ctrlr.progress_info})
+
 
 # 向前端js发送图表数据
 @app.route('/data-eval/charts/<cid>')

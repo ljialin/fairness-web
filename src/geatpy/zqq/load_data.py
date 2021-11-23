@@ -142,7 +142,7 @@ def df2onehot(df, attrs):
 # print()
 
 
-def load_data(dataname, datatype="numerical-for-NN", test_size=0.25, preserve_sens_in_net=0, seed_split_traintest=2021, sensitive_attributions=None, is_ensemble=False):
+def load_data(dataname, dataModel, datatype="numerical-for-NN", test_size=0.25, preserve_sens_in_net=0, seed_split_traintest=2021, sensitive_attributions=None, is_ensemble=False):
     available_datasets = get_dataset_names()
     if dataname not in available_datasets:
         print('There is no dataset named', dataname)
@@ -158,11 +158,12 @@ def load_data(dataname, datatype="numerical-for-NN", test_size=0.25, preserve_se
             # is_make_uniform = 0
             # is_smaller = 0
             if data_obj.dataset_name == dataname:
-                # org_data = pd.read_csv(dir + os.sep + "{}.csv".format(dataname))
-                # attrs, label = get_header(dataname, dir)
+                org_data = pd.read_csv(dir + os.sep + "{}.csv".format(dataname))
+                attrs, label = get_header(dataname, dir)
 
+                # org_data, attrs, label = dataModel.load_data()
                 data = df2onehot(org_data.copy(), attrs)
-                org_data, attrs, label = DataModel.load_data(dir + os.sep + "{}.csv".format(dataname))
+
 
                 label_name = label['name']
                 data.reset_index(inplace=True, drop=True)
@@ -587,9 +588,9 @@ def load_data(dataname, datatype="numerical-for-NN", test_size=0.25, preserve_se
                 valid_data_norm = normalize.transform(newvalid_data)
 
                 # Change labels into integer
-                train_y = make_class_attr_num(train_label.copy(), data_obj.get_positive_class_val(""))
-                test_y = make_class_attr_num(test_label.copy(), data_obj.get_positive_class_val(""))
-                valid_y = make_class_attr_num(valid_label.copy(), data_obj.get_positive_class_val(""))
+                train_y = make_class_attr_num(train_label.copy(), dataModel.pos_label_val)
+                test_y = make_class_attr_num(test_label.copy(), dataModel.pos_label_val)
+                valid_y = make_class_attr_num(valid_label.copy(), dataModel.pos_label_val)
 
                 DATA_names = ['train_data', 'train_data_norm', 'train_label', 'train_y', 'train_org',
                               'valid_data', 'valid_data_norm', 'valid_label', 'valid_y', 'valid_org',

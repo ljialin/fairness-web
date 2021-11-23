@@ -49,6 +49,9 @@ class AlgoCfgController:
         self.view = AlgoCfgView(data_model)
         self.task = None
         self.algo = Algorithm()
+        self.progress = 0 #100就结束
+        self.progress_info = ""
+        self.inQ = None
         AlgoCfgController.instances[ip] = self
 
     def set(self, **kwargs):
@@ -64,3 +67,14 @@ class AlgoCfgController:
     def add_models(self, struct_file, var_files):
         models = init_pop_from_uploaded(self.task.id, struct_file, var_files, self.cfg.pop_size)
         self.algo.pop = models
+
+class AlgoManager:
+    instances = {}
+    def __init__(self, ip):
+        self.ip = ip
+        self.finished_tasks = {} #单个task可以用单个AlgoCfgController来装
+        self.running_tasks = {}
+        AlgoManager.instances[ip] = self
+
+    def add_task(self, task_id, algoCfgController):
+        self.running_tasks[task_id] = algoCfgController

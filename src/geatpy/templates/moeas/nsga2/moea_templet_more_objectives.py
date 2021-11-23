@@ -118,7 +118,7 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
 
     """
 
-    def __init__(self, problem, start_time, population, muta_mu=0, muta_var=0.001, objectives=None, kfold=0, calculmetric=20,
+    def __init__(self, problem, start_time, population, muta_mu=0, muta_var=0.001, objectives=None, kfold=0, calculmetric=20, ctrlr = None,
                  run_id=0, use_GAN=False, dropout=0, MOEAs=6, mutation_p = 0.2, crossover_p = 0.8, lr_decay_factor=0.99, record_parameter=None, is_ensemble=False):
         ea.MoeaAlgorithm.__init__(self, problem, population)  # 先调用父类构造方法
         if objectives is None:
@@ -164,6 +164,7 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
         self.lr_decay_factor = lr_decay_factor
         self.record_parameter = record_parameter
         self.is_ensemble = is_ensemble
+        self.ctrlr = ctrlr
 
     def reinsertion(self, population, offspring, NUM, isNN=1):
 
@@ -476,6 +477,8 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
 
                 # print better individuals
                 np.savetxt('Result/' + self.start_time + '/detect/better_individuals_gen{}.txt'.format(gen), chooseidx)
+                # self.q.put('演化中... ({}%)'.format(str(round(gen * 100 / self.MAXGEN, 2))))
+                self.ctrlr.progress_info = '演化中... ({}%)'.format(str(round(gen * 100 / self.MAXGEN, 2)))
                 self.update_timeslot()
 
             # if np.mod(gen, 10) == 0:

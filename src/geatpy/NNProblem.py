@@ -367,7 +367,7 @@ def get_obj_vals(Group_infos, obj_classes):
 
 
 class NNProblem_new(ea.Problem):  # 继承Problem父类
-    def __init__(self, M=None, learning_rate=0.01, batch_size=500, sensitive_attributions=None,
+    def __init__(self, M=None, learning_rate=0.01, batch_size=500, sensitive_attributions=None, dataModel=None,
                  epoches=2, dataname='ricci', objectives_class=None, dirname=None, preserve_sens_in_net=0,
                  seed_split_traintest=2021, weight_decay=1e-1, cal_obj_plan=6, GAN_alpha=0.3, L_regul=0.8,
                  start_time=0, sel_obj_plan=1, obj_is_logits=1, is_ensemble=False):
@@ -398,7 +398,7 @@ class NNProblem_new(ea.Problem):  # 继承Problem父类
         self.preserve_sens_in_net = preserve_sens_in_net
         self.seed_split_traintest = seed_split_traintest
         self.weight_decay = weight_decay
-        DATA, dataset_obj = load_data(dataname, test_size=0.25, preserve_sens_in_net=preserve_sens_in_net,
+        DATA, dataset_obj = load_data(dataname, dataModel, test_size=0.25, preserve_sens_in_net=preserve_sens_in_net,
                                       seed_split_traintest=seed_split_traintest, sensitive_attributions=sensitive_attributions, is_ensemble=is_ensemble)
         self.train_data = DATA['train_data']
         self.train_data_norm = DATA['train_data_norm']
