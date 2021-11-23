@@ -1,0 +1,12 @@
+.progress-div {
+    background: rgba(0, 0, 0, 0.03);
+    width: 600px;
+    height: 100px;
+    padding: 60px 20px;
+    visibility: hidden;
+}
+
+.progress {
+    margin: 0;
+    width: 100%;
+}
