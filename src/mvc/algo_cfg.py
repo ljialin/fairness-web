@@ -34,7 +34,7 @@ class AlgoCfgView:
 
 class AlgoCfg:
     def __init__(self):
-        self.acc_metric = 'Accuracy'
+        self.acc_metric = 'Misclassification'
         self.fair_metric = 'Individual_fairness'
         self.optimizer = 'SRA'
         self.pop_size = 25

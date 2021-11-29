@@ -1394,14 +1394,18 @@ def calcul_all_fairness_new3(data, data_norm, logits, truelabel, sensitive_attri
     if "Accuracy" in obj_names:
         Groups_info.update({"Accuracy": 1-np.mean(pred_label == truelabel)})
 
+    if "Misclassification" in obj_names:
+        Groups_info.update({"Misclassification": 1-np.mean(pred_label == truelabel)})
+
     # MSE loss
-    # if "Error" in obj_names:
-    #     MSE_loss = np.mean(np.power(logits - truelabel, 2))
+    if "MSE_loss" in obj_names:
+        MSE_loss = np.mean(np.power(logits - truelabel, 2))
+        Groups_info.update({"MSE_loss": MSE_loss})
 
     # BCE loss
-    if "Error" in obj_names:
+    if "BCE_loss" in obj_names:
         BCE_loss = log_loss(truelabel.reshape(-1, 1), np.hstack([1 - logits.reshape(-1, 1), logits.reshape(-1, 1)]))
-        Groups_info.update({"Error": BCE_loss})
+        Groups_info.update({"BCE_loss": BCE_loss})
 
     # Individual unfairness = within-group + between-group
     if "Individual_fairness" in obj_names:

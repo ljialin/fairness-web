@@ -222,7 +222,6 @@ def run_task(task_id):
     ip = request.remote_addr
     algomnger = AlgosManager.instances[ip]
     ctrlr = algomnger.get_task(task_id)
-    # ctrlr = AlgoController.instances[ip]  # 这里之后应该改成从AlgoManager拿
 
     if ctrlr.status != STATUS.INIT: #已经有算法在跑住了（用户直接访问带task_id的页面）
         print(ctrlr.status) #看到状态了前端才会停止刷新
@@ -232,10 +231,7 @@ def run_task(task_id):
 
     interface4flask(ctrlr, task_id)
 
-    if len(ctrlr.pops) == 0:
-        fpops = []
-    else:
-        fpops = np.around(ctrlr.pops[-1], 5).tolist()
+    fpops = [] if len(ctrlr.pops) == 0 else np.around(ctrlr.pops[-1], 5).tolist()
     return jsonify({'progress_info': ctrlr.progress_info,
                     'progress_rate': ctrlr.progress,
                     'progress_status': ctrlr.status,
@@ -247,10 +243,8 @@ def show_progress(task_id):
     ip = request.remote_addr
     algomnger = AlgosManager.instances[ip]
     ctrlr = algomnger.get_task(task_id)
-    if len(ctrlr.pops) == 0:
-        fpops = []
-    else:
-        fpops = np.around(ctrlr.pops[-1], 5).tolist()
+    fpops = [] if len(ctrlr.pops) == 0 else np.around(ctrlr.pops[-1], 5).tolist()
+
     return jsonify({'progress_info': ctrlr.progress_info,
                     'progress_rate': ctrlr.progress,
                     'progress_status': ctrlr.status,
@@ -277,7 +271,7 @@ def algo_status_chart(task_id):
     ip = request.remote_addr
     algomnger = AlgosManager.instances[ip]
     ctrlr = algomnger.get_task(task_id)
-    pop = ctrlr.pops[-1]
+    pop = ctrlr.pops[-1] if len(ctrlr.pops) > 0 else np.array([[0,0]])
     # chart = AlgoCfgController.instances[ip].chart
     # return chart.dump_options_with_quotes()
 
@@ -292,7 +286,7 @@ def algo_status_chart(task_id):
                                                        name_location='center',
                                                        max_=ctrlr.max_pop[1],
                                                        type_="value"),
-                              title_opts=opts.TitleOpts("公平性指标和准确性指标优化结果"),
+                              title_opts=opts.TitleOpts(title="公平性指标和准确性指标优化结果"),
                               )
              )
 
