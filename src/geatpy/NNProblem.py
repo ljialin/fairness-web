@@ -398,8 +398,8 @@ class NNProblem_new(ea.Problem):  # 继承Problem父类
         self.preserve_sens_in_net = preserve_sens_in_net
         self.seed_split_traintest = seed_split_traintest
         self.weight_decay = weight_decay
-        DATA, dataset_obj = load_data(dataname, dataModel, test_size=0.25, preserve_sens_in_net=preserve_sens_in_net,
-                                      seed_split_traintest=seed_split_traintest, sensitive_attributions=sensitive_attributions, is_ensemble=is_ensemble)
+        self.dataModel = dataModel
+        DATA = load_data(dataModel, preserve_sens_in_net=preserve_sens_in_net, sensitive_attributions=sensitive_attributions)
         self.train_data = DATA['train_data']
         self.train_data_norm = DATA['train_data_norm']
         self.train_label = DATA['train_label']
@@ -458,7 +458,7 @@ class NNProblem_new(ea.Problem):  # 继承Problem父类
         self.M = M
         self.num_features = self.train_data_norm.shape[1]
         self.dataname = dataname
-        self.dataset_obj = dataset_obj
+        # self.dataset_obj = dataset_obj
         self.objectives_class = objectives_class
         self.dirname = 'zqq/' + dirname
         self.cal_sens_name = [sensitive_attributions[0]]
