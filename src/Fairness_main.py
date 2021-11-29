@@ -2,6 +2,7 @@
 import geatpy as ea
 from geatpy.NNProblem import NNProblem_new  # 导入自定义问题接口
 from geatpy.Population import Population
+from mvc.algo_cfg import STATUS
 import time
 import os
 import numpy as np
@@ -13,11 +14,9 @@ import sys
 def run(parameters):
     start_time = parameters['start_time']
     print('The time is ', start_time)
-    # q = parameters['queue']
     ctrlr = parameters['ctrlr']
     """===============================实例化问题对象============================"""
-    # q.put('正在实例化问题对象...')
-    ctrlr.progress_info = '正在实例化问题对象...'
+    ctrlr.update_progress(STATUS.INIT_PROBLEM)
     problem = NNProblem_new(M=len(parameters['objectives_class']), learning_rate=parameters['learning_rate'],
                              batch_size=parameters['batch_size'],
                              sensitive_attributions=parameters['sensitive_attributions'],
@@ -27,8 +26,7 @@ def run(parameters):
                              seed_split_traintest=parameters['seed_split_traintest'],
                              dataModel = parameters['dataModel'])  # 生成问题对象
     """==================================种群设置==============================="""
-    # q.put('正在初始化种群...')
-    ctrlr.progress_info = '正在初始化种群...'
+    ctrlr.update_progress(STATUS.INIT_POP)
     Encoding = parameters['Encoding']  # 编码方式 --> 假的，其实是NN
     NIND = parameters['NIND']  # 种群规模
     Field = ea.crtfld('BG', problem.varTypes, problem.ranges, problem.borders,
@@ -39,7 +37,7 @@ def run(parameters):
                                parameters=parameters,
                                logits=np.zeros([NIND, problem.test_data.shape[0]]))  # 实例化种群对象（此时种群还没被初始化，仅仅是完成种群对象的实例化）
     """================================算法参数设置============================="""
-    ctrlr.progress_info = '演化中... (0%)'
+    ctrlr.update_progress(STATUS.INIT_CONFIG)
     myAlgorithm = ea.moea_templet_more_objectives(problem=problem, start_time=start_time,
                                   population=population,
                                   muta_mu=parameters['muta_mu'],
@@ -69,14 +67,13 @@ def run(parameters):
 def interface4flask(ctrlr=None, task_id=0): #ctrlr可以认为非空
     algoCfg = ctrlr.cfg
 
-    dataname = ctrlr.problem.data_model.name # 数据集名称
+    dataname = ctrlr.view.dataname # 数据集名称
     sensitive_attributions = algoCfg.sens_featrs # 敏感属性列表
     objectives_class = [algoCfg.acc_metric, algoCfg.fair_metric] # 优化目标列表
     popsize = algoCfg.pop_size # 种群大小
     MAXGEN = algoCfg.max_gens # 进化代数
     optimizer = algoCfg.optimizer # 优化器
-    dataModel = ctrlr.problem.data_model #传入的模型#已经改成从AlgoCfgController的problem拿
-    q = ctrlr.inQ
+    dataModel = ctrlr.data_model #传入的模型#已经改成从AlgoCfgController的problem拿
 
     if objectives_class is None:
         objectives_class = ['BCE_loss', 'Individual_fairness']

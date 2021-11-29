@@ -3,6 +3,7 @@ import numpy as np
 import geatpy as ea  # 导入geatpy库
 from sys import path as paths
 from os import path
+from mvc.algo_cfg import STATUS
 import torch
 import time
 import os
@@ -152,7 +153,7 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
         self.objectives_class = objectives
         self.kfold = kfold
         self.calculmetric = calculmetric
-        self.run_id = run_id
+        self.run_id = run_id #就是前端的task_id
         self.use_GAN = use_GAN
         self.dropout = dropout
         self.MOEAs = MOEAs
@@ -334,6 +335,10 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
         self.add_gen2info(population, gen)
         self.update_timeslot()
         Archive = copy.deepcopy(population)
+
+        self.ctrlr.update_pop(population.ObjV_valid, gen=gen)
+        self.ctrlr.update_progress(STATUS.RUNNING, gen=gen, maxgen=self.MAXGEN)
+
         # ===========================开始进化============================
         while not self.terminated(population):
 
@@ -478,7 +483,6 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
                 # print better individuals
                 np.savetxt('Result/' + self.start_time + '/detect/better_individuals_gen{}.txt'.format(gen), chooseidx)
                 # self.q.put('演化中... ({}%)'.format(str(round(gen * 100 / self.MAXGEN, 2))))
-                self.ctrlr.progress_info = '演化中... ({}%)'.format(str(round(gen * 100 / self.MAXGEN, 2)))
                 self.update_timeslot()
 
             # if np.mod(gen, 10) == 0:
@@ -492,8 +496,9 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
             self.add_gen2info(population, gen)
             self.update_timeslot()
             # print(population.ObjV_valid)
-            savepop_dir = 'task_space/task{}/'.format(self.run_id)
-            np.savetxt(savepop_dir + 'pop_objs_valid{}.txt'.format(gen), population.ObjV_valid)
+
+            self.ctrlr.update_pop(population.ObjV_valid, gen=gen)
+            self.ctrlr.update_progress(STATUS.RUNNING, gen=gen, maxgen=self.MAXGEN)
             if np.mod(gen, self.calculmetric) == 0 or gen == 1:
                 self.update_passtime()
                 population.save(dirName='Result/' + self.start_time, Gen=gen, NNmodel=population,
@@ -576,5 +581,6 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
         #                 true_y=np.array(self.problem.test_y),
         #                 runtime=self.passTime)
 
+        self.ctrlr.update_progress(STATUS.FINISH)
         print("Run ID ", self.run_id, "finished!")
         return self.finishing(population)  # 调用finishing完成后续工作并返回结果

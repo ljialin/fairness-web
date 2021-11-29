@@ -13,13 +13,13 @@ from pyecharts.charts import Bar, Radar, Scatter
 from pyecharts import options as opts
 from pyecharts.commons.utils import JsCode
 from src.mvc.model_eval import ModelEvalController
-from src.mvc.algo_cfg import AlgoCfgController, AlgoManager
+from src.mvc.algo_cfg import AlgoController, AlgosManager
 # from root import HOSTIP
 # from src.task import Task
 # from src.utils import CustomUnpickler
 from src.mvc.data import DataController
 from src.mvc.data_eval import DataEvalController
-from multiprocessing import Process, Queue
+from mvc.algo_cfg import STATUS
 from Fairness_main import interface4flask
 
 port = 5000
@@ -28,18 +28,21 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    ip = request.remote_addr
+    if AlgosManager.instances.get(ip) is None:
+        AlgosManager(ip)  # 在最初的时候就初始化好AlgoManager
+
     if not request.form:
-        return render_template('index.html')
+        return render_template('index.html', algomnger=AlgosManager.instances[ip])
     else:
         if request.form['name'] == 'next':
-            ip = request.remote_addr
             target = request.form['tar']
             # if ip in DataController.insts.keys():
             #     DataController.insts[ip].free()
             # else:
             DataController(ip, target)
-            AlgoManager(ip) # 在最初的时候就初始化好AlgoManager
             return redirect('/data')
+
 
 @app.route('/data', methods=['GET', 'POST'])
 def data_page():
@@ -68,16 +71,18 @@ def data_page():
                 return redirect(ctrlr.target)
         return render_template('data.html', view=ctrlr.view, errinfo=errinfo)
 
+
 @app.route('/data/desc_template')
 def download_desc_template():
     return send_from_directory('static/file_templates', 'data.csv', as_attachment=True)
+
 
 @app.route('/data-eval', methods=['GET', 'POST'])
 def data_eval():
     ip = request.remote_addr
     form = request.form
     errinfo = None
-    if not form:
+    if not form:  # 检测是不是在页面内按按钮之后，还要用这个页面
         if DataController.insts[ip] is None:
             return '必须在选择数据集页面选择数据集后才能访问该页面'
         ctrlr = DataEvalController(ip, DataController.insts[ip].model)
@@ -98,6 +103,7 @@ def data_eval():
     # 这里的ip好像没被用到
     return render_template('data_eval.html', view=ctrlr.view, ip=ip, port=port, errinfo=errinfo)
 
+
 @app.route('/model-upload', methods=['GET', 'POST'])
 def model_upload():
     ip = request.remote_addr
@@ -110,9 +116,11 @@ def model_upload():
         return redirect('/model-eval')
     return render_template('model_upload.html')
 
+
 @app.route('/model/model_def_template')
 def download_model_template():
     return send_from_directory('static/file_templates', 'model_defination.py', as_attachment=True)
+
 
 @app.route('/model-eval', methods=['GET', 'POST'])
 def model_eval():
@@ -130,48 +138,54 @@ def model_eval():
                 ctrlr.cgf_eval(sens_featrs, form['legi-featr'])
     return render_template('model_eval.html', port=port, view=ctrlr.view)
 
+
 @app.route('/model-eval/intro')
 def metric_intro():
     ip = request.remote_addr
+    if ModelEvalController.insts[ip] is None:
+        return '必须在选择数据集页面选择数据集，并在上传模型页面上传模型后才能访问该页面'
     ctrlr = ModelEvalController.insts[ip]
     return render_template('metric_intro.html', view=ctrlr.view)
+
 
 @app.route('/algo-cfg', methods=['GET', 'POST'])
 def algo_cfg():
     ip = request.remote_addr
-    data_model = DataController.insts[ip].model
     form = request.form
-    print(form)
-    # errinfo = None
-    if not form:
-        if DataController.insts[ip] is None:
+    print("algo_cfg:form", form)
+    errinfo = None
+    if not form:  # 检测是不是首次载入这个页面，首次载入应该是被选数据页面重定向过来的
+        if DataController.insts.get(ip) is None:
             return '必须在选择数据集页面选择数据集后才能访问该页面'
-        ctrlr = AlgoCfgController(ip, data_model)
-    else:
-        ctrlr = AlgoCfgController.instances[ip]
-        sens_featrs = form.getlist('sens-featrs')
-        task_id = ctrlr.set(
+        else:  # 是第一次，且经过选择数据集这部跳转
+            data_model = DataController.insts[ip].model
+            ctrlr = AlgoController(ip, data_model)  # 新建一个Controller，默认值写在这个类里面
+            return render_template('algo_cfg.html', view=ctrlr.view, cfg=ctrlr.cfg, errinfo=errinfo)
+    else:  # 点击了页面中的按钮之后执行的
+        ctrlr = AlgoController.instances[ip]
+        errinfo, task_id = ctrlr.new_task(
             acc_metric=form['acc_metric'],
             fair_metric=form['fair_metric'],
-            pop_size=int(form['pop_size']),
-            max_gens=int(form['max_gens']),
-            sens_featrs=sens_featrs
+            pop_size=form['pop_size'],
+            max_gens=form['max_gens'],
+            sens_featrs=form.getlist('sens-featrs')
         )
+        AlgosManager.instances[ip].running_tasks[task_id] = ctrlr
+        if errinfo is not None:
+            return render_template('algo_cfg.html', view=ctrlr.view, cfg=ctrlr.cfg, errinfo=errinfo)
         if form['type'] == '上传初始化模型簇':
             return redirect('/algo-cfg/model-upload')
         else:
-            return redirect(f'/task/{task_id:04d}')
-        # print(form)
-        # if
+            # return redirect(f'/task/{task_id:04d}')
+            return redirect('/task/{}'.format(task_id))
 
-    return render_template('algo_cfg.html', view=ctrlr.view, cfg=ctrlr.cfg)
 
 @app.route('/algo-cfg/model-upload', methods=['GET', 'POST'])
 def model_upload_for_algo():
     ip = request.remote_addr
     if request.files:
         try:
-            ctrlr = AlgoCfgController.instances[ip]
+            ctrlr = AlgoController.instances[ip]
             ctrlr.add_models(request.files['struct'], request.files.getlist('var'))
             # ModelEvalController(ip, request.files['struct'], request.files['var'])
         except RuntimeError as e:
@@ -184,60 +198,63 @@ def model_upload_for_algo():
 def task_page(task_id):
     print(task_id)
     ip = request.remote_addr
-    ctrlr = AlgoCfgController.instances[ip]
+    algomnger = AlgosManager.instances[ip]
+    ctrlr = algomnger.get_task(task_id)
     algoCfg = ctrlr.cfg
+    algoView = ctrlr.view
 
-    algomnger = AlgoManager.instances[ip]  # 在新建任务，跳转到运行页面之前，把这个task加入管理者
-    algomnger.add_task(task_id, ctrlr)
+    algomnger.add_task(task_id, ctrlr)# 在新建任务，跳转到运行页面之前，把这个task加入管理者
 
-    #造一些数据
-    fpops = [[13,12],[16,43],[16,86],[26,46]]
-
+    # 造一些数据
+    # fpops = [[13, 12], [16, 43], [16, 86], [26, 46]]
+    if len(ctrlr.pops) == 0:
+        fpops = []
+    else:
+        fpops = np.around(ctrlr.pops[-1], 5)
 
     return render_template('task_page.html', pid=task_id, finished=ctrlr.progress,
-                           fpops=fpops, cfg=algoCfg, port=port)
-
+                           fpops=fpops, cfg=algoCfg, view=algoView, port=port)
 
 
 @app.route('/task/<task_id>/progress')
 def run_task(task_id):
-    # 临时处理JS传参开头带0自动转为八进制的问题
-    task_id = str(oct(int(task_id)))[2:]
-    temp = "".join(['0'] * (4 - len(task_id)))
-    task_id = temp + task_id
-
+    # JS传参开头带0自动转为八进制的问题,通过task_id前面加a解决
     ip = request.remote_addr
-    ctrlr = AlgoCfgController.instances[ip] #这里之后应该改成从AlgoManager拿
-    # 开多进程运行
-    # q = Queue()
-    # ctrlr.inQ = q  # 目前把任务对应的q记下来还没用到
+    algomnger = AlgosManager.instances[ip]
+    ctrlr = algomnger.get_task(task_id)
+    # ctrlr = AlgoController.instances[ip]  # 这里之后应该改成从AlgoManager拿
 
-    # p = Process(target=interface4flask, args=(
-    #     ctrlr,
-    #     task_id,  # 当前任务编号
-    # ))
-    # p.start()
+    if ctrlr.status != STATUS.INIT: #已经有算法在跑住了（用户直接访问带task_id的页面）
+        print(ctrlr.status) #看到状态了前端才会停止刷新
+        return jsonify({'progress_info': ctrlr.progress_info,
+                        'progress_rate': ctrlr.progress,
+                        'progress_status': ctrlr.status})
 
     interface4flask(ctrlr, task_id)
 
-    info = ctrlr.progress_info
-    if "100" in info:
-        return jsonify({'res': info})
+    if len(ctrlr.pops) == 0:
+        fpops = []
     else:
-        return jsonify({'res': 'error'})
+        fpops = np.around(ctrlr.pops[-1], 5).tolist()
+    return jsonify({'progress_info': ctrlr.progress_info,
+                    'progress_rate': ctrlr.progress,
+                    'progress_status': ctrlr.status,
+                    'pop': fpops})
 
 
 @app.route('/task/<task_id>/show_progress')
 def show_progress(task_id):
-    #临时处理JS传参开头带0自动转为八进制的问题
-    task_id = str(oct(int(task_id)))[2:]
-    temp = "".join(['0']*(4-len(task_id)))
-    task_id = temp + task_id
-
     ip = request.remote_addr
-    algomnger = AlgoManager.instances[ip]
-    ctrlr = algomnger.running_tasks[task_id]
-    return jsonify({'res': ctrlr.progress_info})
+    algomnger = AlgosManager.instances[ip]
+    ctrlr = algomnger.get_task(task_id)
+    if len(ctrlr.pops) == 0:
+        fpops = []
+    else:
+        fpops = np.around(ctrlr.pops[-1], 5).tolist()
+    return jsonify({'progress_info': ctrlr.progress_info,
+                    'progress_rate': ctrlr.progress,
+                    'progress_status': ctrlr.status,
+                    'pop': fpops})
 
 
 # 向前端js发送图表数据
@@ -247,52 +264,70 @@ def data_eval_charts(cid):
     charts = DataEvalController.insts[ip].charts
     return charts[cid].dump_options_with_quotes()
 
+
 @app.route('/model-eval/charts/<cid>')
 def model_eval_charts(cid):
     ip = request.remote_addr
     charts = ModelEvalController.insts[ip].charts
     return charts[cid].dump_options_with_quotes()
 
-@app.route('/task/<pid>/chart')
-def algo_status_chart(pid):
+
+@app.route('/task/<task_id>/chart')
+def algo_status_chart(task_id):
     ip = request.remote_addr
-    ctrlr = AlgoCfgController.instances[ip]
+    algomnger = AlgosManager.instances[ip]
+    ctrlr = algomnger.get_task(task_id)
+    pop = ctrlr.pops[-1]
     # chart = AlgoCfgController.instances[ip].chart
     # return chart.dump_options_with_quotes()
 
-    chart = (Scatter(opts.InitOpts(width="600px", height="600px"))
-               .set_global_opts(xaxis_opts=opts.AxisOpts(name=ctrlr.cfg.acc_metric,
-                                                         name_location='center',
-                                                         name_gap=20,
-                                                         type_="value"),
-                                yaxis_opts=opts.AxisOpts(name=ctrlr.cfg.fair_metric,
-                                                         name_gap=20,
-                                                         name_location='center',
-                                                         type_="value"),
-                                title_opts=opts.TitleOpts("公平性指标和准确性指标优化结果"),
-                                )
-               )
-    colors = []
-    for i in range(10):
-        tmp = 20 - i
-        colors.append(str(hex(50 + i * 20))[2:])
-        x = [tmp + v for v in tmp * np.linspace(-0.3, 0.3, 20)]
-        y = [tmp - v for v in tmp * np.linspace(-0.3, 0.3, 20)]
-        chart.add_xaxis(x)
-        chart.add_yaxis(
-            series_name="",
-            y_axis=[each for each in zip(y,x)],
-            symbol_size=5,
-            symbol=None,
-            is_selected=True,
-            color='#00{}FF'.format(colors[i]),
-            label_opts=opts.LabelOpts(is_show=False)
-        )
+    chart = (Scatter(opts.InitOpts(width="500px", height="500px"))
+             .set_global_opts(xaxis_opts=opts.AxisOpts(name=ctrlr.cfg.acc_metric,
+                                                       name_location='center',
+                                                       name_gap=20,
+                                                       max_=ctrlr.max_pop[0],
+                                                       type_="value"),
+                              yaxis_opts=opts.AxisOpts(name=ctrlr.cfg.fair_metric,
+                                                       name_gap=20,
+                                                       name_location='center',
+                                                       max_=ctrlr.max_pop[1],
+                                                       type_="value"),
+                              title_opts=opts.TitleOpts("公平性指标和准确性指标优化结果"),
+                              )
+             )
+
+    chart.add_xaxis(list(pop[:,0]))
+    chart.add_yaxis(
+        series_name="",
+        y_axis=[each for each in zip(list(pop[:,1]), list(pop[:,0]))],
+        symbol_size=3,
+        symbol=None,
+        is_selected=True,
+        color='#00BBFF',
+        label_opts=opts.LabelOpts(is_show=False)
+    )
+    # 要想这个方法能被执行，需要把js里面的get_chart写到progress_bar.js里面，按秒刷新
+    # colors = []
+    # for i in range(10):
+    #     tmp = 20 - i
+    #     colors.append(str(hex(50 + i * 20))[2:])
+    #     x = [tmp + v for v in tmp * np.linspace(-0.3, 0.3, 20)]
+    #     y = [tmp - v for v in tmp * np.linspace(-0.3, 0.3, 20)]
+    #     chart.add_xaxis(x)
+    #     chart.add_yaxis(
+    #         series_name="",
+    #         y_axis=[each for each in zip(y, x)],
+    #         symbol_size=5,
+    #         symbol=None,
+    #         is_selected=True,
+    #         color='#00{}FF'.format(colors[i]),
+    #         label_opts=opts.LabelOpts(is_show=False)
+    #     )
     chart.set_global_opts(tooltip_opts=opts.TooltipOpts(
-                                formatter=JsCode(
-                                    "function (params) {return '( '+ params.value[2] +' : '+ params.value[1] + ' )';}"
-                                )
-                        ))
+        formatter=JsCode(
+            "function (params) {return '( '+ params.value[2] +' : '+ params.value[1] + ' )';}"
+        )
+    ))
     return chart.dump_options_with_quotes()
 
 
@@ -309,6 +344,7 @@ def datagf_chart(feature):
         chart.add_yaxis('', [1.1, 0.75, 1.1])
         chart.set_global_opts(title_opts=opts.TitleOpts(title="Race"))
     return chart.dump_options_with_quotes()
+
 
 # @app.route('/charts/models-radar/<feature>')
 # def model_radar_chart(feature):

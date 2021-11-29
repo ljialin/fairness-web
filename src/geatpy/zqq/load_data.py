@@ -618,7 +618,8 @@ def load_data(dataname, dataModel, datatype="numerical-for-NN", test_size=0.25, 
                 DATA['test_label'] = test_label
                 DATA['test_y'] = test_y.astype('int')
 
-                DATA['positive_class'] = data_obj.get_positive_class_val("")
+                # DATA['positive_class'] = data_obj.get_positive_class_val("")
+                DATA['positive_class'] = dataModel.pos_label_val
                 DATA['privileged_class_names'] = data_obj.privileged_class_names
 
 
@@ -633,7 +634,8 @@ def load_data(dataname, dataModel, datatype="numerical-for-NN", test_size=0.25, 
                 DATA['test_org'] = test_org
                 DATA['valid_org'] = valid_org
 
-                DATA['positive_class_name'] = data_obj.get_class_attribute()
+                DATA['positive_class_name'] = dataModel.label
+                # DATA['positive_class_name'] = data_obj.get_class_attribute()
                 # DATA['sens_attrs'] = data_obj.get_sensitive_attributes()
 
                 # DATA['sens_idxs'] = sens_idxs

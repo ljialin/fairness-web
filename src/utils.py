@@ -28,13 +28,16 @@ def get_count_from_series(data, key):
         return 0
 
 def auto_dire(name, path=None, fmtr=''):
-    dire_id = 0
     prefix = PRJROOT if path is None else f'{PRJROOT}{path}/'
     tar = f'{prefix}'
-    while os.path.exists(tar):
-        suffix = fmtr % dire_id if fmtr else dire_id
-        tar = f'{prefix}{name}{suffix}'
-        dire_id += 1
+    if not os.path.exists(tar):
+        os.makedirs(tar)
+    # while os.path.exists(tar):
+    dire_id = len(os.listdir(tar))
+    suffix = fmtr % dire_id if fmtr else dire_id
+    tar = f'{prefix}{name}{suffix}'
+    dire_id += 1
+
     os.makedirs(tar)
     print(tar)
     return tar

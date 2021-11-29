@@ -10,3 +10,46 @@
     margin: 0;
     width: 100%;
 }
+
+.cfg {
+    /*border-width: 1px;*/
+    /*border-style: solid;*/
+    /*border-color: black;*/
+    margin-bottom: 20px;
+    margin-inside: 10px;
+}
+
+.poptable {
+    height: 400px;
+    overflow-y:scroll;
+    margin-bottom: 20px
+}
+
+table {
+    width: 100%;
+    border-left: 2px solid #000000;;
+    border-right: 2px solid #000000;
+    border-top: 2px solid #000000;;
+    border-bottom: 2px solid #000000;
+    text-align: center;
+}
+
+table th {
+    border-left: 1px solid #000000;
+    border-top: 1px solid #000000;
+}
+
+#th_id {
+    width: 10%;
+}
+#th_fair {
+    width: 45%;
+}
+#th_acc {
+    width: 45%;
+}
+
+table td {
+    border-left: 1px solid #000000;
+    border-top: 1px solid #000000;
+}
