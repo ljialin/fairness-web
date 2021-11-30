@@ -1,59 +1,68 @@
-"""
-@DATE: 2021/6/24
-@Author: Ziqi Wang
-@File: test.py
-"""
-
-import glob
-
+from pyecharts import options as opts
+from pyecharts.charts import Scatter
+from pyecharts.commons.utils import JsCode
 import numpy as np
-from pyecharts.charts import Bar
-from pandas import DataFrame
-from PIL import Image
-import pandas
-from werkzeug.datastructures import ImmutableMultiDict
 
-from root import PRJROOT
-import socket
-import time
+# data = [[13, 12], [16, 43], [16, 86], [26, 46]]
+# x = [each[0] for each in data]
+# y = [each[1] for each in data]
+# print(x)
+# print(y)
+#
+# a = Scatter()
+# a.add_xaxis(x)
+# a.add_yaxis(
+#     "商家A",
+#     [each for each in zip(y, x)],
+#     label_opts=opts.LabelOpts(is_show=False)
+# )
+# a.set_global_opts(
+#     title_opts=opts.TitleOpts(title="Scatter-多维度数据"),
+#     tooltip_opts=opts.TooltipOpts(
+#         formatter=JsCode(
+#             "function (params) {return '( '+ params.value[2] +' : '+ params.value[1] + ' )';}"
+#         )
+#     ),
+#     visualmap_opts=opts.VisualMapOpts(
+#         type_="color", max_=150, min_=20, dimension=1
+#     ),
+#     xaxis_opts=opts.AxisOpts(type_='value'),
+#     yaxis_opts=opts.AxisOpts(type_='value')
+# )
+# a.render("scatter_multi_dimension.html")
 
-class MyObj:
-    insts = {}
 
-    def __init__(self, ip):
-        self.ip = ip
-        MyObj.insts[ip] = self
+chart = (Scatter(opts.InitOpts(width="600px", height="600px"))
+         .set_global_opts(xaxis_opts=opts.AxisOpts(name='x-aix',
+                                                   name_location='center',
+                                                   name_gap=20,
+                                                   type_="value"),
+                          yaxis_opts=opts.AxisOpts(name='y-aix',
+                                                   name_gap=20,
+                                                   type_="value"),
+                          title_opts=opts.TitleOpts(title="公平性指标和准确性指标优化结果", subtitle="subtitile"),
+                          )
+         )
+colors = []
+for i in range(10):
+    tmp = 20 - i
+    colors.append(str(hex(50 + i * 20))[2:])
+    x = [tmp + v for v in tmp * np.linspace(-0.3, 0.3, 20)]
+    y = [tmp - v for v in tmp * np.linspace(-0.3, 0.3, 20)]
+    chart.add_xaxis(x)
+    chart.add_yaxis(
+        series_name="",
+        y_axis=[each for each in zip(y, x)],
+        symbol_size=5,
+        symbol=None,
+        is_selected=True,
+        color='#00{}FF'.format(colors[i]),
+        label_opts=opts.LabelOpts(is_show=False)
+    )
+chart.set_global_opts(tooltip_opts=opts.TooltipOpts(
+    formatter=JsCode(
+        "function (params) {return '( '+ params.value[2] +' : '+ params.value[1] + ' )';}"
+    )
+))
+chart.render("scatter_multi_dimension.html")
 
-
-def prt(*args):
-    for item in args:
-        print(item)
-
-if __name__ == '__main__':
-    a = 13
-    s = '0023'
-    print(int(s) + a)
-    # arr = [1, -2]
-    # print(', '.join(map(str, arr)))
-    # data = pandas.read_csv('data/N-IF-100000.csv').applymap(str)
-    # data[['grade']] = data[['grade']].applymap(float)
-    # data = data.sort_values('grade')[['grade', 'acceptance']]
-    #
-    # start = time.time()
-    # for i in range(10):
-    #     # tmp = data.iloc[i]['grade']
-    #     print(data.iloc[i]['grade'], end=' ')
-    # print((time.time() - start))
-    #
-    # start = time.time()
-    # for i in range(10):
-    #     # tmp = data.iat[i, 0]
-    #     print(data.iat[i, 0], end=' ')
-    # print((time.time() - start))
-    #
-    # start = time.time()
-    # grades = data['grade'].to_numpy()
-    # for i in range(10):
-    #     print(grades[i], end=' ')
-    # print((time.time() - start))
-    pass
