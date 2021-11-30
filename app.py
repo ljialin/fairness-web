@@ -275,7 +275,7 @@ def algo_status_chart(task_id):
     # chart = AlgoCfgController.instances[ip].chart
     # return chart.dump_options_with_quotes()
 
-    chart = (Scatter(opts.InitOpts(width="500px", height="500px"))
+    chart = (Scatter(opts.InitOpts(width="600px", height="600px"))
              .set_global_opts(xaxis_opts=opts.AxisOpts(name=ctrlr.cfg.acc_metric,
                                                        name_location='center',
                                                        name_gap=20,

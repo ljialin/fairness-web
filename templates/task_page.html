@@ -30,8 +30,8 @@
     {% endif %}
     ）
 </h2>
-<div>
-    <div style="float:left;width:45%;margin-right: 10%">
+<div style="width: 100%">
+    <div style="float:left;width:500px;margin-right: 200px">
         <div class="cfg">
             <h4>数据集名称：{{ view.dataname }}</h4>
             <h4>敏感属性：
@@ -45,7 +45,7 @@
             <h4>优化器：{{ cfg.optimizer }}</h4>
         </div>
 
-        <div class="poptable">
+        <div class="poptable" style="width: 500px">
             <table>
                 <tr>
                     {#                <th></th>#}
@@ -67,17 +67,17 @@
                 </tbody>
             </table>
         </div>
-
     </div>
-    <div class="block" style="float:left;width:45%">
-        <div style="text-align: center;"><h3>公平性指标和准确性指标优化结果</h3></div>
+
+    <div class="block" style="float:left">
+        <h3>公平性指标和准确性指标优化结果</h3>
         <div id="{{ pid }}" style="width:500px; height:500px; text-align: center">
             <script> get_chart("{{ pid }}", "http://127.0.0.1:{{ port }}/task/{{ pid }}/chart") </script>
         </div>
     </div>
 </div>
 
-<div id="btns" style="float:bottom;width:50%">
+<div id="btns" style="float:left;width:100%">
     {% if not finished %}
         <p>
             <input type="submit" value="终止任务">
@@ -91,7 +91,7 @@
     </p>
 </div>
 
-<div class="progress-div">
+<div class="progress-div" style="float:left;width: 1200px">
     <div class="progress">
         <h4 id="prog_info" style="text-align: center"></h4>
         <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0"
@@ -100,7 +100,7 @@
     </div>
 </div>
 
-<div class="footerpage" style="float:bottom"></div>
+<div class="footerpage" style="float:left;width: 100%"></div>
 <script src="{{ url_for('static',filename='extlib/jquery.js') }}"></script>
 <script>
     $(function () {

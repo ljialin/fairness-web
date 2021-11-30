@@ -110,12 +110,12 @@ from zqq.GroupInfo import GroupInfo, GroupsInfo
 from zqq.Mutation_NN import Mutation_NN
 from zqq.Mutation_NN import Crossover_NN
 # from zqq.data.objects.list import DATASETS, get_dataset_names
-from zqq.data.objects.ProcessedData import ProcessedData
+# from zqq.data.objects.ProcessedData import ProcessedData
 # from zqq.data.objects.Sample import Sample
 # from zqq.data.objects.Ricci import Ricci
-from zqq.data.objects.Adult import Adult
-from zqq.data.objects.German import German
-from zqq.data.objects.PropublicaRecidivism import PropublicaRecidivism
+# from zqq.data.objects.Adult import Adult
+# from zqq.data.objects.German import German
+# from zqq.data.objects.PropublicaRecidivism import PropublicaRecidivism
 # from zqq.data.objects.PropublicaViolentRecidivism import PropublicaViolentRecidivism
 # from zqq.data.objects.TwoGaussians import TwoGaussians
 
@@ -185,7 +185,7 @@ from zqq.data.objects.PropublicaRecidivism import PropublicaRecidivism
 # from templates.moeas.moead.moea_MOEAD_DE_templet import moea_MOEAD_DE_templet
 # from templates.moeas.nsga2.moea_NSGA2_archive_templet import moea_NSGA2_archive_templet
 # from templates.moeas.nsga2.moea_NSGA2_DE_templet import moea_NSGA2_DE_templet
-from templates.moeas.nsga2.moea_NSGA2_templet import moea_NSGA2_templet
+# from templates.moeas.nsga2.moea_NSGA2_templet import moea_NSGA2_templet
 from templates.moeas.nsga2.moea_templet_more_objectives import moea_templet_more_objectives
 # from templates.moeas.nsga2.moea_templet import moea_templet
 # from templates.moeas.nsga2.moea_psy_NSGA2_archive_templet import moea_psy_NSGA2_archive_templet

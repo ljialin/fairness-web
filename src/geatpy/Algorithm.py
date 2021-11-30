@@ -3,7 +3,7 @@ import numpy as np
 import geatpy as ea
 import warnings
 import time
-from geatpy.zqq.Run_metric import Alg_Evaluation
+# from geatpy.zqq.Run_metric import Alg_Evaluation
 
 
 def maxminnorm(array):
@@ -243,105 +243,105 @@ Algorithm : class - 算法模板顶级父类
         self.problem.aimFunc_GAN(pop, kfold=kfold, Adversary=adversary, gen=gen, dirName=dirName)  # 调用问题类的aimFunc()
         self.evalsNum = self.evalsNum + pop.sizes if self.evalsNum is not None else pop.sizes  # 更新评价次数
 
-    def train_nets(self, pop, Gen, epoch=1, iscal_metric=1, changeNets=0, problem=None, runtime=0):
-
-        """
-        训练用所有的train data来训练 pop 中的网络，
-        通过changeNet参数来决定是否修改pop中的weights，1为改变，0为不变,
-        并计算训练后的网络在test data上的，logits的值
-        并打印所得到的train、test分别的 accuracy、mse、individual fairness、group fairness的值，
-        同时也打印在test data的logits，方便后面的补充metrics
-        同时，根据 iscal_metric 来决定是否计算并打印所得到结果的metrics结果，
-        """
-        # pop.Phen = pop.decoding()  # 染色体解码
-        if self.problem is None:
-            raise RuntimeError('error: problem has not been initialized. (算法模板中的问题对象未被初始化。)')
-        if changeNets == 0:
-            popnew = pop.copy()
-            resin_train, resin_test, pop_logits_test = self.problem.train_nets(popnew, epoch)  # 调用问题类的aimFunc()
-        else:
-            resin_train, resin_test, pop_logits_test = self.problem.train_nets(pop, epoch)  # 调用问题类的aimFunc()
-            for i in range(len(pop)):
-                pop.logits[i, :] = pop_logits_test[i, :]
-
-        ###### 计算 metric ######
-        if iscal_metric == 1:
-            popsize = len(pop)
-            dataset_obj = self.problem.dataset_obj
-            true_label = self.problem.test_label.tolist()
-            Res_metrics = {}
-            supported_tag = 'numerical-for-NN'
-            all_possible = set(true_label)
-            posi_calss = dataset_obj.get_positive_class_val(supported_tag)
-            all_possible.remove(posi_calss)
-            negative_calss = all_possible.pop()
-            for i in range(popsize):
-                pred_label = pop_logits_test[i, :]
-                pred_label = [posi_calss if x >= 0.5 else negative_calss for x in pred_label]
-                # (dataset_obj, problem, logits, predic_label, true_label, test_org, supported_tag):
-                metric_res = Alg_Evaluation(dataset_obj, self.problem, pop_logits_test[i, :],
-                                            pred_label, true_label, self.problem.test_org, supported_tag)
-                Res_metrics[str(i)] = metric_res
-                # print("Calculating metrics: " + str(i + 1) + " / " + str(popsize))
-
-            ## 打印metrics
-            nowmetric = Res_metrics
-            if pop.ObjV is not None:
-                [levels, _] = ea.ndsortDED(pop.ObjV, needLevel=1, CV=pop.CV,
-                                           maxormins=self.problem.maxormins)  # 非支配分层
-                levels = np.where(levels == 1)[0]
-            else:
-                levels = np.array(range(popsize))
-            save_filename = '/fulltrain/fulltrain_inGen%d_metric.csv' % Gen
-            all_sensitive_attributes = list(nowmetric[str(0)].keys())
-            with open(self.dirName + save_filename, 'a+') as file:
-                for sens in all_sensitive_attributes:
-                    all_colums_name = list(nowmetric[str(0)][all_sensitive_attributes[0]].keys())
-                    line = str(runtime) + ",is non-dom,sensitive attributes,"
-                    # 写下metric的名字
-                    for colum in all_colums_name:
-                        line = line + colum + ','
-                    file.write(line + "\n")
-
-                    for idx in range(len(nowmetric)):
-                        info = nowmetric[str(idx)]
-                        if idx in levels:
-                            line = "individual " + str(idx) + ",1," + sens
-                        else:
-                            line = "individual " + str(idx) + ",0," + sens
-                        for colum in all_colums_name:
-                            line = line + ',' + str(info[sens][colum])
-                        file.write(line + "\n")
-                    file.write("\n")
-                file.close()
-
-        ###### 打印在train、test的目标值 ######
-        save_filename = '/fulltrain/fulltrain_inGen%d_trainObj.csv' % Gen
-        with open(self.dirName + save_filename, 'a+') as file:
-            for i in range(resin_train.shape[0]):
-                line = ','.join(str(x) for x in resin_train[i, :]) + '\n'
-                file.write(line)
-            file.close()
-
-        save_filename = '/fulltrain/fulltrain_inGen%d_testObj.csv' % Gen
-        with open(self.dirName + save_filename, 'a+') as file:
-            for i in range(resin_test.shape[0]):
-                line = ','.join(str(x) for x in resin_test[i, :]) + '\n'
-                file.write(line)
-            file.close()
-
-        save_filename = '/fulltrain/fulltrain_inGen%d_testlogits.csv' % Gen
-        true_y = np.array(problem.test_y)
-        with open(self.dirName + save_filename, 'a+') as file:
-            logits = np.array(pop_logits_test)
-            true_y = true_y.reshape(1, -1)
-            line = ','.join(str(x) for x in true_y[0]) + '\n'
-            file.write(line)
-            for rows in range(logits.shape[0]):
-                popobj = logits[rows, :]
-                line = ','.join(str(x) for x in popobj) + '\n'
-                file.write(line)
-            file.close()
+    # def train_nets(self, pop, Gen, epoch=1, iscal_metric=1, changeNets=0, problem=None, runtime=0):
+    #
+    #     """
+    #     训练用所有的train data来训练 pop 中的网络，
+    #     通过changeNet参数来决定是否修改pop中的weights，1为改变，0为不变,
+    #     并计算训练后的网络在test data上的，logits的值
+    #     并打印所得到的train、test分别的 accuracy、mse、individual fairness、group fairness的值，
+    #     同时也打印在test data的logits，方便后面的补充metrics
+    #     同时，根据 iscal_metric 来决定是否计算并打印所得到结果的metrics结果，
+    #     """
+    #     # pop.Phen = pop.decoding()  # 染色体解码
+    #     if self.problem is None:
+    #         raise RuntimeError('error: problem has not been initialized. (算法模板中的问题对象未被初始化。)')
+    #     if changeNets == 0:
+    #         popnew = pop.copy()
+    #         resin_train, resin_test, pop_logits_test = self.problem.train_nets(popnew, epoch)  # 调用问题类的aimFunc()
+    #     else:
+    #         resin_train, resin_test, pop_logits_test = self.problem.train_nets(pop, epoch)  # 调用问题类的aimFunc()
+    #         for i in range(len(pop)):
+    #             pop.logits[i, :] = pop_logits_test[i, :]
+    #
+    #     ###### 计算 metric ######
+    #     if iscal_metric == 1:
+    #         popsize = len(pop)
+    #         dataset_obj = self.problem.dataset_obj
+    #         true_label = self.problem.test_label.tolist()
+    #         Res_metrics = {}
+    #         supported_tag = 'numerical-for-NN'
+    #         all_possible = set(true_label)
+    #         posi_calss = dataset_obj.get_positive_class_val(supported_tag)
+    #         all_possible.remove(posi_calss)
+    #         negative_calss = all_possible.pop()
+    #         for i in range(popsize):
+    #             pred_label = pop_logits_test[i, :]
+    #             pred_label = [posi_calss if x >= 0.5 else negative_calss for x in pred_label]
+    #             # (dataset_obj, problem, logits, predic_label, true_label, test_org, supported_tag):
+    #             metric_res = Alg_Evaluation(dataset_obj, self.problem, pop_logits_test[i, :],
+    #                                         pred_label, true_label, self.problem.test_org, supported_tag)
+    #             Res_metrics[str(i)] = metric_res
+    #             # print("Calculating metrics: " + str(i + 1) + " / " + str(popsize))
+    #
+    #         ## 打印metrics
+    #         nowmetric = Res_metrics
+    #         if pop.ObjV is not None:
+    #             [levels, _] = ea.ndsortDED(pop.ObjV, needLevel=1, CV=pop.CV,
+    #                                        maxormins=self.problem.maxormins)  # 非支配分层
+    #             levels = np.where(levels == 1)[0]
+    #         else:
+    #             levels = np.array(range(popsize))
+    #         save_filename = '/fulltrain/fulltrain_inGen%d_metric.csv' % Gen
+    #         all_sensitive_attributes = list(nowmetric[str(0)].keys())
+    #         with open(self.dirName + save_filename, 'a+') as file:
+    #             for sens in all_sensitive_attributes:
+    #                 all_colums_name = list(nowmetric[str(0)][all_sensitive_attributes[0]].keys())
+    #                 line = str(runtime) + ",is non-dom,sensitive attributes,"
+    #                 # 写下metric的名字
+    #                 for colum in all_colums_name:
+    #                     line = line + colum + ','
+    #                 file.write(line + "\n")
+    #
+    #                 for idx in range(len(nowmetric)):
+    #                     info = nowmetric[str(idx)]
+    #                     if idx in levels:
+    #                         line = "individual " + str(idx) + ",1," + sens
+    #                     else:
+    #                         line = "individual " + str(idx) + ",0," + sens
+    #                     for colum in all_colums_name:
+    #                         line = line + ',' + str(info[sens][colum])
+    #                     file.write(line + "\n")
+    #                 file.write("\n")
+    #             file.close()
+    #
+    #     ###### 打印在train、test的目标值 ######
+    #     save_filename = '/fulltrain/fulltrain_inGen%d_trainObj.csv' % Gen
+    #     with open(self.dirName + save_filename, 'a+') as file:
+    #         for i in range(resin_train.shape[0]):
+    #             line = ','.join(str(x) for x in resin_train[i, :]) + '\n'
+    #             file.write(line)
+    #         file.close()
+    #
+    #     save_filename = '/fulltrain/fulltrain_inGen%d_testObj.csv' % Gen
+    #     with open(self.dirName + save_filename, 'a+') as file:
+    #         for i in range(resin_test.shape[0]):
+    #             line = ','.join(str(x) for x in resin_test[i, :]) + '\n'
+    #             file.write(line)
+    #         file.close()
+    #
+    #     save_filename = '/fulltrain/fulltrain_inGen%d_testlogits.csv' % Gen
+    #     true_y = np.array(problem.test_y)
+    #     with open(self.dirName + save_filename, 'a+') as file:
+    #         logits = np.array(pop_logits_test)
+    #         true_y = true_y.reshape(1, -1)
+    #         line = ','.join(str(x) for x in true_y[0]) + '\n'
+    #         file.write(line)
+    #         for rows in range(logits.shape[0]):
+    #             popobj = logits[rows, :]
+    #             line = ','.join(str(x) for x in popobj) + '\n'
+    #             file.write(line)
+    #         file.close()
 
     def get_predy(self, logits):
         pred_label = logits
@@ -815,31 +815,31 @@ class MoeaAlgorithm(Algorithm):  # 多目标优化算法模板父类
     #     else:
     #         self.logits = np.vstack([self.logits, pop_logits])
 
-    def get_metric(self, population):
-        # [levels, _] = ea.ndsortDED(population.ObjV, needLevel=1, CV=population.CV,
-        #                            maxormins=self.problem.maxormins)  # 非支配分层
-        # population = population[np.where(levels == 1)[0]]  # 只保留种群中的非支配个体，形成一个非支配种群
-
-        # Alg_Evaluation(dataset_obj, predic_label, true_label, test_org, supported_tag):
-        popsize = len(population)
-        dataset_obj = self.problem.dataset_obj
-        true_label = self.problem.test_label.tolist()
-        Res_metrics = {}
-        supported_tag = 'numerical-for-NN'
-        all_possible = set(true_label)
-        posi_calss = dataset_obj.get_positive_class_val(supported_tag)
-        all_possible.remove(posi_calss)
-        negative_calss = all_possible.pop()
-        for i in range(popsize):
-            indiv = population[i]
-            pred_label = indiv.logits.reshape(-1).tolist()
-            logits = pred_label.copy()
-            pred_label = [posi_calss if x >= 0.5 else negative_calss for x in pred_label]
-            metric_res = Alg_Evaluation(dataset_obj, self.problem, logits,
-                                        pred_label, true_label, self.problem.test_org, supported_tag)
-            Res_metrics[str(i)] = metric_res
-            # print("Calculating metrics: " + str(i + 1) + " / " + str(popsize))
-        return Res_metrics
+    # def get_metric(self, population):
+    #     # [levels, _] = ea.ndsortDED(population.ObjV, needLevel=1, CV=population.CV,
+    #     #                            maxormins=self.problem.maxormins)  # 非支配分层
+    #     # population = population[np.where(levels == 1)[0]]  # 只保留种群中的非支配个体，形成一个非支配种群
+    #
+    #     # Alg_Evaluation(dataset_obj, predic_label, true_label, test_org, supported_tag):
+    #     popsize = len(population)
+    #     dataset_obj = self.problem.dataset_obj
+    #     true_label = self.problem.test_label.tolist()
+    #     Res_metrics = {}
+    #     supported_tag = 'numerical-for-NN'
+    #     all_possible = set(true_label)
+    #     posi_calss = dataset_obj.get_positive_class_val(supported_tag)
+    #     all_possible.remove(posi_calss)
+    #     negative_calss = all_possible.pop()
+    #     for i in range(popsize):
+    #         indiv = population[i]
+    #         pred_label = indiv.logits.reshape(-1).tolist()
+    #         logits = pred_label.copy()
+    #         pred_label = [posi_calss if x >= 0.5 else negative_calss for x in pred_label]
+    #         metric_res = Alg_Evaluation(dataset_obj, self.problem, logits,
+    #                                     pred_label, true_label, self.problem.test_org, supported_tag)
+    #         Res_metrics[str(i)] = metric_res
+    #         # print("Calculating metrics: " + str(i + 1) + " / " + str(popsize))
+    #     return Res_metrics
 
     # def setProblem(self, problem):
     #     self.problem
