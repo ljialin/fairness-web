@@ -1,5 +1,5 @@
 attr1_name,attr2_name,label_name
 numberical,categorical,label
-2.5,C1,
-80,C2,
-0.58,C1,
+2.5,C1,1
+80,C2,1
+0.58,C1,0
