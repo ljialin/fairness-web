@@ -73,21 +73,31 @@
                 </label>
             </p>
             <p>
+                {% set optmzer = ["SRA", "NSGA-II"] %}
                 多目标优化器:
-                <label>
-                    {% if cfg.optimizer == 'SRA' %}
-                        <input type="radio" name="optimizer" value="SRA" checked="checked">
-                    {% else %}
-                        <input type="radio" name="optimizer" value="SRA">
-                    {% endif %}
-                </label> SRA
-                <label>
-                    {% if cfg.optimizer == 'NSGA-II' %}
-                        <input type="radio" name="optimizer" value="NSGA2" checked="checked">
-                    {% else %}
-                        <input type="radio" name="optimizer" value="NSGA2">
-                    {% endif %}
-                </label> NSGA-II
+                {% for each in optmzer %}
+                    <label>
+                        {% if cfg.optimizer == each %}
+                            <input type="radio" name="optimizer" value="{{ each }}" checked="checked">
+                        {% else %}
+                            <input type="radio" name="optimizer" value="{{ each }}">
+                        {% endif %}
+                    </label> {{ each }}
+                {% endfor %}
+{#                <label>#}
+{#                    {% if cfg.optimizer == 'SRA' %}#}
+{#                        <input type="radio" name="optimizer" value="SRA" checked="checked">#}
+{#                    {% else %}#}
+{#                        <input type="radio" name="optimizer" value="SRA">#}
+{#                    {% endif %}#}
+{#                </label> SRA#}
+{#                <label>#}
+{#                    {% if cfg.optimizer == 'NSGA-II' %}#}
+{#                        <input type="radio" name="optimizer" value="NSGA-II" checked="checked">#}
+{#                    {% else %}#}
+{#                        <input type="radio" name="optimizer" value="NSGA-II">#}
+{#                    {% endif %}#}
+{#                </label> NSGA-II#}
             </p>
         </div>
     </div>

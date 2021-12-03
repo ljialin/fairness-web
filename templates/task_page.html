@@ -23,7 +23,7 @@
 <p><input type="button" value="回到主页面" onclick="window.location.href='/'"></p>
 <h2>
     优化过程-{{ pid }}（
-    {% if finished == 100 %}
+    {% if status == 11 %}
         已结束
     {% else %}
         运行中
@@ -31,7 +31,7 @@
     ）
 </h2>
 <div style="width: 100%">
-    <div style="float:left;width:500px;margin-right: 200px">
+    <div style="float:left;width:500px;margin-right: 150px">
         <div class="cfg">
             <h4>数据集名称：{{ view.dataname }}</h4>
             <h4>敏感属性：
@@ -78,16 +78,14 @@
 </div>
 
 <div id="btns" style="float:left;width:100%">
-    {% if not finished %}
-        <p>
-            <input type="submit" value="终止任务">
-        </p>
+    {% if status != 11 %}
+    <p>
+        <input id="abort" type="submit" value="终止任务" onclick="killProcess('http://127.0.0.1:{{ port }}/task/{{ pid }}/intervene')">
+        <input id="pause" type="submit" value="暂停任务" onclick="pauseContinue('http://127.0.0.1:{{ port }}/task/{{ pid }}/pause')">
+    </p>
     {% endif %}
     <p>
-        {% if not finished %}
-            <input type="submit" value="上传模型" onclick="uploadModels()">
-        {% endif %}
-        <input type="submit" value="下载模型" onclick="downloadModels()">
+        <a href="/task/{{ pid }}/download_model" id="download_model" hidden="hidden">下载模型</a>
     </p>
 </div>
 

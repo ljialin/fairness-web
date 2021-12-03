@@ -21,6 +21,9 @@ class STATUS:
     RUNNING = 10
     FINISH = 11
     ERROR = 12
+    ABORT = 13
+    PAUSE = 14
+    PAUSED = 15
 
 
 class AlgoCfgView:
@@ -36,7 +39,7 @@ class AlgoCfg:
     def __init__(self):
         self.acc_metric = 'Misclassification'
         self.fair_metric = 'Individual_fairness'
-        self.optimizer = 'SRA'
+        self.optimizer = 'NSGA-II'
         self.pop_size = 25
         self.max_gens = 100
         self.sens_featrs = []
@@ -68,7 +71,8 @@ class AlgoController:
         self.algo = Algorithm()
         self.save_dir = None
 
-        self.status = STATUS.INIT
+        self.status = STATUS.INIT  # 后端传前端
+        self.is_abort = 0  # 前端传后端
         self.progress = 0  # 100就结束
         self.progress_info = ""
 
@@ -81,7 +85,7 @@ class AlgoController:
         errinfo = None
         self.cfg.acc_metric = kwargs['acc_metric']
         self.cfg.fair_metric = kwargs['fair_metric']
-
+        self.cfg.optimizer = kwargs['optimizer']
         try:
             self.cfg.pop_size = int(kwargs['pop_size'])
         except:
@@ -95,6 +99,9 @@ class AlgoController:
         self.cfg.sens_featrs = kwargs['sens_featrs']
         if len(self.cfg.sens_featrs) == 0:
             return "需要选择敏感属性", 0
+        for fear in self.cfg.sens_featrs:
+            if fear in self.data_model.n_featrs:
+                return "暂不支持连续属性作为敏感属性", 0
 
         task_id = 'task' + auto_dire('task', 'task_space' + os.sep + str(self.ip), fmtr='%04d')[-4:]
         self.task = Task(task_id)
@@ -137,10 +144,12 @@ class AlgoController:
             self.progress_info = config["progress_info"]
             self.max_pop = config["max_pop"]
         # 读取种群
-        pop_files = os.listdir(self.save_dir)
-        pop_files.pop(0)
+        dir = self.save_dir + 'fitness/'
+        if not os.path.exists(dir):
+            return
+        pop_files = os.listdir(dir)
         for file in pop_files:
-            pop = np.loadtxt(self.save_dir + file)
+            pop = np.loadtxt(dir + file)
             self.pops.append(pop)
 
 
@@ -165,16 +174,30 @@ class AlgoController:
             algomnger.finished_tasks[self.task.id] = self
         elif status == STATUS.ERROR:
             self.progress_info = error_info
+        elif status == STATUS.ABORT:
+            self.progress_info = '任务终止！ 代数{}/{}({}%)'.format(gen, maxgen, str(self.progress))
+            algomnger = AlgosManager.instances[self.ip]
+            algomnger.running_tasks.pop(self.task.id)
+            algomnger.finished_tasks[self.task.id] = self
         self.__saveConfig()  # 把每个状态写出文件
 
-    def update_pop(self, pop, gen=0):
-        np.savetxt(self.save_dir + 'pop_objs_valid{}.txt'.format(gen), pop)
+    def save_fitness(self, pop, gen=0):
+        dir = self.save_dir + 'fitness/'
+        if not os.path.exists(dir):
+            os.mkdir(dir)
+        np.savetxt(dir + 'pop_objs_valid{}.txt'.format(gen), pop)
         self.pops.append(pop)
 
 
     def add_models(self, struct_file, var_files):
         models = init_pop_from_uploaded(self.task.id, struct_file, var_files, self.cfg.pop_size)
         self.algo.pop = models
+
+    def get_savepop_dir(self):
+        dir = self.save_dir + 'net/'
+        if not os.path.exists(dir):
+            os.mkdir(dir)
+        return dir
 
 
 class AlgosManager:

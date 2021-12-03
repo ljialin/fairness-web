@@ -29,15 +29,6 @@
     <a href="/task/{{ task_id }}"> {{ task_id }} </a>
     <br>
 {% endfor %}
-{#    <li>#}
-{#      <a href="/task/0000"> task-0000 </a>#}
-{#    </li>#}
-{#    <li>#}
-{#      <a href="/task/0001"> task-0001 </a>#}
-{#    </li>#}
-{#    <li>#}
-{#      <a href="/task/0003"> task-0003 </a>#}
-{#    </li>#}
 <h3> 运行中任务: </h3>
 {% for task_id in algomnger.running_tasks.keys() %}
     <a href="/task/{{ task_id }}"> {{ task_id }} </a>

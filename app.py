@@ -21,6 +21,7 @@ from src.mvc.data import DataController
 from src.mvc.data_eval import DataEvalController
 from mvc.algo_cfg import STATUS
 from Fairness_main import interface4flask
+from zipfile import ZipFile
 
 port = 5000
 app = Flask(__name__)
@@ -166,6 +167,7 @@ def algo_cfg():
         errinfo, task_id = ctrlr.new_task(
             acc_metric=form['acc_metric'],
             fair_metric=form['fair_metric'],
+            optimizer=form['optimizer'],
             pop_size=form['pop_size'],
             max_gens=form['max_gens'],
             sens_featrs=form.getlist('sens-featrs')
@@ -173,7 +175,7 @@ def algo_cfg():
         AlgosManager.instances[ip].running_tasks[task_id] = ctrlr
         if errinfo is not None:
             return render_template('algo_cfg.html', view=ctrlr.view, cfg=ctrlr.cfg, errinfo=errinfo)
-        if form['type'] == '上传初始化模型簇':
+        if form['type'] == '上传初始化模型':
             return redirect('/algo-cfg/model-upload')
         else:
             # return redirect(f'/task/{task_id:04d}')
@@ -197,23 +199,40 @@ def model_upload_for_algo():
 @app.route('/task/<task_id>')
 def task_page(task_id):
     print(task_id)
+    form = request.form
     ip = request.remote_addr
     algomnger = AlgosManager.instances[ip]
     ctrlr = algomnger.get_task(task_id)
     algoCfg = ctrlr.cfg
     algoView = ctrlr.view
 
-    algomnger.add_task(task_id, ctrlr)# 在新建任务，跳转到运行页面之前，把这个task加入管理者
+    algomnger.add_task(task_id, ctrlr)  # 在新建任务，跳转到运行页面之前，把这个task加入管理者
 
-    # 造一些数据
-    # fpops = [[13, 12], [16, 43], [16, 86], [26, 46]]
-    if len(ctrlr.pops) == 0:
-        fpops = []
-    else:
-        fpops = np.around(ctrlr.pops[-1], 5)
+    fpops = [] if len(ctrlr.pops) == 0 else np.around(ctrlr.pops[-1], 5).tolist()
 
-    return render_template('task_page.html', pid=task_id, finished=ctrlr.progress,
+    return render_template('task_page.html', pid=task_id, status=ctrlr.status,
                            fpops=fpops, cfg=algoCfg, view=algoView, port=port)
+
+
+@app.route('/task/<task_id>/intervene')
+def abort_task(task_id):
+    ip = request.remote_addr
+    algomnger = AlgosManager.instances[ip]
+    ctrlr = algomnger.get_task(task_id)
+    ctrlr.status = STATUS.ABORT
+    return jsonify({'res': 0})
+
+
+@app.route('/task/<task_id>/pause')
+def pause_task(task_id):
+    ip = request.remote_addr
+    algomnger = AlgosManager.instances[ip]
+    ctrlr = algomnger.get_task(task_id)
+    if ctrlr.status == STATUS.RUNNING: # 确保只有在运行状态才显示按钮
+        ctrlr.status = STATUS.PAUSE
+    elif ctrlr.status == STATUS.PAUSED:
+        ctrlr.status = STATUS.RUNNING
+    return jsonify({'res': 0})
 
 
 @app.route('/task/<task_id>/progress')
@@ -244,11 +263,22 @@ def show_progress(task_id):
     algomnger = AlgosManager.instances[ip]
     ctrlr = algomnger.get_task(task_id)
     fpops = [] if len(ctrlr.pops) == 0 else np.around(ctrlr.pops[-1], 5).tolist()
-
+    # print(ctrlr.status)
     return jsonify({'progress_info': ctrlr.progress_info,
                     'progress_rate': ctrlr.progress,
                     'progress_status': ctrlr.status,
                     'pop': fpops})
+
+
+@app.route('/task/<task_id>/download_model')
+def download_model(task_id):
+    ip = request.remote_addr
+    dir = "task_space/{}/{}".format(ip, task_id)
+    with ZipFile(dir + os.sep + 'net.zip', 'w') as zip:
+        dir2 = dir + '/net'
+        for file in os.listdir(dir2):
+            zip.write(dir2 + os.sep + file, file)
+    return send_from_directory(dir, 'net.zip', as_attachment=True)
 
 
 # 向前端js发送图表数据
@@ -300,23 +330,7 @@ def algo_status_chart(task_id):
         color='#00BBFF',
         label_opts=opts.LabelOpts(is_show=False)
     )
-    # 要想这个方法能被执行，需要把js里面的get_chart写到progress_bar.js里面，按秒刷新
-    # colors = []
-    # for i in range(10):
-    #     tmp = 20 - i
-    #     colors.append(str(hex(50 + i * 20))[2:])
-    #     x = [tmp + v for v in tmp * np.linspace(-0.3, 0.3, 20)]
-    #     y = [tmp - v for v in tmp * np.linspace(-0.3, 0.3, 20)]
-    #     chart.add_xaxis(x)
-    #     chart.add_yaxis(
-    #         series_name="",
-    #         y_axis=[each for each in zip(y, x)],
-    #         symbol_size=5,
-    #         symbol=None,
-    #         is_selected=True,
-    #         color='#00{}FF'.format(colors[i]),
-    #         label_opts=opts.LabelOpts(is_show=False)
-    #     )
+
     chart.set_global_opts(tooltip_opts=opts.TooltipOpts(
         formatter=JsCode(
             "function (params) {return '( '+ params.value[2] +' : '+ params.value[1] + ' )';}"

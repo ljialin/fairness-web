@@ -11,11 +11,17 @@ function start_task(pid) {
                 .text("-");
             $('#prog_info').text(res.progress_info);
             var str = ""
-            for (let i = 0; i < res.pop.length; i++) {
+            for (let i = 0; i < res.pop.length; i++) { //刷新表格
                 str += "<tr><td>" + i +
                     "</td><td>" + res.pop[i][0] +
                     "</td><td>" + res.pop[i][1] + "</td></tr>";
                 $("#poptext").html(str);
+            }
+            if (res.progress_status === 15) { //已经暂停了
+                var pauseEle = $("#pause");
+                pauseEle.attr("disabled", false);
+                pauseEle.val("继续任务");
+                $("#download_model").show()
             }
         });
         get_chart(pid,"http://127.0.0.1:5000/task/" + pid + "/chart")
@@ -28,24 +34,27 @@ function start_task(pid) {
     var this_url = '/task/' + pid + '/progress'
     $.getJSON(this_url, function (res) {
         // alert(res.progress_status)
-        if (res.progress_status === 12){
+        if (res.progress_status === 12){ //error
             clearInterval(sitv);
             $('.progress-bar').css('background', 'red');
             // setTimeout(function () {
             //     alert('失败了!');
             // }, 1);
-        }else if(res.progress_status === 11){
+        }else if(res.progress_status === 11){ //finish
             clearInterval(sitv);
             $('.progress-div').css('visibility', 'visible');
             $('.progress-bar').css('width', '100%')
                 .css('background', 'green')
                 .css('text-align', 'center')
-                .text("-");
+                .text(".");
             $('#prog_info').text(res.progress_info);
+            $('#abort').hide();
+            $('#pause').hide();
+            $('#download_model').show();
             // setTimeout(function () {
             //     alert('运行成功!');
             // }, 100);
-        }else{
+        }else{ //other
             $('.progress-bar').css('width', res.progress_rate + '%')
                 .css('background', 'green')
                 .css('text-align', 'center')

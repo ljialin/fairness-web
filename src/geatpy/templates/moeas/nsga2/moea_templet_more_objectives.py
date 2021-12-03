@@ -8,11 +8,12 @@ import torch
 import time
 import os
 import copy
+
 # from geatpy.plot_demo import plot_decision_boundary2
 paths.append(path.split(path.split(path.realpath(__file__))[0])[0])
 
 
-def save_model(population, gen, filepath = 'nets/gen%d_net%s.pth', start_time=None):
+def save_model(population, gen, filepath='nets/gen%d_net%s.pth', start_time=None):
     for idx in range(len(population)):
         NN = population.Chrom[idx]
         save_filename = filepath % (gen, idx)
@@ -119,44 +120,47 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
 
     """
 
-    def __init__(self, problem, start_time, population, muta_mu=0, muta_var=0.001, objectives=None, kfold=0, calculmetric=20, ctrlr = None,
-                 run_id=0, use_GAN=False, dropout=0, MOEAs=6, mutation_p = 0.2, crossover_p = 0.8, lr_decay_factor=0.99, record_parameter=None, is_ensemble=False):
+    def __init__(self, problem, start_time, population, muta_mu=0, muta_var=0.001, objectives=None, kfold=0,
+                 calculmetric=20, ctrlr=None,
+                 run_id=0, use_GAN=False, dropout=0, MOEAs=6, mutation_p=0.2, crossover_p=0.8, lr_decay_factor=0.99,
+                 record_parameter=None, is_ensemble=False):
         ea.MoeaAlgorithm.__init__(self, problem, population)  # 先调用父类构造方法
         if objectives is None:
             objectives = ['BCE_loss', 'Individual_fairness']
-        if population.ChromNum != 1:
-            raise RuntimeError('传入的种群对象必须是单染色体的种群类型。')
-        self.name = 'NSGA2'
+        # if population.ChromNum != 1:
+        #     raise RuntimeError('传入的种群对象必须是单染色体的种群类型。')
+        # self.name = 'NSGA2'
         if self.problem.M < 10:
             self.ndSort = ea.ndsortESS  # 采用ENS_SS进行非支配排序
         else:
             self.ndSort = ea.ndsortTNS  # 高维目标采用T_ENS进行非支配排序，速度一般会比ENS_SS要快
-        self.selFunc = 'tour'  # 选择方式，采用锦标赛选择
-        if population.Encoding == 'P':
-            self.recOper = ea.Xovpmx(XOVR=1)  # 生成部分匹配交叉算子对象
-            self.mutOper = ea.Mutinv(Pm=1)  # 生成逆转变异算子对象
-        elif population.Encoding == 'BG':
-            self.recOper = ea.Xovud(XOVR=1)  # 生成均匀交叉算子对象
-            self.mutOper = ea.Mutbin(Pm=None)  # 生成二进制变异算子对象，Pm设置为None时，具体数值取变异算子中Pm的默认值
-        elif population.Encoding == 'RI':
-            self.recOper = ea.Recsbx(XOVR=1, n=20)  # 生成模拟二进制交叉算子对象
-            self.mutOper = ea.Mutpolyn(Pm=1 / self.problem.Dim, DisI=20)  # 生成多项式变异算子对象
-        # -------- ZQQ - begin -----------
-        elif population.Encoding == 'NN':
-            self.recOper = ea.Crossover_NN(crossover_p)
-            self.mutOper = ea.Mutation_NN(mu=muta_mu, var=muta_var, p=mutation_p)
-        # -------- ZQQ - end -----------
-        else:
-            raise RuntimeError('编码方式必须为''BG''、''RI''、''P''或''NN''.')
+        # self.selFunc = 'tour'  # 选择方式，采用锦标赛选择
+        # if population.Encoding == 'P':
+        #     self.recOper = ea.Xovpmx(XOVR=1)  # 生成部分匹配交叉算子对象
+        #     self.mutOper = ea.Mutinv(Pm=1)  # 生成逆转变异算子对象
+        # elif population.Encoding == 'BG':
+        #     self.recOper = ea.Xovud(XOVR=1)  # 生成均匀交叉算子对象
+        #     self.mutOper = ea.Mutbin(Pm=None)  # 生成二进制变异算子对象，Pm设置为None时，具体数值取变异算子中Pm的默认值
+        # elif population.Encoding == 'RI':
+        #     self.recOper = ea.Recsbx(XOVR=1, n=20)  # 生成模拟二进制交叉算子对象
+        #     self.mutOper = ea.Mutpolyn(Pm=1 / self.problem.Dim, DisI=20)  # 生成多项式变异算子对象
+        # # -------- ZQQ - begin -----------
+        # elif population.Encoding == 'NN':
+        self.recOper = ea.Crossover_NN(crossover_p)
+        self.mutOper = ea.Mutation_NN(mu=muta_mu, var=muta_var, p=mutation_p)
+        # # -------- ZQQ - end -----------
+        # else:
+        #     raise RuntimeError('编码方式必须为''BG''、''RI''、''P''或''NN''.')
         self.start_time = start_time
-        self.dirName = 'Result/'+self.start_time
+        self.dirName = 'Result/' + self.start_time
         self.objectives_class = objectives
         self.kfold = kfold
         self.calculmetric = calculmetric
-        self.run_id = run_id #就是前端的task_id
+        self.run_id = run_id  # 就是前端的task_id
         self.use_GAN = use_GAN
         self.dropout = dropout
-        self.MOEAs = MOEAs
+        # self.MOEAs = MOEAs
+        self.MOEAs = {'SRA': 6, "NSGA-II": 4}[ctrlr.cfg.optimizer]
         self.mutation_p = mutation_p
         self.crossover_p = crossover_p
         self.muta_mu = muta_mu
@@ -274,7 +278,10 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
         self.initialization(is_ensemble=self.is_ensemble)  # 初始化算法模板的一些动态参数
         # self.initialization()  # 初始化算法模板的一些动态参数
         # ===========================准备进化============================
+
+        # 这里可以把个体传入
         population.initChrom(dataname=self.problem.dataname, dropout=self.dropout)  # 初始化种群染色体矩阵
+
         # self.problem.model_test1(population, use_GAN=self.use_GAN, adv_model_EO=Adversity_EO, adv_model_DE=Adversity_DE, dirName='Result/' + self.start_time, problem=self.problem)
 
         # self.problem.model_test2(population, use_GAN=self.use_GAN, adv_models=adv_models,
@@ -290,17 +297,21 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
             pop_idx_count += 1
             population.family_list[pop_idx].append(-1)
         # population.save(dirName='Result/' + self.start_time, Gen=-1, NNmodel=population.Chrom)  # 打印最开始初始化时的网络参数
+        population.save_pop(self.ctrlr.get_savepop_dir())  # 保存神经网络的权值
         self.update_timeslot()
         gen = 1
         if self.use_GAN:
             if np.random.random() < 0:
-                self.call_aimFunc_GAN(population, kfold=self.kfold, adversary =Adversity_EO, gen=0, dirName='Result/' + self.start_time)  # 求进化后个体的目标函数值
+                self.call_aimFunc_GAN(population, kfold=self.kfold, adversary=Adversity_EO, gen=0,
+                                      dirName='Result/' + self.start_time)  # 求进化后个体的目标函数值
                 print('run GAN')
             else:
-                self.call_aimFunc(population, kfold=self.kfold, gen=gen, dirName='Result/' + self.start_time)  # 计算种群的目标函数值 计算目标值时，kfold!=0时不修改原网络参数，只是试探性的kfold后计算，kfold=0时会修改值
+                self.call_aimFunc(population, kfold=self.kfold, gen=gen,
+                                  dirName='Result/' + self.start_time)  # 计算种群的目标函数值 计算目标值时，kfold!=0时不修改原网络参数，只是试探性的kfold后计算，kfold=0时会修改值
                 print('run no GAN')
         else:
-            self.call_aimFunc(population, kfold=self.kfold, gen=gen, dirName='Result/' + self.start_time, lr_decay_factor=self.lr_decay_factor)  # 计算种群的目标函数值 计算目标值时，kfold!=0时不修改原网络参数，只是试探性的kfold后计算，kfold=0时会修改值
+            self.call_aimFunc(population, kfold=self.kfold, gen=gen, dirName='Result/' + self.start_time,
+                              lr_decay_factor=self.lr_decay_factor)  # 计算种群的目标函数值 计算目标值时，kfold!=0时不修改原网络参数，只是试探性的kfold后计算，kfold=0时会修改值
         # return self.finishing(population)
         # self.train_nets(population, Gen=-1, epoch=1, iscal_metric=1, changeNets=0,
         #                 problem=self.problem, runtime=self.passTime)
@@ -336,13 +347,14 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
         self.update_timeslot()
         Archive = copy.deepcopy(population)
 
-        self.ctrlr.update_pop(population.ObjV_valid, gen=gen)
-        self.ctrlr.update_progress(STATUS.RUNNING, gen=gen, maxgen=self.MAXGEN)
-
+        self.ctrlr.save_fitness(population.ObjV_valid, gen=gen)
+        if self.handle_status(gen):
+            return self.finishing(population)
+        population.FitnV = np.ones([len(population), 1])
         # ===========================开始进化============================
         while not self.terminated(population):
 
-            self.muta_var = self.muta_var_org - gen*(self.muta_var_org * 0.9)/self.MAXGEN
+            self.muta_var = self.muta_var_org - gen * (self.muta_var_org * 0.9) / self.MAXGEN
             self.mutOper = ea.Mutation_NN(mu=self.muta_mu, var=self.muta_var, p=self.mutation_p)
             gen += 1
             # print('Gen', gen)
@@ -360,7 +372,7 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
             elif self.MOEAs == 2:
                 # SDE-MOEA + extreme
                 # better_parents = ea.selecting(self.selFunc, ea.SDE_parent_selection2(population.ObjV), MOEA_sel_num)
-                better_parents = k_tournament(2, ea.SDE_parent_selection2(population.ObjV), MOEA_sel_num)
+                better_parents = k_tournament(2, SDE_parent_selection2(population.ObjV), MOEA_sel_num)
             elif self.MOEAs == 3:
                 # SDE-MOEA + extreme + uniformity
                 # better_parents = ea.selecting(self.selFunc, ea.SDE_parent_selection3(population.ObjV), MOEA_sel_num)
@@ -431,9 +443,13 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
             #
 
             if self.crossover_p > 0:
-                offspring_better.Chrom[0:np.int(np.floor(MOEA_sel_num/2)*2)] = self.recOper.do(offspring_better.Chrom[0:np.int(np.floor(MOEA_sel_num/2))], offspring_better.Chrom[np.int(np.floor(MOEA_sel_num/2)):np.int(np.floor(MOEA_sel_num/2)*2)], np.random.uniform(0, 1, 1))  # 重组
+                offspring_better.Chrom[0:np.int(np.floor(MOEA_sel_num / 2) * 2)] = self.recOper.do(
+                    offspring_better.Chrom[0:np.int(np.floor(MOEA_sel_num / 2))],
+                    offspring_better.Chrom[np.int(np.floor(MOEA_sel_num / 2)):np.int(np.floor(MOEA_sel_num / 2) * 2)],
+                    np.random.uniform(0, 1, 1))  # 重组
             offspring_better.Chrom = self.mutOper.do(offspring_better.Chrom)  # 变异
-            self.call_aimFunc(offspring_better, kfold=self.kfold, gen=gen, dirName='Result/' + self.start_time, loss_type=-1, train_net=1, lr_decay_factor=self.lr_decay_factor)
+            self.call_aimFunc(offspring_better, kfold=self.kfold, gen=gen, dirName='Result/' + self.start_time,
+                              loss_type=-1, train_net=1, lr_decay_factor=self.lr_decay_factor)
             offspring = offspring_better.copy()
 
             if gen < self.MAXGEN and len(self.problem.objectives_class) > 1:
@@ -443,9 +459,14 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
                     # if np.random.random() < 0.5:
                     # offsprint_extrme.Chrom = self.mutOper.do(offsprint_extrme.Chrom)  # 变异
                     if "Individual_fairness" in self.problem.objectives_class or "Group_fairness" in self.problem.objectives_class:
-                        self.call_aimFunc(offsprint_extrme, kfold=self.kfold, gen=gen, dirName='Result/' + self.start_time, loss_type=self.problem.objectives_class, lr_decay_factor=self.lr_decay_factor)
+                        self.call_aimFunc(offsprint_extrme, kfold=self.kfold, gen=gen,
+                                          dirName='Result/' + self.start_time, loss_type=self.problem.objectives_class,
+                                          lr_decay_factor=self.lr_decay_factor)
                     else:
-                        self.call_aimFunc(offsprint_extrme[0], kfold=self.kfold, gen=gen, dirName='Result/' + self.start_time, loss_type=self.problem.objectives_class[0], lr_decay_factor=self.lr_decay_factor)
+                        self.call_aimFunc(offsprint_extrme[0], kfold=self.kfold, gen=gen,
+                                          dirName='Result/' + self.start_time,
+                                          loss_type=self.problem.objectives_class[0],
+                                          lr_decay_factor=self.lr_decay_factor)
                     offspring = offspring + offsprint_extrme[0]
 
             record_process_MOEAs = 0
@@ -455,14 +476,20 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
                 np.savetxt('Result/' + self.start_time + '/detect/better_parents_gen{}.txt'.format(gen), better_parents)
 
                 # print offspring
-                np.savetxt('Result/' + self.start_time + '/detect/offspring_test_gen{}.txt'.format(gen), offspring.ObjV_test)
-                np.savetxt('Result/' + self.start_time + '/detect/offspring_valid_gen{}.txt'.format(gen), offspring.ObjV_valid)
-                np.savetxt('Result/' + self.start_time + '/detect/offspring_train_gen{}.txt'.format(gen), offspring.ObjV_train)
+                np.savetxt('Result/' + self.start_time + '/detect/offspring_test_gen{}.txt'.format(gen),
+                           offspring.ObjV_test)
+                np.savetxt('Result/' + self.start_time + '/detect/offspring_valid_gen{}.txt'.format(gen),
+                           offspring.ObjV_valid)
+                np.savetxt('Result/' + self.start_time + '/detect/offspring_train_gen{}.txt'.format(gen),
+                           offspring.ObjV_train)
 
                 # print old population
-                np.savetxt('Result/' + self.start_time + '/detect/oldpop_test_gen{}.txt'.format(gen), population.ObjV_test)
-                np.savetxt('Result/' + self.start_time + '/detect/oldpop_valid_gen{}.txt'.format(gen), population.ObjV_valid)
-                np.savetxt('Result/' + self.start_time + '/detect/oldpop_train_gen{}.txt'.format(gen), population.ObjV_train)
+                np.savetxt('Result/' + self.start_time + '/detect/oldpop_test_gen{}.txt'.format(gen),
+                           population.ObjV_test)
+                np.savetxt('Result/' + self.start_time + '/detect/oldpop_valid_gen{}.txt'.format(gen),
+                           population.ObjV_valid)
+                np.savetxt('Result/' + self.start_time + '/detect/oldpop_train_gen{}.txt'.format(gen),
+                           population.ObjV_train)
                 self.update_timeslot()
             # #################重插入生成新一代种群#########################################################################
             population, chooseidx = self.reinsertion(population, offspring, NIND, isNN=1)
@@ -476,9 +503,12 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
             if record_process_MOEAs == 1:
                 self.update_passtime()
                 # print new population
-                np.savetxt('Result/' + self.start_time + '/detect/newpop_test_gen{}.txt'.format(gen), population.ObjV_test)
-                np.savetxt('Result/' + self.start_time + '/detect/newpop_valid_gen{}.txt'.format(gen), population.ObjV_valid)
-                np.savetxt('Result/' + self.start_time + '/detect/newpop_train_gen{}.txt'.format(gen), population.ObjV_train)
+                np.savetxt('Result/' + self.start_time + '/detect/newpop_test_gen{}.txt'.format(gen),
+                           population.ObjV_test)
+                np.savetxt('Result/' + self.start_time + '/detect/newpop_valid_gen{}.txt'.format(gen),
+                           population.ObjV_valid)
+                np.savetxt('Result/' + self.start_time + '/detect/newpop_train_gen{}.txt'.format(gen),
+                           population.ObjV_train)
 
                 # print better individuals
                 np.savetxt('Result/' + self.start_time + '/detect/better_individuals_gen{}.txt'.format(gen), chooseidx)
@@ -497,8 +527,11 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
             self.update_timeslot()
             # print(population.ObjV_valid)
 
-            self.ctrlr.update_pop(population.ObjV_valid, gen=gen)
-            self.ctrlr.update_progress(STATUS.RUNNING, gen=gen, maxgen=self.MAXGEN)
+            self.ctrlr.save_fitness(population.ObjV_valid, gen=gen) #保存适应度
+            population.save_pop(self.ctrlr.get_savepop_dir()) # 保存神经网络
+            if self.handle_status(gen):
+                return self.finishing(population)
+
             if np.mod(gen, self.calculmetric) == 0 or gen == 1:
                 self.update_passtime()
                 population.save(dirName='Result/' + self.start_time, Gen=gen, NNmodel=population,
@@ -573,7 +606,7 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
                 self.update_timeslot()
 
         # np.savetxt('Result/' + self.start_time + '/detect/passtime.txt', np.array([self.passTime]))
-
+        population.save_pop(self.ctrlr.get_savepop_dir())
         # population.save(dirName='Result/' + self.start_time, Gen=gen, NNmodel=population,
         #                 All_objs_train=self.all_objetives_train,
         #                 All_objs_valid=self.all_objetives_valid,
@@ -584,3 +617,17 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
         self.ctrlr.update_progress(STATUS.FINISH)
         print("Run ID ", self.run_id, "finished!")
         return self.finishing(population)  # 调用finishing完成后续工作并返回结果
+
+    def handle_status(self, gen):
+        print('curr_status', self.ctrlr.status)
+        if self.ctrlr.status == STATUS.ABORT:
+            self.ctrlr.update_progress(STATUS.FINISH, gen=gen, maxgen=self.MAXGEN)
+            return 1
+        elif self.ctrlr.status == STATUS.PAUSE:
+            self.ctrlr.status = STATUS.PAUSED
+            while self.ctrlr.status != STATUS.RUNNING:
+                time.sleep(1)
+            self.ctrlr.update_progress(STATUS.RUNNING, gen=gen, maxgen=self.MAXGEN)
+        else:
+            self.ctrlr.update_progress(STATUS.RUNNING, gen=gen, maxgen=self.MAXGEN)
+        return 0
