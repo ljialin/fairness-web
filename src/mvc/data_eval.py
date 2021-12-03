@@ -22,7 +22,7 @@ class DataEvaluator:
     def __init__(self, data_model):
         # self.data = data_model.get_raw_data()
         # self.processed_data = data_model.get_processed_data()
-        self.data = data_model.data
+        self.data = data_model.data4eval
         self.label = data_model.label
         self.pos_label_val = data_model.pos_label_val
         self.neg_label_val = data_model.neg_label_val

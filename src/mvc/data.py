@@ -30,7 +30,8 @@ class DataModel:
         self.pos_label_val = ''
         self.neg_label_val = ''
         self.label_map = {}
-        self.data = None
+        self.data = None  # 执行优化算法训练NN的读取格式
+        self.data4eval = None  # 执行数据集公平性判断的读取格式（主要区别在于加了ID和数值属性分5份）
 
         self.errinfo = self.__load_data(file_path)
         self.__train_data = None
@@ -78,10 +79,12 @@ class DataModel:
 
             # 对data进行处理
             self.data[list(self.n_featrs)] = self.data[list(self.n_featrs)].applymap(float)  # 数值型的数据转浮点
-            # self.data.insert(0, 'ID', [*range(len(self.data))])
-            # for n_featr in self.n_featrs:
-            #     self.__group_n_featr(n_featr)  # 分五份
-            # exit(-1)
+
+            self.data4eval = self.data.copy()
+            self.data4eval.insert(0, 'ID', [*range(len(self.data4eval))])
+            for n_featr in self.n_featrs:
+                self.__group_n_featr(n_featr)  # 分五份
+            exit(-1)
             return ''
         except:
             return '数据集文件格式不正确，请对照模板文件进行检查！'
@@ -160,20 +163,20 @@ class DataModel:
 
 
     def __group_n_featr(self, featr):
-        vmax = self.data[featr].max()
-        vmin = self.data[featr].min()
+        vmax = self.data4eval[featr].max()
+        vmin = self.data4eval[featr].min()
         d = (vmax - vmin + 1e-5) / N_SPLIT
 
         legi_groups = [
             f'{vmin + i * d:.3g}-{vmin + (i + 1) * d:.3g}'
             for i in range(N_SPLIT)
         ]
-        original_vals = self.data[featr].values
+        original_vals = self.data4eval[featr].values
         new_col = [
             legi_groups[int((val - vmin) / d)]
             for val in original_vals
         ]
-        self.data.insert(0, f'{featr} groups', new_col)
+        self.data4eval.insert(0, f'{featr} groups', new_col)
 
     def update_prediction(self, predictions):
         self.data.insert(len(self.data.columns), 'prediction', predictions)
@@ -187,13 +190,13 @@ class DataModel:
         # print(ctgr)
         return [key for key in self.categorical_map[featr].keys()]
 
-    def get_raw_data(self):
+    def get_raw_data(self): #旧接口，只在这里用了
         if self.data is None:
             self.data = pandas.read_csv(self.file_path + '.csv').applymap(str)
             self.data[list(self.n_featrs)] = self.data[list(self.n_featrs)].applymap(float) # 数值型的数据转浮点
             self.data.insert(0, 'ID', [*range(len(self.data))])
             for n_featr in self.n_featrs:
-                self.__group_n_featr(n_featr)
+                self.__group_n_featr(n_featr) #除了这里还有一个地方用了
         return self.data
 
     def get_groups(self, featr):
@@ -202,9 +205,9 @@ class DataModel:
         else:
             return list(self.categorical_map[featr].keys())
 
-    def get_processed_data(self):
+    def get_processed_data(self): # 更改了数据接口以后unused
         if self.__train_data is None:
-            self.__process_train_data()
+            self.__process_train_data() #只在这里用了
         return self.__train_data
 
     def __process_train_data(self):
@@ -213,7 +216,7 @@ class DataModel:
             for c_featr in self.c_featrs
         )
         # print(num_input)
-        raw_data = self.get_raw_data()
+        raw_data = self.get_raw_data() #只用了一次
         np_data = np.zeros((len(raw_data), num_input), np.float32)
 
         start = 0
