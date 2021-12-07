@@ -1,115 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>数据集公平性评估</title>
-  <link rel="stylesheet" type="text/css" href="/static/eval_page.css">
-  <script src="/static/extlib/jquery.js"></script>
-  <script type="text/javascript" src="/static/extlib/echarts.min.js"></script>
-  <script type="text/javascript" src="/static/charts.js"></script>
-  <script type="text/javascript" src="/static/info.js"></script>
-  <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='style.css')}}"/>
+    <meta charset="UTF-8">
+    <title>数据集公平性评估</title>
+    <link rel="stylesheet" type="text/css" href="/static/eval_page.css">
+    <script src="/static/extlib/jquery.js"></script>
+    <script type="text/javascript" src="/static/extlib/echarts.min.js"></script>
+    <script type="text/javascript" src="/static/charts.js"></script>
+    <script type="text/javascript" src="/static/info.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}"/>
 </head>
 <body>
 
-  {% if errinfo %}
+{% if errinfo %}
     <script>
-      alert("{{ errinfo }}")
+        alert("{{ errinfo }}")
     </script>
-  {% endif %}
+{% endif %}
 
-  <div class="headerpage"></div>
-  <div class="container">
+<div class="headerpage"></div>
+<div class="container">
     <div class="header">
-      <div style="width: 90%; float: left"><h1>数据集{{ view.name }}公平性分析</h1></div>
-      <div style="width: 10%; float: left; margin-top: 30px">
-        <input type="button" value="回到主页面" onclick="window.location.href='/'">
-      </div>
+        <div style="width: 90%; float: left"><h1>数据集{{ view.name }}公平性分析</h1></div>
+        <div style="width: 10%; float: left; margin-top: 30px">
+            <input type="button" value="回到主页面" onclick="window.location.href='/'">
+        </div>
     </div>
 
     <div class="content">
-      <div class="sidebar">
-        <div style="float: top">
-          <b>选择敏感属性</b>
-          <input type="button" value="?" onclick="sens_feature_info()">
-        </div>
-        <form method="post" style="width: 100%; height: 100%; float: top">
-          <input type="hidden" name="name" value="eval" />
-          <div class="side_form">
-            {% for featr in view.featrs %}
-              <p><label>
-                {% if featr in view.sens_featrs %}
-                  <input type="checkbox" name="sens-featrs" value="{{ featr }}" checked>
-                {% else %}
-                  <input type="checkbox" name="sens-featrs" value="{{ featr }}">
-                {% endif %}
-              </label> {{ featr }} </p>
-            {% endfor %}
-          </div>
-          <div style="float: top">
-            <input type="submit" name="type" value="群体公平分析">
-          </div>
-          <div style="float: top; margin-top: 5%">
-            <b>选择正当属性</b>
-            <input type="button" value="?" onclick="legi_feature_info()">
-          </div>
-          <div class="side_form">
-            {% for featr in view.featrs %}
-              <p><label>
-                {% if featr == view.legi_featr %}
-                  <input type="radio" name="legi-featr" value="{{ featr }}" checked>
-                {% else %}
-                  <input type="radio" name="legi-featr" value="{{ featr }}">
-                {% endif %}
-              </label> {{ featr }} </p>
-            {% endfor %}
-          </div>
-          <div style="float: top">
-            <input type="submit" name="type" value="条件性群体公平分析">
-            <input type="submit" name="type" value="个体公平分析">
-          </div>
-        </form>
-      </div>
-      <div class="main_content">
-        <h3>群体公平性分析<input type="submit" value="?" onclick="data_g_fair_info()"> </h3>
-        <div class="block">
-          {% for i, cmmts in view.gf_cmmts %}
-            <div id="0{{ i }}" style="width:640px; height:360px">
-              <script> get_chart("0{{ i }}", "http://127.0.0.1:{{ port }}/data-eval/charts/0{{ i }}") </script>
+        <div class="sidebar">
+            <div style="float: top">
+                <b>选择敏感属性</b>
+                <input type="button" value="?" onclick="sens_feature_info()">
             </div>
-            {% for cmmt in cmmts %}
-              <p> {{ cmmt }} </p>
-            {%  endfor %}
-          {% endfor %}
+            <form method="post" style="width: 100%; height: 100%; float: top">
+                <input type="hidden" name="name" value="eval"/>
+                <div class="side_form">
+                    {% for featr in view.featrs %}
+                        <p><label>
+                            {% if featr in view.sens_featrs %}
+                                <input type="checkbox" name="sens-featrs" value="{{ featr }}" checked>
+                            {% else %}
+                                <input type="checkbox" name="sens-featrs" value="{{ featr }}">
+                            {% endif %}
+                        </label> {{ featr }} </p>
+                    {% endfor %}
+                </div>
+                <div style="float: top; margin-top: 10px">
+                    <input type="submit" name="type" value="群体公平分析">
+                </div>
+                <div style="float: top; margin-top: 5%">
+                    <b>选择正当属性</b>
+                    <input type="button" value="?" onclick="legi_feature_info()">
+                </div>
+                <div class="side_form">
+                    {% for featr in view.featrs %}
+                        <p><label>
+                            {% if featr == view.legi_featr %}
+                                <input type="radio" name="legi-featr" value="{{ featr }}" checked>
+                            {% else %}
+                                <input type="radio" name="legi-featr" value="{{ featr }}">
+                            {% endif %}
+                        </label> {{ featr }} </p>
+                    {% endfor %}
+                </div>
+                <div style="float: top; margin-top: 10px">
+                    <input type="submit" name="type" value="条件性群体公平分析">
+                    <input type="submit" name="type" value="个体公平分析">
+                </div>
+            </form>
         </div>
-        <h3>条件性群体公平分析 <input type="submit" value="?" onclick="data_cg_fair_info()"></h3>
-        <div class="block">
-          {% for i, cmmts in view.cgf_cmmts %}
-            <div id="1{{ i }}" style="width:90%; height:360px">
-              <script> get_chart("1{{ i }}", "http://127.0.0.1:{{ port }}/data-eval/charts/1{{ i }}") </script>
+        <div class="main_content">
+            <h3>群体公平性分析<input type="submit" value="?" onclick="data_g_fair_info()"></h3>
+            <div class="block">
+                {% for i, cmmts in view.gf_cmmts %}
+                    <div id="0{{ i }}" style="width:640px; height:360px">
+                        <script> get_chart("0{{ i }}", "http://{{ url }}/data-eval/charts/0{{ i }}") </script>
+                    </div>
+                    {% for cmmt in cmmts %}
+                        <p> {{ cmmt }} </p>
+                    {% endfor %}
+                {% endfor %}
             </div>
-            {% for cmmt in cmmts %}
-              <p> {{ cmmt }} </p>
-            {%  endfor %}
-          {% endfor %}
+            <h3>条件性群体公平分析 <input type="submit" value="?" onclick="data_cg_fair_info()"></h3>
+            <div class="block">
+                {% for i, cmmts in view.cgf_cmmts %}
+                    <div id="1{{ i }}" style="width:90%; height:360px">
+                        <script> get_chart("1{{ i }}", "http://{{ url }}/data-eval/charts/1{{ i }}") </script>
+                    </div>
+                    {% for cmmt in cmmts %}
+                        <p> {{ cmmt }} </p>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            <h3>个体公平分析<input type="submit" value="?" onclick="data_i_fair_info()"></h3>
+            <div class="block">
+                {% for cmmt in view.if_cmmts %}
+                    <p>{{ cmmt }}</p>
+                {% endfor %}
+            </div>
         </div>
-        <h3>个体公平分析<input type="submit" value="?" onclick="data_i_fair_info()"></h3>
-        <div class="block">
-          {% for cmmt in view.if_cmmts %}
-            <p>{{ cmmt }}</p>
-          {% endfor %}
-        </div>
-      </div>
     </div>
-  </div>
+</div>
 
-  <div class="footerpage"></div>
-  <script src="{{url_for('static',filename='extlib/jquery.js')}}"></script>
-  <script>
-    $(function() {
-      $(".headerpage").load("{{url_for('static',filename='header.html')}}");
-      $(".footerpage").load("{{url_for('static',filename='footer.html')}}");
+<div class="footerpage"></div>
+<script src="{{ url_for('static',filename='extlib/jquery.js') }}"></script>
+<script>
+    $(function () {
+        $(".headerpage").load("{{url_for('static',filename='header.html')}}");
+        $(".footerpage").load("{{url_for('static',filename='footer.html')}}");
     });
-  </script>
+</script>
 </body>
 </html>

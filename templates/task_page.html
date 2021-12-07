@@ -72,7 +72,7 @@
     <div class="block" style="float:left">
         <h3>公平性指标和准确性指标优化结果</h3>
         <div id="{{ pid }}" style="width:500px; height:500px; text-align: center">
-            <script> get_chart("{{ pid }}", "http://127.0.0.1:{{ port }}/task/{{ pid }}/chart") </script>
+            <script> get_chart("{{ pid }}", "http://{{ url }}/task/{{ pid }}/chart") </script>
         </div>
     </div>
 </div>
@@ -80,8 +80,8 @@
 <div id="btns" style="float:left;width:100%">
     {% if status != 11 %}
     <p>
-        <input id="abort" type="submit" value="终止任务" onclick="killProcess('http://127.0.0.1:{{ port }}/task/{{ pid }}/intervene')">
-        <input id="pause" type="submit" value="暂停任务" onclick="pauseContinue('http://127.0.0.1:{{ port }}/task/{{ pid }}/pause')">
+        <input id="abort" type="submit" value="终止任务" onclick="killProcess('http://{{ url }}/task/{{ pid }}/intervene')">
+        <input id="pause" type="submit" value="暂停任务" onclick="pauseContinue('http://{{ url }}/task/{{ pid }}/pause')">
     </p>
     {% endif %}
     <p>

@@ -6,8 +6,8 @@ body{
 }
 
 .container{
-    width: 90%;
-    height: 720px;
+    width: 100%;
+    height: 800px;
     /*background: #FFF;*/
     margin: 0 auto;/*侧边的自动值与宽度结合使用，可以将布局居中对齐*/
     text-align: left;
@@ -28,21 +28,21 @@ body{
 
 .sidebar{
     float: left;/*侧边栏居左，改为right可令侧边栏居右*/
-    width: 20%;
-    height: 660px;
+    width: 25%;
+    height: 760px;
     /*background: #a4f;*/
 }
 
 .side_form{
     /*float: top;*/
     width: 100%;
-    height: 40%;
+    height: 42%;
     float: top;
     overflow-y: auto;
 }
 
 .main_content{
-    width: 78%;
+    width: 73%;
     height: 640px;
     margin-left: 2%;
     float: left;

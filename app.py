@@ -23,6 +23,7 @@ from mvc.algo_cfg import STATUS
 from Fairness_main import interface4flask
 from zipfile import ZipFile
 
+url = "127.0.0.1:5000"
 port = 5000
 app = Flask(__name__)
 
@@ -102,7 +103,7 @@ def data_eval():
                 errinfo = ctrlr.cgf_eval(sens_featrs, legi_featr)
 
     # 这里的ip好像没被用到
-    return render_template('data_eval.html', view=ctrlr.view, ip=ip, port=port, errinfo=errinfo)
+    return render_template('data_eval.html', view=ctrlr.view, url=url, errinfo=errinfo)
 
 
 @app.route('/model-upload', methods=['GET', 'POST'])
@@ -113,6 +114,7 @@ def model_upload():
         try:
             ModelEvalController(ip, request.files['struct'], request.files['var'])
         except RuntimeError as e:
+            print(str(e))
             return render_template('model_upload.html', errinfo=str(e))
         return redirect('/model-eval')
     return render_template('model_upload.html')
@@ -137,7 +139,7 @@ def model_eval():
                 ctrlr.gf_eval(sens_featrs)
             elif form['type'] == '条件性群体公平分析':
                 ctrlr.cgf_eval(sens_featrs, form['legi-featr'])
-    return render_template('model_eval.html', port=port, view=ctrlr.view)
+    return render_template('model_eval.html', url=url, view=ctrlr.view)
 
 
 @app.route('/model-eval/intro')
@@ -211,7 +213,7 @@ def task_page(task_id):
     fpops = [] if len(ctrlr.pops) == 0 else np.around(ctrlr.pops[-1], 5).tolist()
 
     return render_template('task_page.html', pid=task_id, status=ctrlr.status,
-                           fpops=fpops, cfg=algoCfg, view=algoView, port=port)
+                           fpops=fpops, cfg=algoCfg, view=algoView, url=url)
 
 
 @app.route('/task/<task_id>/intervene')
@@ -302,19 +304,17 @@ def algo_status_chart(task_id):
     algomnger = AlgosManager.instances[ip]
     ctrlr = algomnger.get_task(task_id)
     pop = ctrlr.pops[-1] if len(ctrlr.pops) > 0 else np.array([[0,0]])
-    # chart = AlgoCfgController.instances[ip].chart
-    # return chart.dump_options_with_quotes()
 
     chart = (Scatter(opts.InitOpts(width="600px", height="600px"))
              .set_global_opts(xaxis_opts=opts.AxisOpts(name=ctrlr.cfg.acc_metric,
                                                        name_location='center',
                                                        name_gap=20,
-                                                       max_=ctrlr.max_pop[0],
+                                                       max_=float('%.3g' % ctrlr.max_pop[0]),
                                                        type_="value"),
                               yaxis_opts=opts.AxisOpts(name=ctrlr.cfg.fair_metric,
                                                        name_gap=20,
                                                        name_location='center',
-                                                       max_=ctrlr.max_pop[1],
+                                                       max_=float('%.3g' % ctrlr.max_pop[1]),
                                                        type_="value"),
                               title_opts=opts.TitleOpts(title="公平性指标和准确性指标优化结果"),
                               )

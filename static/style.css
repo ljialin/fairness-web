@@ -3,11 +3,15 @@
  * Code licensed under the Apache License v2.0.
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
  */
+.headerpage {
+    margin-bottom: 20px;
+}
+
 body {
   margin-top: 50px; /* Required margin for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
   margin-bottom: 50px;
-  margin-right: 50px;
-  margin-left: 50px;
+  margin-right: 80px;
+  margin-left: 80px;
 }
 
 footer {
