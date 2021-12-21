@@ -2,11 +2,12 @@
 import os
 import numpy as np
 import geatpy as ea
-from zqq.nets import Population_NN, IndividualNet, weights_init
+from zqq.nets import Population_NN, weights_init
 import torch
 import time
 import copy
 from torch import nn
+from mvc.model_eval import IndividualNet2
 
 
 def weight_init(m):
@@ -190,7 +191,8 @@ Population : class - 种群类
             pop_ids = []
             family_list = []
             for i in range(self.sizes):
-                pop = copy.deepcopy(IndividualNet(self.n_feature, self.n_hidden, self.n_output, name=dataname, dropout=dropout))
+                # pop = copy.deepcopy(IndividualNet(self.n_feature, self.n_hidden, self.n_output, name=dataname, dropout=dropout))
+                pop = copy.deepcopy(IndividualNet2(self.n_feature, self.n_hidden, self.n_output, dropout=dropout))
                 pop.apply(weights_init)
                 population.append(pop)
                 pop_ids.append(i)
@@ -580,7 +582,7 @@ Population : class - 种群类
             torch.save(NN, save_path)
 
     def save_pop(self, dir):  # NNmodel=population.Chrom
-        NNmodels = self.Chrom
+        NNmodels = copy.deepcopy(self.Chrom)
         for i in range(self.sizes):
             torch.save(NNmodels[i].state_dict(), dir + 'indiv_{}.pth'.format(str(i)))
 

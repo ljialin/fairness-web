@@ -3,7 +3,7 @@
   @Author: Ziqi Wang
   @File: app.py
 """
-
+import math
 import os
 from socket import gethostname
 
@@ -132,14 +132,15 @@ def model_eval():
     if ModelEvalController.insts[ip] is None:
         return '必须在选择数据集页面选择数据集，并在上传模型页面上传模型后才能访问该页面'
     ctrlr = ModelEvalController.insts[ip]
+    errinfo = None
     if form:
         if form['name'] == 'eval':
             sens_featrs = form.getlist('sens-featrs')
             if form['type'] == '群体公平分析':
-                ctrlr.gf_eval(sens_featrs)
+                errinfo = ctrlr.gf_eval(sens_featrs)
             elif form['type'] == '条件性群体公平分析':
-                ctrlr.cgf_eval(sens_featrs, form['legi-featr'])
-    return render_template('model_eval.html', url=url, view=ctrlr.view)
+                errinfo = ctrlr.cgf_eval(sens_featrs, form['legi-featr'])
+    return render_template('model_eval.html', url=url, view=ctrlr.view, errinfo=errinfo)
 
 
 @app.route('/model-eval/intro')
@@ -308,11 +309,11 @@ def algo_status_chart(task_id):
     chart = (Scatter(opts.InitOpts(width="600px", height="600px"))
              .set_global_opts(xaxis_opts=opts.AxisOpts(name=ctrlr.cfg.acc_metric,
                                                        name_location='center',
-                                                       name_gap=20,
+                                                       name_gap=25,
                                                        max_=float('%.3g' % ctrlr.max_pop[0]),
                                                        type_="value"),
                               yaxis_opts=opts.AxisOpts(name=ctrlr.cfg.fair_metric,
-                                                       name_gap=20,
+                                                       name_gap=40,
                                                        name_location='center',
                                                        max_=float('%.3g' % ctrlr.max_pop[1]),
                                                        type_="value"),

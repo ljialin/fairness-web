@@ -23,24 +23,32 @@ def upload_model(ip, struct_file, var_file):
         PRJROOT + 'models/temp',
         prefix + secure_filename(struct_file.filename)
     )
-    struct_file.save(struct_path)
+    struct_file.save(struct_path)  # 结构定义文件，作为临时文件复制到一个地方
     var_path = os.path.join(
         PRJROOT + 'models/temp',
         prefix + secure_filename(var_file.filename)
     )
-    var_file.save(var_path)
+    var_file.save(var_path) # 模型文件
 
-    module = importlib.import_module(
-        'models.temp.' + secure_filename(prefix + struct_file.filename)[:-3]
-    )
-    funcs = inspect.getmembers(module, inspect.isfunction)
+    try:
+        module = importlib.import_module(
+            'models.temp.' + secure_filename(prefix + struct_file.filename)[:-3]
+        )
+        importlib.reload(module)
+        funcs = inspect.getmembers(module, inspect.isfunction)
 
-    if len(funcs) != 1:
-        raise RuntimeError('模型的类定义文件必须只含一个函数')
+        if len(funcs) != 1:
+            raise RuntimeError('模型的类定义文件必须只含一个函数')
 
-    func = funcs[0][1]
-    model = func()
-    model.load_state_dict(torch.load(var_path))
+        func = funcs[0][1]
+        model = func()  # 数据类型本质上是nn.Module
+        state_dict = torch.load(var_path)
+        model.load_state_dict(state_dict)
+    except Exception as e:
+        os.remove(var_path)
+        os.remove(struct_path)
+        raise RuntimeError('导入模型失败\n错误信息：{}'.format(str(e)))
+
 
     return var_file.filename[:-4], model
 

@@ -51,6 +51,9 @@ def analyze_data(ana_data, alldata, sensitive_attributions):
     sens_idxs_name = []
     test_num = ana_data.shape[0]
     sens_idxs = {}
+    if len(sensitive_attributions) == 0:
+        return sens_idxs_name, sens_idxs, group_dict
+
     for sens in sensitive_attributions:
         temp = []
         for attr in attribution:
@@ -67,7 +70,7 @@ def analyze_data(ana_data, alldata, sensitive_attributions):
     for sens in sensitive_attributions:
         group_attr.append(group_dict[sens])
 
-    for item in product(*eval(str(group_attr))):
+    for item in product(*eval(str(group_attr))): # 对2个以上的铭感属性集合做笛卡尔积
         group = item
         flag = np.ones([1, test_num]) == np.ones([1, test_num])
         for g in group:
@@ -142,7 +145,7 @@ def df2onehot(df, attrs):
 # print()
 
 
-def load_data(dataModel, preserve_sens_in_net=0, sensitive_attributions=None):
+def load_data(dataModel, preserve_sens_in_net=1, sensitive_attributions=None):
     #datatype="numerical-for-NN"
     #is_ensemble 是读取张清泉预处理数据集用到的参数
 
@@ -195,6 +198,7 @@ def load_data(dataModel, preserve_sens_in_net=0, sensitive_attributions=None):
         newtrain_data = train_data.copy()
         newtest_data = test_data.copy()
         newvalid_data = valid_data.copy()
+        newdata_x = data_x.copy()
     else:
         sens_dict = []
         attribution = train_data.columns

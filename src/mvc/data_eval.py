@@ -20,7 +20,7 @@ class DataEvaluator:
     theta_gf = 0.8
 
     def __init__(self, data_model):
-        # self.data = data_model.get_raw_data()
+        # self.data = data_model.get_raw_data() #gsh commit
         # self.processed_data = data_model.get_processed_data()
         self.data = data_model.data4eval
         self.label = data_model.label

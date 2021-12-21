@@ -360,7 +360,7 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
             # print('Gen', gen)
             # #################选择个体参与进化############################################################################
             #
-            K_num = 2
+            K_num = 5
             if "Individual_fairness" in self.problem.objectives_class or "Group_fairness" in self.problem.objectives_class:
                 MOEA_sel_num = NIND - K_num
             else:
@@ -606,7 +606,6 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
                 self.update_timeslot()
 
         # np.savetxt('Result/' + self.start_time + '/detect/passtime.txt', np.array([self.passTime]))
-        population.save_pop(self.ctrlr.get_savepop_dir())
         # population.save(dirName='Result/' + self.start_time, Gen=gen, NNmodel=population,
         #                 All_objs_train=self.all_objetives_train,
         #                 All_objs_valid=self.all_objetives_valid,

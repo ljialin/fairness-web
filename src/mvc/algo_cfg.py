@@ -97,8 +97,8 @@ class AlgoController:
             return "代数必须是数字！", 0
 
         self.cfg.sens_featrs = kwargs['sens_featrs']
-        if len(self.cfg.sens_featrs) == 0:
-            return "需要选择敏感属性", 0
+        # if len(self.cfg.sens_featrs) == 0:
+        #     return "需要选择敏感属性", 0
         for fear in self.cfg.sens_featrs:
             if fear in self.data_model.n_featrs:
                 return "暂不支持连续属性作为敏感属性", 0

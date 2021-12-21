@@ -84,7 +84,6 @@ class DataModel:
             self.data4eval.insert(0, 'ID', [*range(len(self.data4eval))])
             for n_featr in self.n_featrs:
                 self.__group_n_featr(n_featr)  # 分五份
-            exit(-1)
             return ''
         except:
             return '数据集文件格式不正确，请对照模板文件进行检查！'
@@ -179,12 +178,13 @@ class DataModel:
         self.data4eval.insert(0, f'{featr} groups', new_col)
 
     def update_prediction(self, predictions):
-        self.data.insert(len(self.data.columns), 'prediction', predictions)
+        # 这个方法服务于现有模型的预测，进一步用于公平性分析，所有data用data4eval
+        self.data4eval.insert(len(self.data4eval.columns), 'prediction', predictions)
         binary_predictions = [
             1 if prediction > 0.5 else 0
-            for prediction in self.data['prediction'].values
+            for prediction in self.data4eval['prediction'].values
         ]
-        self.data.insert(len(self.data.columns), 'binary prediction', binary_predictions)
+        self.data4eval.insert(len(self.data4eval.columns), 'binary prediction', binary_predictions)
 
     def get_ctgrs(self, featr):
         # print(ctgr)
@@ -216,7 +216,8 @@ class DataModel:
             for c_featr in self.c_featrs
         )
         # print(num_input)
-        raw_data = self.get_raw_data() #只用了一次
+        # raw_data = self.get_raw_data() #只用了一次 #gsh comment
+        raw_data = self.data
         np_data = np.zeros((len(raw_data), num_input), np.float32)
 
         start = 0

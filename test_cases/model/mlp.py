@@ -26,4 +26,4 @@ class MLP(nn.Module):
         return self.main(x)
 
 def main():
-    return MLP(63, [64])
+    return MLP(60, [64])

@@ -118,169 +118,169 @@ def weights_init(m, rand_type='uniformity'):
             torch.nn.init.zeros_(m.bias)
 
 
-class IndividualNet(torch.nn.Module):
-    def __init__(self, n_feature, n_hidden, n_output, dropout=0.3, name='ricci'):
-        super(IndividualNet, self).__init__()
-        self.name = name
-        self.num_hidden = len(n_hidden)
-        self.n_hidden = n_hidden
-        # if name == 'adult':
-        #     if self.num_hidden == 1:
-        #         # #hidden layers = 1
-        #         self.hidden_1_1 = torch.nn.Linear(n_feature, n_hidden[0])  # hidden layer
-        #         # self.out = torch.nn.Linear(n_hidden, n_output)  # output layer
-        #         self.out = torch.nn.Linear(n_hidden[0], n_output)
-        #     else:
-        #         # #hidden layers = 2
-        #         self.hidden_2_1 = torch.nn.Linear(n_feature, n_hidden[0])
-        #         self.hidden_2_2 = torch.nn.Linear(n_hidden[0], n_hidden[1])
-        #
-        #         self.out = torch.nn.Linear(n_hidden[1], n_output)
-        # elif name == 'ricci':
-        #     if self.num_hidden == 1:
-        #         # #hidden layers = 1
-        #         self.hidden_1_1 = torch.nn.Linear(n_feature, n_hidden[0])  # hidden layer
-        #         # self.out = torch.nn.Linear(n_hidden, n_output)  # output layer
-        #         self.out = torch.nn.Linear(n_hidden[0], n_output)
-        #     else:
-        #         # #hidden layers = 2
-        #         self.hidden_2_1 = torch.nn.Linear(n_feature, n_hidden[0])
-        #         self.hidden_2_2 = torch.nn.Linear(n_hidden[0], n_hidden[1])
-        #
-        #         self.out = torch.nn.Linear(n_hidden[1], n_output)
-        # elif name == 'german':
-        #     if self.num_hidden == 1:
-        #         # #hidden layers = 1
-        #         self.hidden_1_1 = torch.nn.Linear(n_feature, n_hidden[0])  # hidden layer
-        #         self.out = torch.nn.Linear(n_hidden[0], n_output)
-        #         # self.relu = F.relu
-        #     else:
-        #         # #hidden layers = 2
-        #         self.hidden_2_1 = torch.nn.Linear(n_feature, n_hidden[0])
-        #         self.hidden_2_2 = torch.nn.Linear(n_hidden[0], n_hidden[1])
-        #
-        #         self.out = torch.nn.Linear(n_hidden[1], n_output)
-        # elif name == 'propublica-recidivism':
-        #     if self.num_hidden == 1:
-        #         # #hidden layers = 1
-        #         self.hidden_1_1 = torch.nn.Linear(n_feature, n_hidden[0])  # hidden layer
-        #         # self.out = torch.nn.Linear(n_hidden, n_output)  # output layer
-        #         self.out = torch.nn.Linear(n_hidden[0], n_output)
-        #     else:
-        #         # #hidden layers = 2
-        #         self.hidden_2_1 = torch.nn.Linear(n_feature, n_hidden[0])
-        #         self.hidden_2_2 = torch.nn.Linear(n_hidden[0], n_hidden[1])
-        #         self.out = torch.nn.Linear(n_hidden[1], n_output)
-
-        if self.num_hidden == 1:
-            # #hidden layers = 1
-            self.hidden_1_1 = torch.nn.Linear(n_feature, n_hidden[0])  # hidden layer
-            # self.out = torch.nn.Linear(n_hidden, n_output)  # output layer
-            self.out = torch.nn.Linear(n_hidden[0], n_output)
-        else:
-            # #hidden layers = 2
-            self.hidden_2_1 = torch.nn.Linear(n_feature, n_hidden[0])
-            self.hidden_2_2 = torch.nn.Linear(n_hidden[0], n_hidden[1])
-
-            self.out = torch.nn.Linear(n_hidden[1], n_output)
-        # else:
-        # self.hidden1 = torch.nn.Linear(n_feature, hidden_units)
-        # self.hidden2 = torch.nn.Linear(hidden_units, hidden_units)
-        # self.hidden3 = torch.nn.Linear(hidden_units, n_output)
-        self.dropout_value = dropout
-        if dropout > 0:
-            self.dropout = nn.Dropout(self.dropout_value)
-        else:
-            self.dropout = None
-        self.relu = nn.ReLU()
-
-    def forward(self, x):
-        #hidden layers = 2
-        # if self.name == 'adult':
-        #     if self.num_hidden == 1:
-        #         x = self.hidden_1_1(x)
-        #         if self.dropout_value > 0:
-        #             x = self.dropout(x)
-        #
-        #         x = self.relu(x)
-        #         pred_logits = self.out(x)
-        #     else:
-        #         x = self.hidden_2_1(x)
-        #         if self.dropout_value > 0:
-        #             x = self.dropout(x)
-        #         x = self.relu(x)
-        #         x = self.hidden_2_2(x)
-        #         if self.dropout_value > 0:
-        #             x = self.dropout(x)
-        #         x = self.relu(x)
-        #         pred_logits = self.out(x)
-        # elif self.name == 'ricci':
-        #     if self.num_hidden == 1:
-        #         x = F.relu(self.hidden_1_1(x))  # activation function for hidden layer
-        #         pred_logits = self.out(x)
-        #     else:
-        #         x = F.relu(self.hidden_2_1(x))  # activation function for hidden layer
-        #         x = F.relu(self.hidden_2_2(x))  # activation function for hidden layer
-        #         pred_logits = self.out(x)
-        # elif self.name == 'german':
-        #     if self.num_hidden == 1:
-        #         x = F.relu(self.hidden_1_1(x))  # activation function for hidden layer
-        #         pred_logits = self.out(x)
-        #     else:
-        #         x = F.relu(self.hidden_2_1(x))  # activation function for hidden layer
-        #         x = F.relu(self.hidden_2_2(x))  # activation function for hidden layer
-        #         pred_logits = self.out(x)
-        # elif self.name == 'propublica-recidivism':
-        #     if self.num_hidden == 1:
-        #         x = F.relu(self.hidden_1_1(x))  # activation function for hidden layer
-        #         if self.dropout > 0:
-        #             x = F.dropout(x, p=self.dropout)
-        #         pred_logits = self.out(x)
-        #     else:
-        #         x = F.relu(self.hidden_2_1(x))  # activation function for hidden layer
-        #         x = F.relu(self.hidden_2_2(x))  # activation function for hidden layer
-        #         pred_logits = self.out(x)
-        # else:
-        #     if self.num_hidden == 1:
-        #         x = F.relu(self.hidden_1_1(x))  # activation function for hidden layer
-        #         x = F.dropout(x, p=self.dropout)
-        #         pred_logits = self.out(x)
-        #     else:
-        #         x = F.relu(self.hidden_2_1(x))  # activation function for hidden layer
-        #         x = F.relu(self.hidden_2_2(x))  # activation function for hidden layer
-        #         pred_logits = self.out(x)
-
-        if self.num_hidden == 1:
-            x = self.hidden_1_1(x)
-            if self.dropout_value > 0:
-                x = self.dropout(x)
-
-            x = self.relu(x)
-            pred_logits = self.out(x)
-        else:
-            x = self.hidden_2_1(x)
-            if self.dropout_value > 0:
-                x = self.dropout(x)
-            x = self.relu(x)
-            x = self.hidden_2_2(x)
-            if self.dropout_value > 0:
-                x = self.dropout(x)
-            x = self.relu(x)
-            pred_logits = self.out(x)
-
-        pred_label = torch.sigmoid(pred_logits)
-        # # hidden = 1
-        # x = F.relu(self.hidden1(x))  # activation function for hidden layer
-        # x = F.dropout(x, p=self.dropout)
-        # pred_logits = self.hidden2(x)  # activation function for hidden layer
-        # pred_label = torch.sigmoid(pred_logits)
-
-        # x = F.relu(self.hidden1(x))  # activation function for hidden layer
-        # # x = F.dropout(x, p=self.dropout)
-        # x = F.relu(self.hidden2(x))
-        # pred_logits = self.hidden3(x)  # activation function for hidden layer
-        # pred_label = torch.sigmoid(pred_logits)
-        return pred_logits, pred_label
+# class IndividualNet(torch.nn.Module):
+#     def __init__(self, n_feature, n_hidden, n_output, dropout=0.3, name='ricci'):
+#         super(IndividualNet, self).__init__()
+#         # self.name = name
+#         self.num_hidden = len(n_hidden)
+#         self.n_hidden = n_hidden
+#         # if name == 'adult':
+#         #     if self.num_hidden == 1:
+#         #         # #hidden layers = 1
+#         #         self.hidden_1_1 = torch.nn.Linear(n_feature, n_hidden[0])  # hidden layer
+#         #         # self.out = torch.nn.Linear(n_hidden, n_output)  # output layer
+#         #         self.out = torch.nn.Linear(n_hidden[0], n_output)
+#         #     else:
+#         #         # #hidden layers = 2
+#         #         self.hidden_2_1 = torch.nn.Linear(n_feature, n_hidden[0])
+#         #         self.hidden_2_2 = torch.nn.Linear(n_hidden[0], n_hidden[1])
+#         #
+#         #         self.out = torch.nn.Linear(n_hidden[1], n_output)
+#         # elif name == 'ricci':
+#         #     if self.num_hidden == 1:
+#         #         # #hidden layers = 1
+#         #         self.hidden_1_1 = torch.nn.Linear(n_feature, n_hidden[0])  # hidden layer
+#         #         # self.out = torch.nn.Linear(n_hidden, n_output)  # output layer
+#         #         self.out = torch.nn.Linear(n_hidden[0], n_output)
+#         #     else:
+#         #         # #hidden layers = 2
+#         #         self.hidden_2_1 = torch.nn.Linear(n_feature, n_hidden[0])
+#         #         self.hidden_2_2 = torch.nn.Linear(n_hidden[0], n_hidden[1])
+#         #
+#         #         self.out = torch.nn.Linear(n_hidden[1], n_output)
+#         # elif name == 'german':
+#         #     if self.num_hidden == 1:
+#         #         # #hidden layers = 1
+#         #         self.hidden_1_1 = torch.nn.Linear(n_feature, n_hidden[0])  # hidden layer
+#         #         self.out = torch.nn.Linear(n_hidden[0], n_output)
+#         #         # self.relu = F.relu
+#         #     else:
+#         #         # #hidden layers = 2
+#         #         self.hidden_2_1 = torch.nn.Linear(n_feature, n_hidden[0])
+#         #         self.hidden_2_2 = torch.nn.Linear(n_hidden[0], n_hidden[1])
+#         #
+#         #         self.out = torch.nn.Linear(n_hidden[1], n_output)
+#         # elif name == 'propublica-recidivism':
+#         #     if self.num_hidden == 1:
+#         #         # #hidden layers = 1
+#         #         self.hidden_1_1 = torch.nn.Linear(n_feature, n_hidden[0])  # hidden layer
+#         #         # self.out = torch.nn.Linear(n_hidden, n_output)  # output layer
+#         #         self.out = torch.nn.Linear(n_hidden[0], n_output)
+#         #     else:
+#         #         # #hidden layers = 2
+#         #         self.hidden_2_1 = torch.nn.Linear(n_feature, n_hidden[0])
+#         #         self.hidden_2_2 = torch.nn.Linear(n_hidden[0], n_hidden[1])
+#         #         self.out = torch.nn.Linear(n_hidden[1], n_output)
+#
+#         if self.num_hidden == 1:
+#             # #hidden layers = 1
+#             self.hidden_1_1 = torch.nn.Linear(n_feature, n_hidden[0])  # hidden layer
+#             # self.out = torch.nn.Linear(n_hidden, n_output)  # output layer
+#             self.out = torch.nn.Linear(n_hidden[0], n_output)
+#         else:
+#             # #hidden layers = 2
+#             self.hidden_2_1 = torch.nn.Linear(n_feature, n_hidden[0])
+#             self.hidden_2_2 = torch.nn.Linear(n_hidden[0], n_hidden[1])
+#
+#             self.out = torch.nn.Linear(n_hidden[1], n_output)
+#         # else:
+#         # self.hidden1 = torch.nn.Linear(n_feature, hidden_units)
+#         # self.hidden2 = torch.nn.Linear(hidden_units, hidden_units)
+#         # self.hidden3 = torch.nn.Linear(hidden_units, n_output)
+#         self.dropout_value = dropout
+#         if dropout > 0:
+#             self.dropout = nn.Dropout(self.dropout_value)
+#         else:
+#             self.dropout = None
+#         self.relu = nn.ReLU()
+#
+#     def forward(self, x):
+#         #hidden layers = 2
+#         # if self.name == 'adult':
+#         #     if self.num_hidden == 1:
+#         #         x = self.hidden_1_1(x)
+#         #         if self.dropout_value > 0:
+#         #             x = self.dropout(x)
+#         #
+#         #         x = self.relu(x)
+#         #         pred_logits = self.out(x)
+#         #     else:
+#         #         x = self.hidden_2_1(x)
+#         #         if self.dropout_value > 0:
+#         #             x = self.dropout(x)
+#         #         x = self.relu(x)
+#         #         x = self.hidden_2_2(x)
+#         #         if self.dropout_value > 0:
+#         #             x = self.dropout(x)
+#         #         x = self.relu(x)
+#         #         pred_logits = self.out(x)
+#         # elif self.name == 'ricci':
+#         #     if self.num_hidden == 1:
+#         #         x = F.relu(self.hidden_1_1(x))  # activation function for hidden layer
+#         #         pred_logits = self.out(x)
+#         #     else:
+#         #         x = F.relu(self.hidden_2_1(x))  # activation function for hidden layer
+#         #         x = F.relu(self.hidden_2_2(x))  # activation function for hidden layer
+#         #         pred_logits = self.out(x)
+#         # elif self.name == 'german':
+#         #     if self.num_hidden == 1:
+#         #         x = F.relu(self.hidden_1_1(x))  # activation function for hidden layer
+#         #         pred_logits = self.out(x)
+#         #     else:
+#         #         x = F.relu(self.hidden_2_1(x))  # activation function for hidden layer
+#         #         x = F.relu(self.hidden_2_2(x))  # activation function for hidden layer
+#         #         pred_logits = self.out(x)
+#         # elif self.name == 'propublica-recidivism':
+#         #     if self.num_hidden == 1:
+#         #         x = F.relu(self.hidden_1_1(x))  # activation function for hidden layer
+#         #         if self.dropout > 0:
+#         #             x = F.dropout(x, p=self.dropout)
+#         #         pred_logits = self.out(x)
+#         #     else:
+#         #         x = F.relu(self.hidden_2_1(x))  # activation function for hidden layer
+#         #         x = F.relu(self.hidden_2_2(x))  # activation function for hidden layer
+#         #         pred_logits = self.out(x)
+#         # else:
+#         #     if self.num_hidden == 1:
+#         #         x = F.relu(self.hidden_1_1(x))  # activation function for hidden layer
+#         #         x = F.dropout(x, p=self.dropout)
+#         #         pred_logits = self.out(x)
+#         #     else:
+#         #         x = F.relu(self.hidden_2_1(x))  # activation function for hidden layer
+#         #         x = F.relu(self.hidden_2_2(x))  # activation function for hidden layer
+#         #         pred_logits = self.out(x)
+#
+#         if self.num_hidden == 1:
+#             x = self.hidden_1_1(x)
+#             if self.dropout_value > 0:
+#                 x = self.dropout(x)
+#
+#             x = self.relu(x)
+#             pred_logits = self.out(x)
+#         else:
+#             x = self.hidden_2_1(x)
+#             if self.dropout_value > 0:
+#                 x = self.dropout(x)
+#             x = self.relu(x)
+#             x = self.hidden_2_2(x)
+#             if self.dropout_value > 0:
+#                 x = self.dropout(x)
+#             x = self.relu(x)
+#             pred_logits = self.out(x)
+#
+#         pred_label = torch.sigmoid(pred_logits)
+#         # # hidden = 1
+#         # x = F.relu(self.hidden1(x))  # activation function for hidden layer
+#         # x = F.dropout(x, p=self.dropout)
+#         # pred_logits = self.hidden2(x)  # activation function for hidden layer
+#         # pred_label = torch.sigmoid(pred_logits)
+#
+#         # x = F.relu(self.hidden1(x))  # activation function for hidden layer
+#         # # x = F.dropout(x, p=self.dropout)
+#         # x = F.relu(self.hidden2(x))
+#         # pred_logits = self.hidden3(x)  # activation function for hidden layer
+#         # pred_label = torch.sigmoid(pred_logits)
+#         return pred_logits, pred_label
 
 
 def mutate(model, var):

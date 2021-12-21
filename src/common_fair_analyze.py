@@ -39,17 +39,25 @@ class CgfAnalyzeRes:
                     name_location='center', name_gap=30, name_rotate=0
                 ),
                 xaxis_opts=chopts.AxisOpts(
-                    name=f'基于{self.legi_featr}划分的群组',
-                    name_location='middle', name_gap=20
+                    # name=f'基于{self.legi_featr}划分的群组',
+                    name_location='middle', name_gap=20,
+                    axislabel_opts=chopts.LabelOpts(
+                        rotate=20,
+                        vertical_align='middle',
+                    )
                 )
             )
-            .add_xaxis([f'{self.legi_featr}={legi_grp}群组' for legi_grp in self.legi_groups])
+            .add_xaxis(
+                [f'{self.legi_featr}={legi_grp}' for legi_grp in self.legi_groups]
+            )
         )
         for sens_grp in self.sens_groups:
             chart.add_yaxis(
                 f'{self.sens_featr}={sens_grp}群组',
                 [self.data[legi_grp][sens_grp] for legi_grp in self.legi_groups],
-                label_opts = chopts.LabelOpts(is_show=False)
+                label_opts = chopts.LabelOpts(
+                    is_show=False,
+                )
             )
         return chart
 

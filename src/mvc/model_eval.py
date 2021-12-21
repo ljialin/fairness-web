@@ -50,7 +50,8 @@ class ModelEvaluator:
         self.processed_data = data_model.get_processed_data()
         # TODO: Predict only 1 times can reduce time cost
         data_model.update_prediction(self.predictor.predict(self.processed_data))
-        self.data = data_model.get_raw_data()
+        # self.data = data_model.get_raw_data()
+        self.data = data_model.data4eval
 
         self.__glb_metric_vals = None
         self.__fair_range = None
@@ -139,7 +140,7 @@ class ModelEvaluator:
             if discrimination != '':
                 cmmts.append(
                     ModelEvaluator.fairness_cmmt_fmt %
-                    (metric, grp, discrimination, metric, featr, featr)
+                    (metric, grp, discrimination, metric, featr, self.label)
                 )
         return cmmts
 
@@ -273,11 +274,31 @@ class ModelEvalController:
 
     def cgf_eval(self, sens_featrs, legi_featr):
         if not legi_featr:
-            raise RuntimeError('必须选择一个正当属性才能进行条件性群体公平分析')
+            # raise RuntimeError('必须选择一个正当属性才能进行条件性群体公平分析')
+            return '必须选择一个正当属性才能进行条件性群体公平分析'
         if legi_featr in sens_featrs:
-            raise RuntimeError('正当特征必须是非敏感特征')
+            # raise RuntimeError('正当特征必须是非敏感特征')
+            return '正当特征必须是非敏感特征'
         charts = self.view.update_cgf_res(self.model_evaltr, sens_featrs, legi_featr)
         for i, chart in enumerate(charts):
             self.charts[f'1{i}'] = chart
-        pass
+        return None
 
+
+class IndividualNet2(torch.nn.Module):
+    def __init__(self, n_feature, n_hidden, n_output=1, dropout=0.3):
+        super(IndividualNet2, self).__init__()
+
+        # 搭建神经网络
+        # layers = []
+        num_neurons = [n_feature, *n_hidden]
+        self.main = torch.nn.Sequential()
+        for i in range(1, len(num_neurons)):
+            self.main.add_module("linear_{}".format(str(i)), torch.nn.Linear(num_neurons[i - 1], num_neurons[i]))
+            self.main.add_module("dropout_{}".format(str(i)), torch.nn.Dropout(dropout))
+            self.main.add_module("relu_{}".format(str(i)), torch.nn.ReLU())
+        self.main.add_module("out", torch.nn.Linear(num_neurons[-1], n_output))
+        self.main.add_module("sigmoid", torch.nn.Sigmoid())
+
+    def forward(self, x):
+        return self.main(x)
