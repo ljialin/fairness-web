@@ -2,7 +2,7 @@
 import os
 import numpy as np
 import geatpy as ea
-from zqq.nets import Population_NN, weights_init
+from moeas4NN.nets import Population_NN, weights_init
 import torch
 import time
 import copy
@@ -750,7 +750,7 @@ Population : class - 种群类
                 #             file.write("\n")
                 #         file.close()
                 # print('种群信息导出完毕。')
-    # zqq added
+    # moeas4NN added
     def printPare(self, test_org, record_parameter):
         dirName = self.parameters['dirName']
         start_time = self.parameters['start_time']
@@ -773,7 +773,7 @@ Population : class - 种群类
         test_org.to_csv(dirName + start_time + '/testdata.csv', index=None)
 
 
-    # zqq added
+    # moeas4NN added
     def setisNN(self, isNN):
         self.isNN = isNN
         self.Encoding = 'NN'

@@ -3,7 +3,7 @@ import numpy as np
 import geatpy as ea
 import warnings
 import time
-# from geatpy.zqq.Run_metric import Alg_Evaluation
+# from geatpy.moeas4NN.Run_metric import Alg_Evaluation
 
 
 def maxminnorm(array):

@@ -102,22 +102,22 @@ from Population import Population
 from Problem import Problem
 # from PsyPopulation import PsyPopulation
 #
-# from zqq.nets import Population_NN, IndividualNet, weights_init
-from zqq.Evaluate import Cal_objectives
-from zqq.load_data import load_data
-from zqq.nets import sigmoid, mutate
-from zqq.GroupInfo import GroupInfo, GroupsInfo
-from zqq.Mutation_NN import Mutation_NN
-from zqq.Mutation_NN import Crossover_NN
-# from zqq.data.objects.list import DATASETS, get_dataset_names
-# from zqq.data.objects.ProcessedData import ProcessedData
-# from zqq.data.objects.Sample import Sample
-# from zqq.data.objects.Ricci import Ricci
-# from zqq.data.objects.Adult import Adult
-# from zqq.data.objects.German import German
-# from zqq.data.objects.PropublicaRecidivism import PropublicaRecidivism
-# from zqq.data.objects.PropublicaViolentRecidivism import PropublicaViolentRecidivism
-# from zqq.data.objects.TwoGaussians import TwoGaussians
+# from moeas4NN.nets import Population_NN, IndividualNet, weights_init
+from moeas4NN.Evaluate import Cal_objectives
+from moeas4NN.load_data import load_data
+from moeas4NN.nets import sigmoid, mutate
+from moeas4NN.GroupInfo import GroupInfo, GroupsInfo
+from moeas4NN.Mutation_NN import Mutation_NN
+from moeas4NN.Mutation_NN import Crossover_NN
+# from moeas4NN.data.objects.list import DATASETS, get_dataset_names
+# from moeas4NN.data.objects.ProcessedData import ProcessedData
+# from moeas4NN.data.objects.Sample import Sample
+# from moeas4NN.data.objects.Ricci import Ricci
+# from moeas4NN.data.objects.Adult import Adult
+# from moeas4NN.data.objects.German import German
+# from moeas4NN.data.objects.PropublicaRecidivism import PropublicaRecidivism
+# from moeas4NN.data.objects.PropublicaViolentRecidivism import PropublicaViolentRecidivism
+# from moeas4NN.data.objects.TwoGaussians import TwoGaussians
 
 # import operators
 # from operators.migration.Migrate import Migrate

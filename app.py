@@ -93,7 +93,7 @@ def data_page():
         if request.form['name'] == 'upload-dataset':
             errinfo = ctrlr.upload_dataset(
                 request.files['data'],
-                request.form['keep-or-not'] == 'F'
+                request.form['keep-or-not'] == 'T'
             )
         elif request.form['name'] == 'select-dataset':
             if request.form.get("dataset") is None:

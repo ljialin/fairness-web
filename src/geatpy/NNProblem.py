@@ -4,14 +4,14 @@ import geatpy as ea
 import torch
 from torch.utils.data import TensorDataset
 from torch.utils.data import DataLoader
-from geatpy.zqq.load_data import load_data
+from geatpy.moeas4NN.load_data import load_data
 from sklearn.model_selection import KFold
 import time
 import os
 import copy
 import matplotlib.pyplot as plt
 # from geatpy.plot_demo import plot_decision_boundary, plot_decision_boundary4
-from zqq.Mutation_NN import Mutation_NN
+from moeas4NN.Mutation_NN import Mutation_NN
 from scipy.optimize import minimize
 # from geatpy.MGD_utils import steep_direct_cost, steep_direc_cost_deriv, make_constraints
 import torch.nn.functional as F
@@ -463,7 +463,7 @@ class NNProblem_new(ea.Problem):  # 继承Problem父类
         self.dataname = dataname
         # self.dataset_obj = dataset_obj
         self.objectives_class = objectives_class
-        self.dirname = 'zqq/' + dirname
+        self.dirname = 'moeas4NN/' + dirname
         # self.cal_sens_name = [sensitive_attributions[0]]
         self.cal_obj_plan = cal_obj_plan
         self.GAN_alpha = GAN_alpha

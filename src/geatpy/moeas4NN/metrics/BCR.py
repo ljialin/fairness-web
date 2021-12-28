@@ -1,0 +1,19 @@
+from geatpy.moeas4NN.metrics.Metric import Metric
+from geatpy.moeas4NN.metrics.TNR import TNR
+from geatpy.moeas4NN.metrics.TPR import TPR
+
+class BCR(Metric):
+    def __init__(self):
+        Metric.__init__(self)
+        self.name = 'BCR'
+
+    def calc(self, actual, predicted, dict_of_sensitive_lists, single_sensitive_name,
+             unprotected_vals, positive_pred, problem, logits):
+        tnr = TNR()
+        tnr_val = tnr.calc(actual, predicted, dict_of_sensitive_lists, single_sensitive_name,
+                           unprotected_vals, positive_pred, problem, logits)
+        tpr = TPR()
+        tpr_val = tpr.calc(actual, predicted, dict_of_sensitive_lists, single_sensitive_name,
+                           unprotected_vals, positive_pred, problem, logits)
+        bcr = (tpr_val + tnr_val) / 2.0
+        return bcr
