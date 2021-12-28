@@ -364,7 +364,7 @@ msgstr ""
 #: templates/index.html:13
 msgid "intro_2"
 msgstr ""
-"People who are identical on non-sensitive traits should have similar "
+"People who are identical on non-sensitive attributes should have similar "
 "predicted results (or labels). For example, for students with the same "
 "grades, regardless of gender, the model should predict the same admission"
 " outcome."
@@ -372,7 +372,7 @@ msgstr ""
 #: templates/index.html:14
 msgid "intro_3"
 msgstr ""
-"The predicted results (or labels) between different populations should "
+"The predicted results (or labels) between different groups should "
 "not differ more than the differences between their non-sensitive "
 "characteristics."
 
