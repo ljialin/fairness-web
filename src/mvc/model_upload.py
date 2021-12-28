@@ -44,11 +44,11 @@ def upload_model(ip, struct_file, var_file):
         model = func()  # 数据类型本质上是nn.Module
         state_dict = torch.load(var_path)
         model.load_state_dict(state_dict)
+        model.eval()
     except Exception as e:
         os.remove(var_path)
         os.remove(struct_path)
         raise RuntimeError('导入模型失败\n错误信息：{}'.format(str(e)))
-
 
     return var_file.filename[:-4], model
 

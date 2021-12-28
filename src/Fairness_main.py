@@ -83,13 +83,13 @@ def interface4flask(ctrlr=None, task_id=0): #ctrlr可以认为非空
     n_hidden = [128]  # 默认一层隐藏层，宽度为n_hidden   np.array([64, 32])
 
     # 网络中的参数
-    learning_rate = 0.01  # 机器学习中训练网络的学习率
+    learning_rate = 0.004  # 机器学习中训练网络的学习率
     batch_size = 512  # 机器学习中的batch尺寸
 
     n_output = 1  # adult数据集中是二分类问题，因此为1
-    epoches = 1  # 初始化或变异后再训练的epoch
+    epoches = 1  # 初始化或变异后再训练的epoch(partial training)
     muta_mu = 0  # 网络变异正态噪音的均值
-    muta_var = 0.01  # 网络变异正态噪音的方差
+    muta_var = 0.1  # 网络变异正态噪音的方差
     kfold = 0  # 影响NNprobelm.py里面的流程， 计算objective时，需要将train data的kfold的值
     # 如果 kfold为大于0的数，则是最新版的算法流程
     # 如果 kfold为0不做cv，所有的train data只训练一次，并且保存此参数，用训练所得到的结果作为目标值

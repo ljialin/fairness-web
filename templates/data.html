@@ -2,7 +2,7 @@
 <html lang="cn">
 <head>
     <meta charset="UTF-8">
-    <title>机器学习模型评估</title>
+    <title>{{ _("ml_model_eval ") }}</title>
     <script type="text/javascript" src="/static/charts.js"></script>
     <script src="/static/extlib/jquery.js"></script>
     <script type="text/javascript" src="/static/extlib/echarts.min.js"></script>
@@ -19,13 +19,13 @@
 
 <div style="width: 100%; height: 640px;">
     <div style="float: left; width: 100%">
-        <input type="button" value="回到主页面" onclick="window.location.href='/'">
+        <input type="button" value="{{ _("back") }}" onclick="window.location.href='/'">
     </div>
     <div style="float: left; width: 100%">
         <div style="width: 32%; height: 100%; float: left">
-            <h4> 选择数据集 </h4>
-            <p>请在选择数据集后点击确认，然后点击“确认”。如果要上传数据集，请在选择描述文件和数据文件后，点击“上传数据集”。</p>
-            <p>确认过选择的数据集并看到属性列表后，请点击“下一步”。</p>
+            <h4> {{ _("dataset_selection ") }} </h4>
+            <p>{{ _("data_info_1 ") }}</p>
+            <p>{{ _("data_info_2 ") }}</p>
             <form action="" method="post" style="width: 100%; height: 48%; float: top">
                 <div style="width: 100%; height: 80%; overflow-y: auto">
                     {% for dataset in view.datasets %}
@@ -39,49 +39,49 @@
                         </label> {{ dataset }} </p>
                     {% endfor %}
                 </div>
-                <input type="submit" value="确认" style="margin-top: 10px">
+                <input type="submit" value="{{ _("yes") }}" style="margin-top: 10px">
             </form>
             <div style="width: 100%; height: 40%; float: top; margin-top: 4%">
                 <p>
-                    <a href="/data/desc_template"> 下载数据集模板 </a>
+                    <a href="/data/desc_template"> {{ _("download_data_temp ") }} </a>
                 </p>
                 <form action="" enctype='multipart/form-data' method='POST'>
                     <input type="hidden" name="name" value="upload-dataset"/>
                     <p>
-                        选择数据文件(.csv)
+                        {{ _("select_data_file ") }}(.csv)
                         <input type="file" name="data">
                     </p>
                     <p><label>
                         <input type="radio" name="keep-or-not" value="T" checked>
-                    </label> 长期保留数据集 </p>
+                    </label> {{ _("longterm_save_dataset ") }} </p>
                     <p><label>
                         <input type="radio" name="keep-or-not" value="F">
-                    </label> 不保留数据集 </p>
-                    <input type="submit" value="上传数据集">
+                    </label> {{ _("dont_keep_dataset") }} </p>
+                    <input type="submit" value="{{ _("upload_dataset ") }}">
                 </form>
             </div>
         </div>
         <div style="width: 64%; height: 100%; float: left; margin-left: 4%">
-            <h4> 离散属性 </h4>
+            <h4> {{ _("discrete_attribute") }} </h4>
             <div style="width: 100%; height: 36%; float: top; overflow-y: auto">
                 {% for line_text in view.c_featr_texts %}
                     <li> {{ line_text }} </li>
                 {% endfor %}
             </div>
-            <h4> 连续属性 </h4>
+            <h4> {{ _("continuous_attribute") }} </h4>
             <div style="width: 100%; height: 28%; float: top; overflow-y: auto">
                 {% for line_text in view.n_featr_texts %}
                     <li> {{ line_text }} </li>
                 {% endfor %}
             </div>
-            <h4> 目标属性 </h4>
+            <h4> {{ _("target_attribute ") }} </h4>
             {{ view.label_text }}
         </div>
     </div>
 
     <form method="post">
         <input type="hidden" name="name" value="next"/>
-        <input type="submit" value="下一步" style="float: top; margin-top: 40px">
+        <input type="submit" value="{{ _("next") }}" style="float: top; margin-top: 40px">
     </form>
 </div>
 
@@ -89,8 +89,8 @@
 <script src="{{ url_for('static',filename='extlib/jquery.js') }}"></script>
 <script>
     $(function () {
-        $(".headerpage").load("{{url_for('static',filename='header.html')}}");
-        $(".footerpage").load("{{url_for('static',filename='footer.html')}}");
+        $(".headerpage").load("{{ url_for('loadheader', para="null") }}");
+        $(".footerpage").load("{{ url_for('loadfooter') }}");
     });
 </script>
 </body>

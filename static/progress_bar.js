@@ -20,7 +20,7 @@ function start_task(pid) {
             if (res.progress_status === 15) { //已经暂停了
                 var pauseEle = $("#pause");
                 pauseEle.attr("disabled", false);
-                pauseEle.val("继续任务");
+                pauseEle.val(_("task_continue"));
                 $("#download_model").show()
             }
         });

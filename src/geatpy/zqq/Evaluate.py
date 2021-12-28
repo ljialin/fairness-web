@@ -1324,7 +1324,7 @@ def calcul_all_fairness_new3(data, data_norm, logits, truelabel, sensitive_attri
             # P(y != d, g)
             # Error ratio   or   Error diff
             if "Error_ratio" in obj_names or "Error_diff" in obj_names:
-                Error_ratio.append(1 - np.sum(g_truelabel * g_predlabel) / total_num)
+                Error_ratio.append(np.sum(g_truelabel != g_predlabel) / total_num)
                 Error_diff = Error_ratio
 
             # P(y=1 | d=1, g)

@@ -13,6 +13,8 @@ from root import PRJROOT
 # from utils import FileUtils
 from werkzeug.utils import secure_filename
 from src.common_fair_analyze import N_SPLIT
+from sklearn.preprocessing import StandardScaler
+from flask_babel import gettext as _
 
 
 class DataModel:
@@ -54,6 +56,7 @@ class DataModel:
                 if clazz[featr] == "categorical":
                     values = self.data[featr]
                     values = list(set(values))
+                    values = sorted(values)
                     tmp = {}
                     for i, value in enumerate(values):
                         tmp[value] = i
@@ -65,15 +68,16 @@ class DataModel:
                 elif clazz[featr] == "label":
                     values = self.data[featr]
                     values = list(set(values))
+                    values = sorted(values)
                     self.label = featr
                     if len(values) != 2:
-                        return f'描述文件中分类属性{featr}的取值类型只能是两个'
+                        return _("label_error")
                     self.pos_label_val = values[0]
                     self.neg_label_val = values[1]
                     self.label_map[values[0]] = 1
                     self.label_map[values[1]] = 0
                 else:
-                    return f'描述文件中属性{featr}需要指定为numberical、categorical或label'
+                    return f'{_("attribute")}{featr}{_("should_be_defined_as")}numberical、categorical or label'
             featrs.remove(self.label)
             self.featrs = featrs
 
@@ -86,7 +90,7 @@ class DataModel:
                 self.__group_n_featr(n_featr)  # 分五份
             return ''
         except:
-            return '数据集文件格式不正确，请对照模板文件进行检查！'
+            return _("update_error")
 
         #gsh add finish
 
@@ -184,6 +188,7 @@ class DataModel:
             1 if prediction > 0.5 else 0
             for prediction in self.data4eval['prediction'].values
         ]
+        print(np.sum(binary_predictions), len(binary_predictions))
         self.data4eval.insert(len(self.data4eval.columns), 'binary prediction', binary_predictions)
 
     def get_ctgrs(self, featr):
@@ -205,48 +210,95 @@ class DataModel:
         else:
             return list(self.categorical_map[featr].keys())
 
-    def get_processed_data(self): # 更改了数据接口以后unused
+    def get_processed_data(self, norm=1):
         if self.__train_data is None:
-            self.__process_train_data() #只在这里用了
+            self.__process_train_data(norm)
+
+            # normalize = StandardScaler()
+            # normalize.fit(self.__train_data[0])
+            # np_data = torch.FloatTensor(normalize.transform(self.__train_data[0]))
+            # self.__train_data = (np_data, self.__train_data[1])
+
         return self.__train_data
 
-    def __process_train_data(self):
+
+    def __process_train_data(self, norm):
+        raw_data, attrs, label = self.load_data()
         num_input = len(self.n_featrs) + sum(
             len(self.categorical_map[c_featr])
             for c_featr in self.c_featrs
         )
-        # print(num_input)
-        # raw_data = self.get_raw_data() #只用了一次 #gsh comment
-        raw_data = self.data
         np_data = np.zeros((len(raw_data), num_input), np.float32)
 
         start = 0
-        for featr in self.featrs:
+        for featr in attrs.keys():
+            featr_class = attrs[featr]
             frame = raw_data[featr]
-            if featr in self.n_featrs:
-                # min-max normalization
+            if len(featr_class) == 0:
                 end = start + 1
-                # print(frame.to_numpy().shape)
                 np_data[:, start] = frame.to_numpy()
-                min_val = np_data[:, start].min()
-                max_val = np_data[:, start].max()
-                np_data[:, start] -= min_val
-                np_data[:, start] /= (max_val - min_val)
-            else:
-                # convert onehot
-                featr_map = self.categorical_map[featr]
-                end = start + len(featr_map)
+                start = end
+
+        for featr in attrs.keys():
+            featr_class = attrs[featr]
+            frame = raw_data[featr]
+            if len(featr_class) != 0: #离散型
+                end = start + len(featr_class)
                 row_indexs = list(range(len(raw_data)))
-                col_indexs = list(featr_map[val] + start for val in frame)
+                col_indexs = list(featr_class.index(val) + start for val in frame)
                 np_data[row_indexs, col_indexs] = 1
-            start = end
+                start = end
 
         labels = list(map(int, (self.label_map[val] for val in raw_data[self.label].values)))
+
+        if norm:
+            normalize = StandardScaler()
+            normalize.fit(np_data)
+            np_data = normalize.transform(np_data)
+
         self.__train_data = (torch.tensor(np_data), torch.tensor(labels))
+
+
+    # wzq ver.
+    # def __process_train_data(self):
+    #     num_input = len(self.n_featrs) + sum(
+    #         len(self.categorical_map[c_featr])
+    #         for c_featr in self.c_featrs
+    #     )
+    #     # print(num_input)
+    #     # raw_data = self.get_raw_data() #只用了一次 #gsh comment
+    #     raw_data = self.data
+    #     np_data = np.zeros((len(raw_data), num_input), np.float32)
+    #
+    #     start = 0
+    #     for featr in self.featrs:
+    #         frame = raw_data[featr]
+    #         if featr in self.n_featrs:
+    #             # min-max normalization
+    #             end = start + 1
+    #             # print(frame.to_numpy().shape)
+    #             np_data[:, start] = frame.to_numpy()
+    #             min_val = np_data[:, start].min()
+    #             max_val = np_data[:, start].max()
+    #             np_data[:, start] -= min_val
+    #             np_data[:, start] /= (max_val - min_val)
+    #         else:
+    #             # convert onehot
+    #             featr_map = self.categorical_map[featr]
+    #             end = start + len(featr_map)
+    #             row_indexs = list(range(len(raw_data)))
+    #             col_indexs = list(featr_map[val] + start for val in frame)
+    #             np_data[row_indexs, col_indexs] = 1
+    #         start = end
+    #
+    #     labels = list(map(int, (self.label_map[val] for val in raw_data[self.label].values)))
+    #     self.__train_data = (torch.tensor(np_data), torch.tensor(labels))
+
+
 
     def free(self):
         if self.temporal:
-            os.remove(self.file_path + '.txt')
+            os.remove(self.file_path + 'np_data = {ndarray: (32561, 108)} [[0.30136988 0.         0.         ... 0.         0.         0.        ], [0.4520548  0.         0.         ... 0.         0.         0.        ], [0.28767124 1.         0.         ... 0.         0.         0.        ], ..., [0.2739726  1.         0.      ...View as Array.txt')
             os.remove(self.file_path + '.csv')
 
 
@@ -281,20 +333,20 @@ class DataService:
     def upload_dataset(data, keepfile):
         self = DataService.inst()
         if data.filename[-4:] != '.csv':
-            return '数据文件的文件类型必须为.csv'
+            return f'{_("dataset_file_type_error")}.csv'
 
         tar_path = PRJROOT + 'data'
         if not keepfile:
             tar_path += '/temp'
         data_path = os.path.join(tar_path, secure_filename(data.filename))
         if keepfile and (os.path.isfile(data_path)):
-            return '文件名冲突'
+            return _("filename_conflict")
         data.save(data_path)
 
         name = data.filename[:-4]
         if name in self.datasets.keys():
             os.remove(data_path)
-            return '上传失败：上传数据集与已有数据集重名'
+            return _("dataset_duplicate_name")
         self.datasets[name] = data_path[:-4]
         return f'OK:{name}'
 

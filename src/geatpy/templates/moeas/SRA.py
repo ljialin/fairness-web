@@ -1,3 +1,5 @@
+import copy
+
 import numpy as np
 import pandas as pd
 from scipy.spatial.distance import pdist
@@ -13,7 +15,7 @@ def SRA_parent_selection(popobjs):
 def SRA_env_selection(popobjs, n):
     # popobjs (N * M): objectives of population, #poluation = n, #objectives = m
     # n:               number of better parents
-    popobjs1 = popobjs
+    popobjs1 = copy.deepcopy(popobjs)
     popobjs = (popobjs - np.min(popobjs, axis=0))/(np.max(popobjs, axis=0) - np.min(popobjs, axis=0))
 
     N = popobjs.shape[0]

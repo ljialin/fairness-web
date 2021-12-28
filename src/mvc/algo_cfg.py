@@ -11,6 +11,7 @@ from src.task import Task
 from src.mvc.model_upload import init_pop_from_uploaded
 from src.algorithm import Algorithm
 import numpy as np
+from flask_babel import gettext as _
 
 
 class STATUS:
@@ -37,10 +38,10 @@ class AlgoCfgView:
 
 class AlgoCfg:
     def __init__(self):
-        self.acc_metric = 'Misclassification'
+        self.acc_metric = 'BCE_loss'
         self.fair_metric = 'Individual_fairness'
-        self.optimizer = 'NSGA-II'
-        self.pop_size = 25
+        self.optimizer = 'SRA'
+        self.pop_size = 50
         self.max_gens = 100
         self.sens_featrs = []
 
@@ -89,19 +90,19 @@ class AlgoController:
         try:
             self.cfg.pop_size = int(kwargs['pop_size'])
         except:
-            return "种群大小必须是数字！", 0
+            return _("task_error1"), 0
 
         try:
             self.cfg.max_gens = int(kwargs['max_gens'])
         except:
-            return "代数必须是数字！", 0
+            return _("task_error2"), 0
 
         self.cfg.sens_featrs = kwargs['sens_featrs']
         # if len(self.cfg.sens_featrs) == 0:
         #     return "需要选择敏感属性", 0
         for fear in self.cfg.sens_featrs:
             if fear in self.data_model.n_featrs:
-                return "暂不支持连续属性作为敏感属性", 0
+                return _("task_error3"), 0
 
         task_id = 'task' + auto_dire('task', 'task_space' + os.sep + str(self.ip), fmtr='%04d')[-4:]
         self.task = Task(task_id)
@@ -157,25 +158,25 @@ class AlgoController:
         self.status = status
         if status == STATUS.RUNNING:
             self.progress = round(gen * 100 / maxgen, 2)
-            self.progress_info = '演化中... 代数{}/{}({}%)'.format(gen, maxgen, str(self.progress))
+            self.progress_info = _("progress_info_1").format(gen, maxgen, str(self.progress))
             if gen == 1:
                 for i in range(len(self.max_pop)):
                     self.max_pop[i] = max(self.max_pop[i], max(self.pops[-1][:, i]))
         elif status == STATUS.INIT_PROBLEM:
-            self.progress_info = '正在实例化问题对象...'
+            self.progress_info = _("progress_info_2")
         elif status == STATUS.INIT_POP:
-            self.progress_info = '正在初始化种群...'
+            self.progress_info = _("progress_info_3")
         elif status == STATUS.INIT_CONFIG:
-            self.progress_info = '初始化参数配置...'
+            self.progress_info = _("progress_info_4")
         elif status == STATUS.FINISH:
-            self.progress_info = '演化完成！'
+            self.progress_info = _("progress_info_5")
             algomnger = AlgosManager.instances[self.ip]
             algomnger.running_tasks.pop(self.task.id)
             algomnger.finished_tasks[self.task.id] = self
         elif status == STATUS.ERROR:
             self.progress_info = error_info
         elif status == STATUS.ABORT:
-            self.progress_info = '任务终止！ 代数{}/{}({}%)'.format(gen, maxgen, str(self.progress))
+            self.progress_info = _("progress_info_6").format(gen, maxgen, str(self.progress))
             algomnger = AlgosManager.instances[self.ip]
             algomnger.running_tasks.pop(self.task.id)
             algomnger.finished_tasks[self.task.id] = self

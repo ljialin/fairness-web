@@ -1,43 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>模型评估指标说明</title>
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="机器学习模型评估指标说明">
-  <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='style.css')}}"/>
+    <meta charset="UTF-8">
+    <title>模型评估指标说明</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="机器学习模型评估指标说明">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}"/>
 </head>
 <body>
-  <div style="float: right; margin-right: 100px">
+<div style="float: right; margin-right: 100px">
     <input type="button" value="返回" onclick="window.location.href='/model-eval'">
-  </div>
-  <div class="headerpage"></div>
-  <div>
+</div>
+<div class="headerpage"></div>
+<div>
     <h1><b>机器学习模型评估指标说明</b></h1>
     <p>本页面借助二分类问题解释本平台使用的机器学习模型评估指标。</p>
     <p><b>记号（notations）：</b>
     <ul>
-      <li>\(g_1\)和\(g_2\)：基于敏感属性划分的两个群组。如：基于性别划分，\(g_1\)指代男性，\(g_2\)指代女性。</li>
-      <li>\(y\)：一个样本的实际类别。\(y=1\)表示该样本的实际类别为正类（\(g_p\)）；否则，\(y=0\)。如雇佣问题中，一位求职者被雇佣，其\(y=1\)；否则，其\(y=0\)。</li>
-      <li>\(\hat y\)：模型对一个样本给出的预测类别。\(\hat y=1\)表示该样本的预测类别为正类；否则\(y=0\)。如雇佣问题中，一个机器学习模型预测一位求职者被雇佣，则其\(\hat y=1\)；否则，其\(\hat y=0\)。</li>
-      <li>\(P\)：数据集中正样本的数目（\(P=TP+FN\)）。</li>
-      <li>\(F\)：数据集中负样本的数目（\(N=TN+FP\)）。</li>
-      <li>\(TP\)：True Positive, 即模型判断为正样本且实际是正样本的样本数目。</li>
-      <li>\(TN\)：True Negative, 即模型判断为负样本且实际是负样本的样本数目。</li>
-      <li>\(FP\)：False Positive, 即模型判断为正样本但实际是负样本的样本数目。</li>
-      <li>\(FN\)：False Negative, 即模型判断为负样本但实际是正样本的样本数目。</li>
+        <li>\(g_1\)和\(g_2\)：基于敏感属性划分的两个群组。如：基于性别划分，\(g_1\)指代男性，\(g_2\)指代女性。</li>
+        <li>\(y\)：一个样本的实际类别。\(y=1\)表示该样本的实际类别为正类（\(g_p\)）；否则，\(y=0\)。如雇佣问题中，一位求职者被雇佣，其\(y=1\)；否则，其\(y=0\)。</li>
+        <li>\(\hat y\)：模型对一个样本给出的预测类别。\(\hat y=1\)表示该样本的预测类别为正类；否则\(y=0\)。如雇佣问题中，一个机器学习模型预测一位求职者被雇佣，则其\(\hat
+            y=1\)；否则，其\(\hat y=0\)。
+        </li>
+        <li>\(P\)：数据集中正样本的数目（\(P=TP+FN\)）。</li>
+        <li>\(F\)：数据集中负样本的数目（\(N=TN+FP\)）。</li>
+        <li>\(TP\)：True Positive, 即模型判断为正样本且实际是正样本的样本数目。</li>
+        <li>\(TN\)：True Negative, 即模型判断为负样本且实际是负样本的样本数目。</li>
+        <li>\(FP\)：False Positive, 即模型判断为正样本但实际是负样本的样本数目。</li>
+        <li>\(FN\)：False Negative, 即模型判断为负样本但实际是正样本的样本数目。</li>
     </ul>
     <hr>
 
     <h2>准确率（Accuracy）</h2>
     <p>该指标评估模型的在预测任务上的正确率（越高越好），计算方式如下
-    \[Accuracy= {TP+TN \over TP+FN+TN+FP}\]</p>
+        \[Accuracy= {TP+TN \over TP+FN+TN+FP}\]</p>
     <p>如果一个模型对所有群组的准确率都相同，则称该模型满足了<b>总体准确率均等（Overall Accuracy Equality）</b>。</p>
-    <p>更多关于该指标的解释请参考Berk等人的论文<cite><a href="https://www.researchgate.net/publication/315667137_Fairness_in_Criminal_Justice_Risk_Assessments_The_State_of_the_Art">Fairness in Criminal Justice Assessments: The State of the Art </a></cite></p>
+    <p>更多关于该指标的解释请参考Berk等人的论文<cite><a
+            href="https://www.researchgate.net/publication/315667137_Fairness_in_Criminal_Justice_Risk_Assessments_The_State_of_the_Art">Fairness
+        in Criminal Justice Assessments: The State of the Art </a></cite></p>
     <hr>
 
     <h2>群组公平性（Group Fairness），又称为统计均等（Statistical Parity）</h2>
@@ -46,7 +50,8 @@
     <p>如果下述等式成立（即，模型对于每个群组中的个体预测为正的概率相同），则认为该模型是统计均等的。</p>
     \[PLR(g_1) = PLR(g_2)\]
     <p>该指标表示，基于敏感属性划分不同群组中的个体应该有同等概率获得相同的预测值，否则此机器学习模型可能对其中一个群组存在偏爱或歧视。</p>
-    <p>更多关于该指标的解释请参考Zemel等人的论文 <cite><a href="https://dl.acm.org/doi/10.5555/3042817.3042973">Learning Fair Representations</a></cite>。</p>
+    <p>更多关于该指标的解释请参考Zemel等人的论文 <cite><a href="https://dl.acm.org/doi/10.5555/3042817.3042973">Learning Fair
+        Representations</a></cite>。</p>
     <hr>
 
     <h2>衡量预测公平性的指标</h2>
@@ -55,47 +60,55 @@
     <p>如果下述等式成立（即，模型对于每个群组中实际为正类的个体被预测为正类的概率相同），则认为该模型是正类预测均等的。</p>
     \[\mathcal{P}(\hat{y}=1|y=1,G=g_1)=\mathcal{P}(\hat{y}=1|y=1,G=g_2)\]
     <p>该指标表示，基于敏感属性划分不同群组中的正类个体应该有同等概率被预测为正类，否则此机器学习模型可能对其中一个群组存在偏爱或歧视。</p>
-    <p>更多关于以上指标的解释请参考A. Chouldechova的论文 <cite><a href="https://pubmed.ncbi.nlm.nih.gov/28632438/">Fair Prediction with Disparate Impact: A Study of Bias in Recidivism Prediction Instruments</a></cite>。</p>
+    <p>更多关于以上指标的解释请参考A. Chouldechova的论文 <cite><a href="https://pubmed.ncbi.nlm.nih.gov/28632438/">Fair Prediction with
+        Disparate Impact: A Study of Bias in Recidivism Prediction Instruments</a></cite>。</p>
 
 
     <h3>负类预测均等 (Negative Predictive Value, NPV)</h3>
     <p>与PPV的定义类似。如果下述等式成立（即，模型对于每个群组中实际为负类的个体被预测为负类的概率相同），则认为该模型是负类预测均等的。</p>
     \[\mathcal{P}(\hat{y}=0|y=0,G=g_1)=\mathcal{P}(\hat{y}=0|y=0,G=g_2)\]
     <p>该指标表示，基于敏感属性划分不同群组中的正类个体应该有同等概率被预测为正类，否则此机器学习模型可能对其中一个群组存在偏爱或歧视。</p>
-    <p>更多关于以上指标的解释请参考A. Chouldechova的论文 <cite><a href="https://pubmed.ncbi.nlm.nih.gov/28632438/">Fair Prediction with Disparate Impact: A Study of Bias in Recidivism Prediction Instruments</a></cite>。</p>
+    <p>更多关于以上指标的解释请参考A. Chouldechova的论文 <cite><a href="https://pubmed.ncbi.nlm.nih.gov/28632438/">Fair Prediction with
+        Disparate Impact: A Study of Bias in Recidivism Prediction Instruments</a></cite>。</p>
 
 
     <h3>正类错误预测平衡 (False Positive Error Rate (FPR) Balance)</h3>
     <p>如果下述等式成立（即，模型对于每个群组中实际为负类的个体被预测为正类的概率相同），则认为该模型是正类错误预测平衡的。</p>
     \[\mathcal{P}(\hat{y}=1|y=0,G=g_1)=\mathcal{P}(\hat{y}=1|y=0,G=g_2)\]
     <p>该指标表示，基于敏感属性划分不同群组中的负类个体应该有同等概率被错误的预测为正类，否则此机器学习模型可能对其中一个群组存在偏爱或歧视。</p>
-    <p>更多关于以上指标的解释请参考A. Chouldechova的论文 <cite><a href="https://pubmed.ncbi.nlm.nih.gov/28632438/">Fair Prediction with Disparate Impact: A Study of Bias in Recidivism Prediction Instruments</a></cite>。</p>
+    <p>更多关于以上指标的解释请参考A. Chouldechova的论文 <cite><a href="https://pubmed.ncbi.nlm.nih.gov/28632438/">Fair Prediction with
+        Disparate Impact: A Study of Bias in Recidivism Prediction Instruments</a></cite>。</p>
 
 
     <h3>负类错误预测平衡 (False Negative Error Rate (FNR) Balance)</h3>
     <p>与FPR的定义类似。如果下述等式成立（即，模型对于每个群组中实际为正类的个体被预测为负类的概率相同），则认为该模型是负类错误预测平衡的。</p>
     \[\mathcal{P}(\hat{y}=0|y=1,G=g_1)=\mathcal{P}(\hat{y}=0|y=1,G=g_2)\]
     <p>该指标表示，基于敏感属性划分不同群组中的正类个体应该有同等概率被错误的预测为负类，否则此机器学习模型可能对其中一个群组存在偏爱或歧视。</p>
-    <p>更多关于以上指标的解释请参考A. Chouldechova的论文 <cite><a href="https://pubmed.ncbi.nlm.nih.gov/28632438/">Fair Prediction with Disparate Impact: A Study of Bias in Recidivism Prediction Instruments</a></cite>。</p>
+    <p>更多关于以上指标的解释请参考A. Chouldechova的论文 <cite><a href="https://pubmed.ncbi.nlm.nih.gov/28632438/">Fair Prediction with
+        Disparate Impact: A Study of Bias in Recidivism Prediction Instruments</a></cite>。</p>
 
     <h3>差异均等 (Equalized Odds)</h3>
     <p>如果一个机器学习模型同时满足正类错误预测平衡（FPR Balance）和负类错误预测平衡（FNR Balance），则称其是差异均等的。</p>
     <p>该指标表示，机器学习模型对基于敏感属性划分不同群组中的个体预测获得的TPR和FPR应该相等，否则此机器学习模型可能对其中一个群组存在偏爱或歧视。</p>
-    <p>更多关于该指标的解释请参考Hardt等人的论文 <cite><a href="https://dl.acm.org/doi/10.5555/3157382.3157469">Equality of opportunity in supervised learning</a></cite>。</p>
-    <p>更多关于衡量预测公平性的指标的解释可以参考Verma和Rubin的论文 <cite><a href="https://ieeexplore.ieee.org/document/8452913">Fairness Definitions Explained</a></cite>。</p>
+    <p>更多关于该指标的解释请参考Hardt等人的论文 <cite><a href="https://dl.acm.org/doi/10.5555/3157382.3157469">Equality of opportunity in
+        supervised learning</a></cite>。</p>
+    <p>更多关于衡量预测公平性的指标的解释可以参考Verma和Rubin的论文 <cite><a href="https://ieeexplore.ieee.org/document/8452913">Fairness
+        Definitions Explained</a></cite>。</p>
     <hr>
 
     <h4>在本平台中，由于考虑了多群组的情况，所以将以上所有的二群组指标采用“群组指标值=总体指标值”的形式拓展为了多群组指标。该做法主要参考了Corbett-Davies的论文:</h4>
-      <cite><a href="https://www.researchgate.net/publication/313107433_Algorithmic_decision_making_and_the_cost_of_fairness">Algorithmic decision making and the cost of fairness</a></cite>
-  </div>
+    <cite><a
+            href="https://www.researchgate.net/publication/313107433_Algorithmic_decision_making_and_the_cost_of_fairness">Algorithmic
+        decision making and the cost of fairness</a></cite>
+</div>
 
-  <div class="footerpage"></div>
-  <script src="{{url_for('static',filename='extlib/jquery.js')}}"></script>
-  <script>
-    $(function() {
-      $(".headerpage").load("{{url_for('static',filename='header.html')}}");
-      $(".footerpage").load("{{url_for('static',filename='footer.html')}}");
+<div class="footerpage"></div>
+<script src="{{ url_for('static',filename='extlib/jquery.js') }}"></script>
+<script>
+    $(function () {
+        $(".headerpage").load("{{ url_for('loadheader', para="null") }}");
+        $(".footerpage").load("{{ url_for('loadfooter') }}");
     });
-  </script>
+</script>
 </body>
 </html>

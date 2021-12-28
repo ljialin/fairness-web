@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>算法配置</title>
+    <title>{{ _("algo_config") }}</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}"/>
 </head>
 <body>
@@ -14,10 +14,10 @@
 {% endif %}
 
 <div class="headerpage"></div>
-<p><input type="button" value="回到主页面" onclick="window.location.href='/'"></p>
-<h2> 配置算法参数 </h2>
+<p><input type="button" value="{{ _("back") }}" onclick="window.location.href='/'"></p>
+<h2> {{ _("algo_para_config") }} </h2>
 <form style="width: 1200px; height: 500px" method="post">
-    <h4>选择敏感属性</h4>
+    <h4>{{ _("choose_sensitive_attributes") }}</h4>
     <div style="width: 30%; height: 100%; float: left; overflow-y: auto">
         {% for featr in view.featrs %}
             <p><label>
@@ -28,10 +28,10 @@
     <div style="width: 68%; height: 100%; margin-left: 2%; float: left">
         <div style="width: 100%; height: 60%; float: top">
 
-            {% set metric = ["Misclassification", "MSE_loss", "BCE_loss"] %}
+            {% set metric = ["BCE_loss", "MSE_loss", "Misclassification"] %}
 
             <div style="width: 48%; float: left">
-                准确度指标
+                {{ _("accuracy_metric") }}
                 {% for each in metric %}
                     <p><label>
                         {% if cfg.acc_metric == each %}
@@ -44,13 +44,13 @@
             </div>
 
             {% set metric = ["Individual_fairness", "Group_fairness", "Predictive_parity",
-            "FPR_ratio", "Equalized_odds", "Conditional_use_accuracy_equality", "Overall_accuracy",
+            "FPR_ratio", "FNR_ratio", "Equalized_odds", "Conditional_use_accuracy_equality", "Overall_accuracy",
 
-            "Equal_opportunity",
+            "Equal_opportunity","Predictive_equality"
             ] %}
 
             <div style="width: 48%; float: left; margin-left: 4%">
-                公平性指标
+                {{ _("fairness_metric") }}
                 {% for each in metric %}
                     <p><label>
                         {% if cfg.fair_metric == each %}
@@ -64,18 +64,18 @@
         </div>
         <div style="width: 100%; height: 37%; margin-top: 3%; float: top">
             <p>
-                种群大小:
+                {{ _("pop_size") }}:
                 <label>
                     <input type="text" name="pop_size" value="{{ cfg.pop_size }}">
                 </label>
-                迭代次数:
+                {{ _("iter_time") }}:
                 <label>
                     <input type="text" name="max_gens" value="{{ cfg.max_gens }}">
                 </label>
             </p>
             <p>
                 {% set optmzer = ["SRA", "NSGA-II"] %}
-                多目标优化器:
+                {{ _("mo_optimazor") }}:
                 {% for each in optmzer %}
                     <label>
                         {% if cfg.optimizer == each %}
@@ -102,16 +102,16 @@
             </p>
         </div>
     </div>
-    <input type="submit" name="type" value="上传初始化模型" disabled>
-    <input type="submit" name="type" value="运行任务">
+    <input type="submit" name="type" value="{{ _("upload_init_models") }}" disabled>
+    <input type="submit" name="type" value="{{ _("run_task") }}">
 </form>
 
 <div class="footerpage"></div>
 <script src="{{ url_for('static',filename='extlib/jquery.js') }}"></script>
 <script>
     $(function () {
-        $(".headerpage").load("{{url_for('static',filename='header.html')}}");
-        $(".footerpage").load("{{url_for('static',filename='footer.html')}}");
+        $(".headerpage").load("{{ url_for('loadheader', para="null") }}");
+        $(".footerpage").load("{{ url_for('loadfooter') }}");
     });
 </script>
 </body>

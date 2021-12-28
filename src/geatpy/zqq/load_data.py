@@ -157,6 +157,12 @@ def load_data(dataModel, preserve_sens_in_net=1, sensitive_attributions=None):
     data_x = data.drop(columns=label_name)
     data_label = data[label_name]
 
+    # ---
+    normalize = StandardScaler()
+    normalize.fit(data_x)
+    asd = normalize.transform(data_x)
+    # ---
+
     # train+validation = 80%      test = 20%
     sss1 = StratifiedShuffleSplit(n_splits=2, test_size=0.2, random_state=20210811)
     plan1, plan2 = sss1.split(data_x, data_label)

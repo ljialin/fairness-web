@@ -13,6 +13,7 @@ from typing import List
 from src.common_fair_analyze import THRESHOLDS, N_SPLIT, CgfAnalyzeRes
 from pyecharts.charts import Bar
 from src.utils import get_count_from_series
+from flask_babel import gettext as _
 
 
 class DataEvaluator:
@@ -59,19 +60,12 @@ class DataEvaluator:
         group_sp_rates = self.get_group_plr(key) / self.get_global_plr()
         for group in group_sp_rates.index:
             if group_sp_rates[group] < self.theta_gf:
-                cmmts.append(
-                    f'{group}群体的正面标签率（标签值为{self.pos_label_val}的频率）'
-                    f'与总体正面标签率的比值过低。建议检查该群体是否收到歧视\\偏爱，'
-                    f'以及该特征是否为应当影响标签值的非敏感特征。'
-                )
+                cmmts.append(_("data_eval_result_1").format(group, self.pos_label_val))
             elif group_sp_rates[group] > 1 / self.theta_gf:
-                cmmts.append(
-                    f'{group}群体的正面标签率（标签值为{self.pos_label_val}的频率）'
-                    f'与总体正面标签率的比值过高，建议检查该群体是否受到歧视\\偏爱，'
-                    f'以及该特征是否为应当影响标签值的非敏感特征。'
-                )
+                cmmts.append(_("data_eval_result_2").format(group, self.pos_label_val))
         if not cmmts:
-            cmmts.append(f'对{featr}特征进行群体公平分析，未发现公平性问题')
+            data_eval_result_4 = _("data_eval_result_4")
+            cmmts.append(f'{featr}{data_eval_result_4}')
         return group_sp_rates, cmmts
 
     def analyze_cgf(self, sens_featr, legi_featr):
@@ -104,16 +98,16 @@ class DataEvaluator:
                 res.data[legi_grp][sens_grp] = ratio
                 if ratio < THRESHOLDS['PLR']:
                     res.cmmts.append(
-                        f'{sens_featr}为{sens_grp}的群体在{legi_featr}为{legi_grp}的部分{self.label}'
-                        f'为{self.pos_label_val}的比例过低，可能受到了歧视\\偏爱'
+                        _("data_eval_result_6").format(sens_featr, sens_grp, legi_featr, legi_grp, self.label,
+                                                       self.pos_label_val)
                     )
                 elif ratio > 1 / THRESHOLDS['PLR']:
                     res.cmmts.append(
-                        f'{sens_featr}为{sens_grp}的群体在{legi_featr}为{legi_grp}的部分{self.label}为{self.pos_label_val}'
-                        f'的比例过高，可能受到了歧视\\偏爱'
+                        _("data_eval_result_7").format(sens_featr, sens_grp, legi_featr, legi_grp, self.label,
+                                                       self.pos_label_val)
                     )
-            if not res.cmmts:
-                res.cmmts.append(f'以{legi_featr}为正当特征对{sens_featr}进行分析，未发现公平性问题')
+        if not res.cmmts:
+            res.cmmts.append(_("data_eval_result_11").format(legi_featr, sens_featr))
         return res
 
     def analyze_if(self, legi_featr):
@@ -122,18 +116,25 @@ class DataEvaluator:
         else:
             neg_discriminated, pos_discriminated = self.__analyze_if_categorical(legi_featr)
         cmmts = []
-        if neg_discriminated:
-            cmmts.append(f'以{legi_featr}作为正当特征分析，数据集中以下{len(neg_discriminated)}个个体可能受到了歧视\\偏爱：')
-            cmmts.append(', '.join(map(str, neg_discriminated)))
-        if pos_discriminated:
-            cmmts.append(f'以{legi_featr}作为正当特征分析，数据集中以下{len(pos_discriminated)}个个体可能受到了歧视\\偏爱：')
-            cmmts.append(', '.join(map(str, pos_discriminated)))
+        # if neg_discriminated:
+        #     cmmts.append(f'以{legi_featr}作为正当特征分析，数据集中以下{len(neg_discriminated)}个个体可能受到了歧视\\偏爱：')
+        #     cmmts.append(', '.join(map(str, neg_discriminated)))
+        # if pos_discriminated:
+        #     cmmts.append(f'以{legi_featr}作为正当特征分析，数据集中以下{len(pos_discriminated)}个个体可能受到了歧视\\偏爱：')
+        #     cmmts.append(', '.join(map(str, pos_discriminated)))
+        if neg_discriminated or pos_discriminated:
+            # cmmts.append(_("data_eval_result_8").format(legi_featr, len(neg_discriminated)) +
+            #              '\n, '.join(map(str, neg_discriminated)))
+            # cmmts.append(_("data_eval_result_8").format(legi_featr, len(pos_discriminated)) +
+            #              '\n, '.join(map(str, pos_discriminated)))
+            cmmts.append(_("data_eval_result_8").format(legi_featr, str(len(pos_discriminated)+len(neg_discriminated))) +
+                         '\n' + ', '.join(map(str, pos_discriminated)) + ', ' + ', '.join(map(str, neg_discriminated)))
             # cmmts.append(
             #     f'以{legi_featr}作为正当特征分析，数据集中以下{len(pos_discriminated)}个个体可能'
             #     f'受到了偏爱：\n' + ', '.join(map(str, pos_discriminated))
             # )
         if not cmmts:
-            cmmts.append('当前数据集中未发现个体公平问题。')
+            cmmts.append(_("data_eval_result_5"))
         return cmmts
 
     def __analyze_if_categorical(self, legi_featr):
@@ -223,13 +224,13 @@ class DataEvalView:
             chart = (
                 Bar()
                 .set_global_opts(
-                    title_opts=chart_opts.TitleOpts(title=f'对{featr}属性的分析结果'),
+                    title_opts=chart_opts.TitleOpts(title=_("data_eval_result_9").format(featr)),
                     xaxis_opts=chart_opts.AxisOpts(
-                        name=f'基于{featr}划分的群组', name_location='middle',
+                        name=_("data_eval_result_10").format(featr), name_location='middle',
                         name_gap=25
                     ),
                     yaxis_opts=chart_opts.AxisOpts(
-                        name='\n'.join('群组正标签率与总体正标签率之比'), name_location='center',
+                        name='\n'.join(_("data_chart_1")), name_location='center',
                         name_gap=25, name_rotate=0
                     ),
                 )
@@ -273,21 +274,21 @@ class DataEvalController:
 
     def gf_eval(self, sens_featrs):
         if not sens_featrs:
-            return '必须选择至少一个敏感属性才能进行分析'
+            return _("data_eval_error_1")
         charts = self.view.update_gf_res(self.model, sens_featrs)
         for i, chart in enumerate(charts):
             self.charts[f'0{i}'] = chart
 
     def cgf_eval(self, sens_featrs, legi_featr):
         if not sens_featrs or not legi_featr:
-            return '必须选择至少一个敏感属性和一个正当属性才能进行分析'
+            return _("data_eval_error_2")
         if legi_featr in sens_featrs:
-            return '正当特征必须是非敏感特征'
+            return _("data_eval_error_3")
         charts = self.view.update_cgf_res(self.model, sens_featrs, legi_featr)
         for i, chart in enumerate(charts):
             self.charts[f'1{i}'] = chart
 
     def if_eval(self, legi_featr):
         if not legi_featr:
-            return '必须选择至少一个正当属性才能进行分析'
+            return _("data_eval_error_4")
         self.view.update_if_res(self.model, legi_featr)

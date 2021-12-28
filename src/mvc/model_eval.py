@@ -14,6 +14,7 @@ from src.common_fair_analyze import METRICS, METRIC_UBS, THRESHOLDS, PREFER_HIGH
 from src.mvc.data import DataController
 from src.mvc.model_upload import upload_model
 from src.utils import get_rgb_hex, get_count_from_series
+from flask_babel import gettext as _
 
 
 class Predictor:
@@ -35,10 +36,7 @@ class Predictor:
 
 
 class ModelEvaluator:
-    fairness_cmmt_fmt = (
-        '根据%s指标，%s群体可能受到了%s，建议考虑将%s指标作为算法优化的目标之一对该模型进行优化，'
-        '或考察%s特征是否对%s有正当影响。若有，建议将该特征从敏感特征列表中去除。'
-    )
+    # fairness_cmmt_fmt = _("model_eval_result_1")
 
     def __init__(self, predictor, data_model):
         self.predictor = predictor
@@ -59,6 +57,7 @@ class ModelEvaluator:
     def get_glb_metric_vals(self):
         if self.__glb_metric_vals is None:
             self.__glb_metric_vals = self.compute_metrics(**self.__get_confus_vals())
+            print(self.__glb_metric_vals['Acc']) #gsh add
         return self.__glb_metric_vals
 
     def get_fair_range(self):
@@ -80,7 +79,7 @@ class ModelEvaluator:
             metric_vals[grp] = self.compute_metrics(**confus_vals[grp])
             cmmts += self.make_fairness_cmmts(featr, grp, metric_vals[grp])
         if not cmmts:
-            cmmts.append(f'对{featr}特征进行分析，未发现公平性问题')
+            cmmts.append(_("model_eval_result_2").format(featr))
         return metric_vals, cmmts
 
     def analyze_cgf(self, sens_featr, legi_featr):
@@ -110,17 +109,11 @@ class ModelEvaluator:
                 ratio = plr / total_plr
                 res.data[legi_grp][sens_grp] = ratio
                 if ratio < THRESHOLDS['PLR']:
-                    res.cmmts.append(
-                        f'{sens_featr}为{sens_grp}的群体在{legi_featr}为{legi_grp}的部分{self.label}预测值'
-                        f'为{self.label_pval}的比例过低，可能受到了歧视\\偏爱'
-                    )
+                    res.cmmts.append(_("model_eval_result_3").format(sens_featr, sens_grp, legi_featr, legi_grp, self.label, self.label_pval))
                 elif ratio > 1 / THRESHOLDS['PLR']:
-                    res.cmmts.append(
-                        f'{sens_featr}为{sens_grp}的群体在{legi_featr}为{legi_grp}的部分{self.label}预测值'
-                        f'为{self.label_pval}的比例过高，可能受到了歧视\\偏爱'
-                    )
+                    res.cmmts.append(_("model_eval_result_4").format(sens_featr, sens_grp, legi_featr, legi_grp, self.label, self.label_pval))
             if not res.cmmts:
-                res.cmmts.append(f'以{legi_featr}为正当特征对{sens_featr}进行分析，未发现公平性问题')
+                res.cmmts.append(_("model_eval_result_5 ").format(legi_featr, sens_featr))
         return res
 
     def make_fairness_cmmts(self, featr, grp, metric_vals):
@@ -132,15 +125,14 @@ class ModelEvaluator:
             discrimination = ''
             if metric_val < fair_range[0][i]:
                 # discrimination = '歧视' if PREFER_HIGH[mtrc] else '偏爱'
-                discrimination = '歧视\\偏爱'
+                discrimination = _("discrimination_preference")
             elif metric_val > fair_range[1][i]:
                 # discrimination = '偏爱' if PREFER_HIGH[mtrc] else '歧视'
-                discrimination = '歧视\\偏爱'
-            metric = mtrc + '和Equalized Odds' if mtrc in {'FPR', 'FNR'} else mtrc
+                discrimination = _("discrimination_preference")
+            metric = mtrc + _("and_eo") if mtrc in {'FPR', 'FNR'} else mtrc
             if discrimination != '':
                 cmmts.append(
-                    ModelEvaluator.fairness_cmmt_fmt %
-                    (metric, grp, discrimination, metric, featr, self.label)
+                    _("model_eval_result_1").format(metric, grp, discrimination, metric, featr, self.label)
                 )
         return cmmts
 
@@ -217,7 +209,7 @@ class ModelEvalView:
                     )
                 )
                 .add(
-                    '公平范围', fair_range,
+                    _("fairness_range"), fair_range,
                     label_opts=chopts.LabelOpts(is_show=False),
                     linestyle_opts=chopts.LineStyleOpts(color='red', width=2)
                 )
@@ -230,7 +222,7 @@ class ModelEvalView:
                 color = f'#{get_rgb_hex(0, g, b)}'
 
                 chart.add(
-                    f'{grp}群组', [[grp_metric_vals[grp][mtrc] for mtrc in METRICS]],
+                    _("group").format(grp), [[grp_metric_vals[grp][mtrc] for mtrc in METRICS]],
                     label_opts=chopts.LabelOpts(is_show=False),
                     linestyle_opts=chopts.LineStyleOpts(width=2),
                     areastyle_opts = chopts.AreaStyleOpts(opacity=0.2),
@@ -275,10 +267,10 @@ class ModelEvalController:
     def cgf_eval(self, sens_featrs, legi_featr):
         if not legi_featr:
             # raise RuntimeError('必须选择一个正当属性才能进行条件性群体公平分析')
-            return '必须选择一个正当属性才能进行条件性群体公平分析'
+            return _("model_eval_error_1")
         if legi_featr in sens_featrs:
             # raise RuntimeError('正当特征必须是非敏感特征')
-            return '正当特征必须是非敏感特征'
+            return _("model_eval_error_2")
         charts = self.view.update_cgf_res(self.model_evaltr, sens_featrs, legi_featr)
         for i, chart in enumerate(charts):
             self.charts[f'1{i}'] = chart

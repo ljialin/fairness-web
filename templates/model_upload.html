@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>上传机器学习模型</title>
+    <title>{{ _("upload_ml_model") }}</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}"/>
 </head>
 <body>
@@ -14,31 +14,28 @@
 {% endif %}
 
 <div style="width: 100%; float: left">
-    <input type="button" value="回到主页面" onclick="window.location.href='/'">
+    <input type="button" value="{{ _("back") }}" onclick="window.location.href='/'">
 </div>
 
 <div style="height: 700px">
     <div>
-        <div style="width: 100%; float: left"><h1>请上传模型</h1></div>
+        <div style="width: 100%; float: left"><h1>{{ _("upload_model") }}</h1></div>
     </div>
     <div style="float: left">
-        <h3> 模型定义文件示意图 </h3>
+        <h3> {{ _("model_def_file_demo") }} </h3>
         <img src="{{ url_for('static', filename= './assets/model_py_example.png') }}" alt="model_py_example"/>
     </div>
     <div style="width: 600px; float: left; margin-left: 50px; margin-top: 35px">
         <h3>
-            请参考左图上传pytorch模型定义文件（.py）和保存的参数（.pth或.pkl）文件。
-            模型参数文件必须是通过torch.save(model.state_dict(), path)保存的。
-            模型定义文件需要包括一个完整的torch.nn.Module子类和一个无参main()函数，
-            该函数返回一个创建好的模型对象。
+            {{ _("model_def_file_dec") }}
         </h3>
-        <a href="/model/model_def_template"> 下载模型结构定义文件模板 </a>
+        <a href="/model/model_def_template"> {{ _("download_model_template") }} </a>
         <form action="" enctype="multipart/form-data" method='POST'>
-            <p>选择模型结构定义文件(.py)</p>
+            <p>{{ _("choose_model_structure") }}(.py)</p>
             <p><input type="file" name="struct"></p>
-            <p>选择模型参数文件(.pth或.pkl)</p>
+            <p>{{ _("choose_model_para") }}(.pth or .pkl)</p>
             <p><input type="file" name="var"></p>
-            <input type="submit" value="上传模型并进行模型评估">
+            <input type="submit" value="{{ _("upload_model_eval") }}">
         </form>
     </div>
 </div>
@@ -46,8 +43,8 @@
 <script src="{{ url_for('static',filename='extlib/jquery.js') }}"></script>
 <script>
     $(function () {
-        $(".headerpage").load("{{url_for('static',filename='header.html')}}");
-        $(".footerpage").load("{{url_for('static',filename='footer.html')}}");
+        $(".headerpage").load("{{ url_for('loadheader', para="null") }}");
+        $(".footerpage").load("{{ url_for('loadfooter') }}");
     });
 </script>
 </body>

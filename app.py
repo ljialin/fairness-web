@@ -9,6 +9,8 @@ from socket import gethostname
 
 import numpy as np
 from flask import Flask, render_template, request, redirect, send_from_directory, jsonify
+from flask_babel import Babel, refresh, gettext as _
+from flask_babel_js import BabelJS
 from pyecharts.charts import Bar, Radar, Scatter
 from pyecharts import options as opts
 from pyecharts.commons.utils import JsCode
@@ -23,9 +25,24 @@ from mvc.algo_cfg import STATUS
 from Fairness_main import interface4flask
 from zipfile import ZipFile
 
+def create_app():
+    app = Flask(__name__)
+    Babel(app)
+    BabelJS(app)
+    app.config.update(
+        BABEL_DEFAULT_LOCALE="zh_Hans_CN"
+    )
+    return app
+
+
 url = "127.0.0.1:5000"
 port = 5000
-app = Flask(__name__)
+app = create_app()
+
+
+# import logging
+# log = logging.getLogger('werkzeug')
+# log.setLevel(logging.ERROR)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -44,6 +61,25 @@ def index():
             # else:
             DataController(ip, target)
             return redirect('/data')
+
+
+@app.route('/trans/<language>', methods=['GET', 'POST'])
+def language_switch(language):
+    app.config.update(
+        BABEL_DEFAULT_LOCALE=language
+    )
+    refresh()
+    return redirect(request.referrer)
+
+
+@app.route('/loadheader/<para>', methods=['GET', 'POST'])
+def loadheader(para):
+    return render_template('header.html', para=para)
+
+
+@app.route('/loadfooter', methods=['GET', 'POST'])
+def loadfooter():
+    return render_template('footer.html')
 
 
 @app.route('/data', methods=['GET', 'POST'])
@@ -95,11 +131,11 @@ def data_eval():
         if form['name'] == 'eval':
             sens_featrs = form.getlist('sens-featrs')
             legi_featr = form.get('legi-featr')
-            if form['type'] == '群体公平分析':
+            if form['type'] == _("group_fairness_analysis"):
                 errinfo = ctrlr.gf_eval(sens_featrs)
-            elif form['type'] == '个体公平分析':
+            elif form['type'] == _("individual_fariness_analysis"):
                 errinfo = ctrlr.if_eval(legi_featr)
-            elif form['type'] == '条件性群体公平分析':
+            elif form['type'] == _("conditional_group_fairness_analysis"):
                 errinfo = ctrlr.cgf_eval(sens_featrs, legi_featr)
 
     # 这里的ip好像没被用到
@@ -136,9 +172,9 @@ def model_eval():
     if form:
         if form['name'] == 'eval':
             sens_featrs = form.getlist('sens-featrs')
-            if form['type'] == '群体公平分析':
+            if form['type'] == _("group_fairness_analysis"):
                 errinfo = ctrlr.gf_eval(sens_featrs)
-            elif form['type'] == '条件性群体公平分析':
+            elif form['type'] == _("conditional_group_fairness_analysis"):
                 errinfo = ctrlr.cgf_eval(sens_featrs, form['legi-featr'])
     return render_template('model_eval.html', url=url, view=ctrlr.view, errinfo=errinfo)
 
@@ -178,7 +214,7 @@ def algo_cfg():
         AlgosManager.instances[ip].running_tasks[task_id] = ctrlr
         if errinfo is not None:
             return render_template('algo_cfg.html', view=ctrlr.view, cfg=ctrlr.cfg, errinfo=errinfo)
-        if form['type'] == '上传初始化模型':
+        if form['type'] == _("upload_init_models"):
             return redirect('/algo-cfg/model-upload')
         else:
             # return redirect(f'/task/{task_id:04d}')
@@ -317,7 +353,7 @@ def algo_status_chart(task_id):
                                                        name_location='center',
                                                        max_=float('%.3g' % ctrlr.max_pop[1]),
                                                        type_="value"),
-                              title_opts=opts.TitleOpts(title="公平性指标和准确性指标优化结果"),
+                              title_opts=opts.TitleOpts(title=_("optimization_result")),
                               )
              )
 

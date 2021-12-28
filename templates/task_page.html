@@ -2,12 +2,13 @@
 <html lang="cn">
 <head>
     <meta charset="UTF-8">
-    <title>进程情况</title>
+    <title>{{ _("task_status") }}</title>
     <script src="/static/extlib/jquery.js"></script>
     <script type="text/javascript" src="/static/extlib/echarts.min.js"></script>
     <script type="text/javascript" src="/static/charts.js"></script>
     <script type="text/javascript" src="/static/script.js"></script>
     <script type="text/javascript" src="/static/progress_bar.js"></script>
+    <script src="{{ url_for("babel_catalog") }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename="task_page.css") }}"/>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}"/>
 </head>
@@ -20,29 +21,29 @@
 
 <body>
 <div class="headerpage"></div>
-<p><input type="button" value="回到主页面" onclick="window.location.href='/'"></p>
+<p><input type="button" value="{{ _("back") }}" onclick="window.location.href='/'"></p>
 <h2>
-    优化过程-{{ pid }}（
+    {{ _("optimization_process") }}-{{ pid }}（
     {% if status == 11 %}
-        已结束
+        {{ _("task_end") }}
     {% else %}
-        运行中
+        {{ _("task_running") }}
     {% endif %}
     ）
 </h2>
 <div style="width: 100%">
     <div style="float:left;width:500px;margin-right: 150px">
         <div class="cfg">
-            <h4>数据集名称：{{ view.dataname }}</h4>
-            <h4>敏感属性：
+            <h4>{{ _("dataset_name") }}: {{ view.dataname }}</h4>
+            <h4>{{ _("sensitive_attributes") }}:
                 {% for fear in cfg.sens_featrs %}
                     {{ fear }},
                 {% endfor %}
             </h4>
-            <h4>优化目标：{{ cfg.acc_metric }}, {{ cfg.fair_metric }}</h4>
-            <h4>种群大小：{{ cfg.pop_size }}</h4>
-            <h4>演化代数：{{ cfg.max_gens }}</h4>
-            <h4>优化器：{{ cfg.optimizer }}</h4>
+            <h4>{{ _("optimization_obj") }}: {{ cfg.acc_metric }}, {{ cfg.fair_metric }}</h4>
+            <h4>{{ _("pop_size") }}: {{ cfg.pop_size }}</h4>
+            <h4>{{ _("iter_time") }}: {{ cfg.max_gens }}</h4>
+            <h4>{{ _("mo_optimazor") }}: {{ cfg.optimizer }}</h4>
         </div>
 
         <div class="poptable" style="width: 500px">
@@ -70,7 +71,7 @@
     </div>
 
     <div class="block" style="float:left">
-        <h3>公平性指标和准确性指标优化结果</h3>
+        <h3>{{ _("optimization_result") }}</h3>
         <div id="{{ pid }}" style="width:500px; height:500px; text-align: center">
             <script> get_chart("{{ pid }}", "http://{{ url }}/task/{{ pid }}/chart") </script>
         </div>
@@ -80,12 +81,12 @@
 <div id="btns" style="float:left;width:100%">
     {% if status != 11 %}
     <p>
-        <input id="abort" type="submit" value="终止任务" onclick="killProcess('http://{{ url }}/task/{{ pid }}/intervene')">
-        <input id="pause" type="submit" value="暂停任务" onclick="pauseContinue('http://{{ url }}/task/{{ pid }}/pause')">
+        <input id="abort" type="submit" value="{{ _("task_stop") }}" onclick="killProcess('http://{{ url }}/task/{{ pid }}/intervene')">
+        <input id="pause" type="submit" value="{{ _("task_pause") }}" onclick="pauseContinue('http://{{ url }}/task/{{ pid }}/pause')">
     </p>
     {% endif %}
     <p>
-        <a href="/task/{{ pid }}/download_model" id="download_model" hidden="hidden">下载模型</a>
+        <a href="/task/{{ pid }}/download_model" id="download_model" hidden="hidden">{{ _("download_models") }}</a>
     </p>
 </div>
 
@@ -102,8 +103,8 @@
 <script src="{{ url_for('static',filename='extlib/jquery.js') }}"></script>
 <script>
     $(function () {
-        $(".headerpage").load("{{url_for('static',filename='header.html')}}");
-        $(".footerpage").load("{{url_for('static',filename='footer.html')}}");
+        $(".headerpage").load("{{ url_for('loadheader', para="hidden") }}");
+        $(".footerpage").load("{{ url_for('loadfooter') }}");
     });
 </script>
 </body>
