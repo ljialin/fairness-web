@@ -1,0 +1,459 @@
+# Translations template for PROJECT.
+# Copyright (C) 2021 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2021-12-28 10:26+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: app.py:133 app.py:174 templates/data_eval.html:50
+#: templates/data_eval.html:74 templates/model_eval.html:50
+#: templates/model_eval.html:73
+msgid "group_fairness_analysis"
+msgstr ""
+
+#: app.py:135 templates/data_eval.html:69 templates/data_eval.html:96
+msgid "individual_fariness_analysis"
+msgstr ""
+
+#: app.py:137 app.py:176 templates/data_eval.html:68
+#: templates/data_eval.html:85 templates/model_eval.html:68
+#: templates/model_eval.html:84
+msgid "conditional_group_fairness_analysis"
+msgstr ""
+
+#: app.py:216 templates/algo_cfg.html:105
+msgid "upload_init_models"
+msgstr ""
+
+#: app.py:355 templates/task_page.html:73
+msgid "optimization_result"
+msgstr ""
+
+#: src/mvc/algo_cfg.py:93
+msgid "task_error1"
+msgstr ""
+
+#: src/mvc/algo_cfg.py:98
+msgid "task_error2"
+msgstr ""
+
+#: src/mvc/algo_cfg.py:105
+msgid "task_error3"
+msgstr ""
+
+#: src/mvc/algo_cfg.py:161
+msgid "progress_info_1"
+msgstr ""
+
+#: src/mvc/algo_cfg.py:166
+msgid "progress_info_2"
+msgstr ""
+
+#: src/mvc/algo_cfg.py:168
+msgid "progress_info_3"
+msgstr ""
+
+#: src/mvc/algo_cfg.py:170
+msgid "progress_info_4"
+msgstr ""
+
+#: src/mvc/algo_cfg.py:172
+msgid "progress_info_5"
+msgstr ""
+
+#: src/mvc/algo_cfg.py:179
+msgid "progress_info_6"
+msgstr ""
+
+#: src/mvc/data.py:74
+msgid "label_error"
+msgstr ""
+
+#: src/mvc/data.py:93
+msgid "update_error"
+msgstr ""
+
+#: src/mvc/data.py:343
+msgid "filename_conflict"
+msgstr ""
+
+#: src/mvc/data.py:349
+msgid "dataset_duplicate_name"
+msgstr ""
+
+#: src/mvc/data_eval.py:63 src/mvc/data_eval.py:72
+msgid "label_freq_of"
+msgstr ""
+
+#: src/mvc/data_eval.py:64
+msgid "data_eval_result_1"
+msgstr ""
+
+#: src/mvc/data_eval.py:65 src/mvc/data_eval.py:74
+msgid "data_eval_result_2"
+msgstr ""
+
+#: src/mvc/data_eval.py:73
+msgid "data_eval_result_3"
+msgstr ""
+
+#: src/mvc/data_eval.py:81
+msgid "data_eval_result_4"
+msgstr ""
+
+#: src/mvc/data_eval.py:115
+msgid "data_eval_result_6"
+msgstr ""
+
+#: src/mvc/data_eval.py:120
+msgid "data_eval_result_7"
+msgstr ""
+
+#: src/mvc/data_eval.py:124
+msgid "data_eval_result_11"
+msgstr ""
+
+#: src/mvc/data_eval.py:140
+msgid "data_eval_result_8"
+msgstr ""
+
+#: src/mvc/data_eval.py:146
+msgid "data_eval_result_5"
+msgstr ""
+
+#: src/mvc/data_eval.py:236
+msgid "data_eval_result_9"
+msgstr ""
+
+#: src/mvc/data_eval.py:238
+msgid "data_eval_result_10"
+msgstr ""
+
+#: src/mvc/data_eval.py:242
+msgid "data_chart_1"
+msgstr ""
+
+#: src/mvc/data_eval.py:286
+msgid "data_eval_error_1"
+msgstr ""
+
+#: src/mvc/data_eval.py:293
+msgid "data_eval_error_2"
+msgstr ""
+
+#: src/mvc/data_eval.py:295
+msgid "data_eval_error_3"
+msgstr ""
+
+#: src/mvc/data_eval.py:302
+msgid "data_eval_error_4"
+msgstr ""
+
+#: src/mvc/model_eval.py:82
+msgid "model_eval_result_2"
+msgstr ""
+
+#: src/mvc/model_eval.py:112
+msgid "model_eval_result_3"
+msgstr ""
+
+#: src/mvc/model_eval.py:114
+msgid "model_eval_result_4"
+msgstr ""
+
+#: src/mvc/model_eval.py:116
+msgid "model_eval_result_5 "
+msgstr ""
+
+#: src/mvc/model_eval.py:128 src/mvc/model_eval.py:131
+msgid "discrimination_preference"
+msgstr ""
+
+#: src/mvc/model_eval.py:132
+msgid "and_eo"
+msgstr ""
+
+#: src/mvc/model_eval.py:135
+msgid "model_eval_result_1"
+msgstr ""
+
+#: src/mvc/model_eval.py:212
+msgid "fairness_range"
+msgstr ""
+
+#: src/mvc/model_eval.py:225
+msgid "group"
+msgstr ""
+
+#: src/mvc/model_eval.py:270
+msgid "model_eval_error_1"
+msgstr ""
+
+#: src/mvc/model_eval.py:273
+msgid "model_eval_error_2"
+msgstr ""
+
+#: static/progress_bar.js:27 static/script.js:42
+msgid "task_continue"
+msgstr ""
+
+#: static/script.js:35 static/script.js:36 static/script.js:43
+#: templates/task_page.html:84
+msgid "task_pause"
+msgstr ""
+
+#: static/script.js:37
+msgid "task_pausing"
+msgstr ""
+
+#: static/script.js:54
+msgid "task_stopping"
+msgstr ""
+
+#: templates/algo_cfg.html:5
+msgid "algo_config"
+msgstr ""
+
+#: templates/algo_cfg.html:17 templates/data.html:22
+#: templates/data_eval.html:26 templates/model_eval.html:26
+#: templates/model_upload.html:17 templates/task_page.html:23
+msgid "back"
+msgstr ""
+
+#: templates/algo_cfg.html:18
+msgid "algo_para_config"
+msgstr ""
+
+#: templates/algo_cfg.html:20 templates/data_eval.html:33
+#: templates/model_eval.html:33
+msgid "choose_sensitive_attributes"
+msgstr ""
+
+#: templates/algo_cfg.html:34
+msgid "accuracy_metric"
+msgstr ""
+
+#: templates/algo_cfg.html:53
+msgid "fairness_metric"
+msgstr ""
+
+#: templates/algo_cfg.html:67 templates/task_page.html:43
+msgid "pop_size"
+msgstr ""
+
+#: templates/algo_cfg.html:71 templates/task_page.html:44
+msgid "iter_time"
+msgstr ""
+
+#: templates/algo_cfg.html:78 templates/task_page.html:45
+msgid "mo_optimazor"
+msgstr ""
+
+#: templates/algo_cfg.html:106
+msgid "run_task"
+msgstr ""
+
+#: templates/data.html:5
+msgid "ml_model_eval "
+msgstr ""
+
+#: templates/data.html:26
+msgid "dataset_selection "
+msgstr ""
+
+#: templates/data.html:27
+msgid "data_info_1 "
+msgstr ""
+
+#: templates/data.html:28
+msgid "data_info_2 "
+msgstr ""
+
+#: templates/data.html:42
+msgid "yes"
+msgstr ""
+
+#: templates/data.html:46
+msgid "download_data_temp "
+msgstr ""
+
+#: templates/data.html:51
+msgid "select_data_file "
+msgstr ""
+
+#: templates/data.html:56
+msgid "longterm_save_dataset "
+msgstr ""
+
+#: templates/data.html:59
+msgid "dont_keep_dataset"
+msgstr ""
+
+#: templates/data.html:60
+msgid "upload_dataset "
+msgstr ""
+
+#: templates/data.html:65
+msgid "discrete_attribute"
+msgstr ""
+
+#: templates/data.html:71
+msgid "continuous_attribute"
+msgstr ""
+
+#: templates/data.html:77
+msgid "target_attribute "
+msgstr ""
+
+#: templates/data.html:84
+msgid "next"
+msgstr ""
+
+#: templates/data_eval.html:5
+msgid "dataset_fairness_evaluation"
+msgstr ""
+
+#: templates/data_eval.html:24
+msgid "dataset"
+msgstr ""
+
+#: templates/data_eval.html:24 templates/model_eval.html:24
+msgid "fairness_evaluation"
+msgstr ""
+
+#: templates/data_eval.html:53 templates/model_eval.html:53
+msgid "select_proper_attributes"
+msgstr ""
+
+#: templates/footer.html:11
+msgid "unit"
+msgstr ""
+
+#: templates/footer.html:12
+msgid "area"
+msgstr ""
+
+#: templates/header.html:1
+msgid "platform_name"
+msgstr ""
+
+#: templates/index.html:12
+msgid "intro_1"
+msgstr ""
+
+#: templates/index.html:13
+msgid "intro_2"
+msgstr ""
+
+#: templates/index.html:14
+msgid "intro_3"
+msgstr ""
+
+#: templates/index.html:15
+msgid "intro_4"
+msgstr ""
+
+#: templates/index.html:26
+msgid "finished_task"
+msgstr ""
+
+#: templates/index.html:31
+msgid "running_task"
+msgstr ""
+
+#: templates/index.html:40
+msgid "func1"
+msgstr ""
+
+#: templates/index.html:45
+msgid "func2"
+msgstr ""
+
+#: templates/index.html:50
+msgid "func3"
+msgstr ""
+
+#: templates/model_eval.html:24
+msgid "model "
+msgstr ""
+
+#: templates/model_upload.html:5
+msgid "upload_ml_model"
+msgstr ""
+
+#: templates/model_upload.html:22
+msgid "upload_model"
+msgstr ""
+
+#: templates/model_upload.html:25
+msgid "model_def_file_demo"
+msgstr ""
+
+#: templates/model_upload.html:30
+msgid "model_def_file_dec"
+msgstr ""
+
+#: templates/model_upload.html:32
+msgid "download_model_template"
+msgstr ""
+
+#: templates/model_upload.html:34
+msgid "choose_model_structure"
+msgstr ""
+
+#: templates/model_upload.html:36
+msgid "choose_model_para"
+msgstr ""
+
+#: templates/model_upload.html:38
+msgid "upload_model_eval"
+msgstr ""
+
+#: templates/task_page.html:5
+msgid "task_status"
+msgstr ""
+
+#: templates/task_page.html:25
+msgid "optimization_process"
+msgstr ""
+
+#: templates/task_page.html:27
+msgid "task_end"
+msgstr ""
+
+#: templates/task_page.html:29
+msgid "task_running"
+msgstr ""
+
+#: templates/task_page.html:36
+msgid "dataset_name"
+msgstr ""
+
+#: templates/task_page.html:37
+msgid "sensitive_attributes"
+msgstr ""
+
+#: templates/task_page.html:42
+msgid "optimization_obj"
+msgstr ""
+
+#: templates/task_page.html:83
+msgid "task_stop"
+msgstr ""
+
+#: templates/task_page.html:88
+msgid "download_models"
+msgstr ""
+

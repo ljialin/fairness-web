@@ -1,0 +1,460 @@
+# Chinese (Simplified, China) translations for PROJECT.
+# Copyright (C) 2021 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2021-12-28 10:26+0800\n"
+"PO-Revision-Date: 2021-12-27 11:32+0800\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_Hans_CN\n"
+"Language-Team: zh_Hans_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: app.py:133 app.py:174 templates/data_eval.html:50
+#: templates/data_eval.html:74 templates/model_eval.html:50
+#: templates/model_eval.html:73
+msgid "group_fairness_analysis"
+msgstr "群体公平分析"
+
+#: app.py:135 templates/data_eval.html:69 templates/data_eval.html:96
+msgid "individual_fariness_analysis"
+msgstr "个体公平分析"
+
+#: app.py:137 app.py:176 templates/data_eval.html:68
+#: templates/data_eval.html:85 templates/model_eval.html:68
+#: templates/model_eval.html:84
+msgid "conditional_group_fairness_analysis"
+msgstr "条件性群体公平分析"
+
+#: app.py:216 templates/algo_cfg.html:105
+msgid "upload_init_models"
+msgstr "上传初始化模型"
+
+#: app.py:355 templates/task_page.html:73
+msgid "optimization_result"
+msgstr "公平性指标和准确性指标优化结果"
+
+#: src/mvc/algo_cfg.py:93
+msgid "task_error1"
+msgstr "种群大小必须是数字！"
+
+#: src/mvc/algo_cfg.py:98
+msgid "task_error2"
+msgstr "代数必须是数字！"
+
+#: src/mvc/algo_cfg.py:105
+msgid "task_error3"
+msgstr "暂不支持连续属性作为敏感属性"
+
+#: src/mvc/algo_cfg.py:161
+msgid "progress_info_1"
+msgstr "演化中... 代数{}/{}({}%)"
+
+#: src/mvc/algo_cfg.py:166
+msgid "progress_info_2"
+msgstr "正在实例化问题对象..."
+
+#: src/mvc/algo_cfg.py:168
+msgid "progress_info_3"
+msgstr "正在初始化种群..."
+
+#: src/mvc/algo_cfg.py:170
+msgid "progress_info_4"
+msgstr "初始化参数配置..."
+
+#: src/mvc/algo_cfg.py:172
+msgid "progress_info_5"
+msgstr "演化完成！"
+
+#: src/mvc/algo_cfg.py:179
+msgid "progress_info_6"
+msgstr "任务终止！ 代数{}/{}({}%)"
+
+#: src/mvc/data.py:74
+msgid "label_error"
+msgstr "分类属性的取值只有两种可能"
+
+#: src/mvc/data.py:93
+msgid "update_error"
+msgstr "数据集文件格式不正确，请对照模板文件进行检查！"
+
+#: src/mvc/data.py:343
+msgid "filename_conflict"
+msgstr "文件名冲突"
+
+#: src/mvc/data.py:349
+msgid "dataset_duplicate_name"
+msgstr "上传失败：上传数据集与已有数据集重名"
+
+#: src/mvc/data_eval.py:63 src/mvc/data_eval.py:72
+msgid "label_freq_of"
+msgstr "做为标签值的频率"
+
+#: src/mvc/data_eval.py:64
+msgid "data_eval_result_1"
+msgstr "{}群体的正面标签率（标签值为{}的频率）与总体正面标签率的比值过低。建议检查该群体是否收到歧视\\偏爱，以及该特征是否为应当影响标签值的非敏感特征。"
+
+#: src/mvc/data_eval.py:65 src/mvc/data_eval.py:74
+msgid "data_eval_result_2"
+msgstr "{}群体的正面标签率（标签值为{}的频率）与总体正面标签率的比值过高，建议检查该群体是否受到歧视\\偏爱，以及该特征是否为应当影响标签值的非敏感特征。"
+
+#: src/mvc/data_eval.py:73
+msgid "data_eval_result_3"
+msgstr "与总体正面标签率的比值过高，建议检查该群体是否受到歧视\\偏爱，"
+
+#: src/mvc/data_eval.py:81
+msgid "data_eval_result_4"
+msgstr "特征在群体公平分析中未发现公平性问题"
+
+#: src/mvc/data_eval.py:115
+msgid "data_eval_result_6"
+msgstr "{}为{}的群体在{}为{}的部分{}为{}的比例过低，可能受到了歧视\\偏爱"
+
+#: src/mvc/data_eval.py:120
+msgid "data_eval_result_7"
+msgstr "{}为{}的群体在{}为{}的部分{}为{}的比例过高，可能受到了歧视\\偏爱"
+
+#: src/mvc/data_eval.py:124
+msgid "data_eval_result_11"
+msgstr "以{}为正当特征对{}进行分析，未发现公平性问题"
+
+#: src/mvc/data_eval.py:140
+msgid "data_eval_result_8"
+msgstr "以{}作为正当特征分析，数据集中以下{}个个体可能受到了歧视\\偏爱："
+
+#: src/mvc/data_eval.py:146
+msgid "data_eval_result_5"
+msgstr "当前数据集中未发现个体公平问题。"
+
+#: src/mvc/data_eval.py:236
+msgid "data_eval_result_9"
+msgstr "对{}属性的分析结果"
+
+#: src/mvc/data_eval.py:238
+msgid "data_eval_result_10"
+msgstr "基于{}划分的群组"
+
+#: src/mvc/data_eval.py:242
+msgid "data_chart_1"
+msgstr "群组正标签率与总体正标签率之比"
+
+#: src/mvc/data_eval.py:286
+msgid "data_eval_error_1"
+msgstr "必须选择至少一个敏感属性才能进行分析"
+
+#: src/mvc/data_eval.py:293
+msgid "data_eval_error_2"
+msgstr "必须选择至少一个敏感属性和一个正当属性才能进行分析"
+
+#: src/mvc/data_eval.py:295
+msgid "data_eval_error_3"
+msgstr "正当特征必须是非敏感特征"
+
+#: src/mvc/data_eval.py:302
+msgid "data_eval_error_4"
+msgstr "必须选择至少一个正当属性才能进行分析"
+
+#: src/mvc/model_eval.py:82
+msgid "model_eval_result_2"
+msgstr "对{}特征进行分析，未发现公平性问题"
+
+#: src/mvc/model_eval.py:112
+msgid "model_eval_result_3"
+msgstr "{}为{}的群体在{}为{}的部分{}预测值为{}的比例过低，可能受到了歧视\\偏爱"
+
+#: src/mvc/model_eval.py:114
+msgid "model_eval_result_4"
+msgstr "{}为{}的群体在{}为{}的部分{}预测值为{}的比例过高，可能受到了歧视\\偏爱"
+
+#: src/mvc/model_eval.py:116
+msgid "model_eval_result_5 "
+msgstr "以{}为正当特征对{}进行分析，未发现公平性问题"
+
+#: src/mvc/model_eval.py:128 src/mvc/model_eval.py:131
+msgid "discrimination_preference"
+msgstr "歧视\\偏爱"
+
+#: src/mvc/model_eval.py:132
+msgid "and_eo"
+msgstr "和Equalized Odds"
+
+#: src/mvc/model_eval.py:135
+msgid "model_eval_result_1"
+msgstr "根据{}指标，{}群体可能受到了{}，建议考虑将{}指标作为算法优化的目标之一对该模型进行优化，或考察{}特征是否对{}有正当影响。若有，建议将该特征从敏感特征列表中去除。"
+
+#: src/mvc/model_eval.py:212
+msgid "fairness_range"
+msgstr "公平范围"
+
+#: src/mvc/model_eval.py:225
+msgid "group"
+msgstr "{}群组"
+
+#: src/mvc/model_eval.py:270
+msgid "model_eval_error_1"
+msgstr "必须选择一个正当属性才能进行条件性群体公平分析"
+
+#: src/mvc/model_eval.py:273
+msgid "model_eval_error_2"
+msgstr "正当特征必须是非敏感特征"
+
+#: static/progress_bar.js:27 static/script.js:42
+msgid "task_continue"
+msgstr "继续任务"
+
+#: static/script.js:35 static/script.js:36 static/script.js:43
+#: templates/task_page.html:84
+msgid "task_pause"
+msgstr "暂停任务"
+
+#: static/script.js:37
+msgid "task_pausing"
+msgstr "暂停中... 请稍后"
+
+#: static/script.js:54
+msgid "task_stopping"
+msgstr "正在终止任务... 请稍后"
+
+#: templates/algo_cfg.html:5
+msgid "algo_config"
+msgstr "算法配置"
+
+#: templates/algo_cfg.html:17 templates/data.html:22
+#: templates/data_eval.html:26 templates/model_eval.html:26
+#: templates/model_upload.html:17 templates/task_page.html:23
+msgid "back"
+msgstr "回到主页面"
+
+#: templates/algo_cfg.html:18
+msgid "algo_para_config"
+msgstr "配置算法参数"
+
+#: templates/algo_cfg.html:20 templates/data_eval.html:33
+#: templates/model_eval.html:33
+msgid "choose_sensitive_attributes"
+msgstr "选择敏感属性"
+
+#: templates/algo_cfg.html:34
+msgid "accuracy_metric"
+msgstr "准确度指标"
+
+#: templates/algo_cfg.html:53
+msgid "fairness_metric"
+msgstr "公平性指标"
+
+#: templates/algo_cfg.html:67 templates/task_page.html:43
+msgid "pop_size"
+msgstr "种群大小"
+
+#: templates/algo_cfg.html:71 templates/task_page.html:44
+msgid "iter_time"
+msgstr "演化代数"
+
+#: templates/algo_cfg.html:78 templates/task_page.html:45
+msgid "mo_optimazor"
+msgstr "多目标优化器"
+
+#: templates/algo_cfg.html:106
+msgid "run_task"
+msgstr "运行任务"
+
+#: templates/data.html:5
+msgid "ml_model_eval "
+msgstr "机器学习模型评估"
+
+#: templates/data.html:26
+msgid "dataset_selection "
+msgstr "选择数据集"
+
+#: templates/data.html:27
+msgid "data_info_1 "
+msgstr "请在选择数据集后点击确认，然后点击“确认”。如果要上传数据集，请在选择描述文件和数据文件后，点击“上传数据集”。"
+
+#: templates/data.html:28
+msgid "data_info_2 "
+msgstr "确认过选择的数据集并看到属性列表后，请点击“下一步”。"
+
+#: templates/data.html:42
+msgid "yes"
+msgstr "确认"
+
+#: templates/data.html:46
+msgid "download_data_temp "
+msgstr "下载数据集模板"
+
+#: templates/data.html:51
+msgid "select_data_file "
+msgstr "选择数据文件"
+
+#: templates/data.html:56
+msgid "longterm_save_dataset "
+msgstr "长期保留数据集"
+
+#: templates/data.html:59
+msgid "dont_keep_dataset"
+msgstr "不保留数据集"
+
+#: templates/data.html:60
+msgid "upload_dataset "
+msgstr "上传数据集"
+
+#: templates/data.html:65
+msgid "discrete_attribute"
+msgstr "离散属性"
+
+#: templates/data.html:71
+msgid "continuous_attribute"
+msgstr "连续属性"
+
+#: templates/data.html:77
+msgid "target_attribute "
+msgstr "目标属性"
+
+#: templates/data.html:84
+msgid "next"
+msgstr "下一步"
+
+#: templates/data_eval.html:5
+msgid "dataset_fairness_evaluation"
+msgstr "数据集公平性评估"
+
+#: templates/data_eval.html:24
+msgid "dataset"
+msgstr "数据集"
+
+#: templates/data_eval.html:24 templates/model_eval.html:24
+msgid "fairness_evaluation"
+msgstr "公平性分析"
+
+#: templates/data_eval.html:53 templates/model_eval.html:53
+msgid "select_proper_attributes"
+msgstr "选择正当属性"
+
+#: templates/footer.html:11
+msgid "unit"
+msgstr "南方科技大学斯发基斯可信自主系统研究院"
+
+#: templates/footer.html:12
+msgid "area"
+msgstr "广东省，深圳市，南山区"
+
+#: templates/header.html:1
+msgid "platform_name"
+msgstr "机器学习公平性评估和建议平台 (Demo v1)"
+
+#: templates/index.html:12
+msgid "intro_1"
+msgstr "本平台提供分析机器学习数据、模型中存在的公平性问题，并通过多目标算法优化模型减轻模型的不公平性的功能。机器学习中的公平性一般指 [1]："
+
+#: templates/index.html:13
+msgid "intro_2"
+msgstr "在非敏感特征上相同的人，其预测结果（或标签）应相似。例如成绩相同的学生，不论性别，模型对其录取结果的预测应相同。"
+
+#: templates/index.html:14
+msgid "intro_3"
+msgstr "不同人群之间的预测结果（或标签）的差异不应大于他们的非敏感特征之间的差异。"
+
+#: templates/index.html:15
+msgid "intro_4"
+msgstr "通常情况下，有一些被法律识别的特征是不允许歧视的，在计算机科学文献中，通常这些特征被认为是“受保护的”或“敏感的”属性 [2]"
+
+#: templates/index.html:26
+msgid "finished_task"
+msgstr "历史任务"
+
+#: templates/index.html:31
+msgid "running_task"
+msgstr "运行中任务"
+
+#: templates/index.html:40
+msgid "func1"
+msgstr "评估数据公平性"
+
+#: templates/index.html:45
+msgid "func2"
+msgstr "评估模型公平性"
+
+#: templates/index.html:50
+msgid "func3"
+msgstr "创建新任务"
+
+#: templates/model_eval.html:24
+msgid "model "
+msgstr "模型"
+
+#: templates/model_upload.html:5
+msgid "upload_ml_model"
+msgstr "上传机器学习模型"
+
+#: templates/model_upload.html:22
+msgid "upload_model"
+msgstr "请上传模型"
+
+#: templates/model_upload.html:25
+msgid "model_def_file_demo"
+msgstr "模型定义文件示意图"
+
+#: templates/model_upload.html:30
+msgid "model_def_file_dec"
+msgstr "请参考左图上传pytorch模型定义文件（.py）和保存的参数（.pth或.pkl）文件。模型参数文件必须是通过torch.save(model.state_dict(),path)保存的。模型定义文件需要包括一个完整的torch.nn.Module子类和一个无参main()函数，该函数返回一个创建好的模型对象。"
+
+#: templates/model_upload.html:32
+msgid "download_model_template"
+msgstr "下载模型结构定义文件模板"
+
+#: templates/model_upload.html:34
+msgid "choose_model_structure"
+msgstr "选择模型结构定义文件"
+
+#: templates/model_upload.html:36
+msgid "choose_model_para"
+msgstr "选择模型参数文件"
+
+#: templates/model_upload.html:38
+msgid "upload_model_eval"
+msgstr "上传模型并进行模型评估"
+
+#: templates/task_page.html:5
+msgid "task_status"
+msgstr "进程情况"
+
+#: templates/task_page.html:25
+msgid "optimization_process"
+msgstr "优化过程"
+
+#: templates/task_page.html:27
+msgid "task_end"
+msgstr "已结束"
+
+#: templates/task_page.html:29
+msgid "task_running"
+msgstr "运行中"
+
+#: templates/task_page.html:36
+msgid "dataset_name"
+msgstr "数据集名称"
+
+#: templates/task_page.html:37
+msgid "sensitive_attributes"
+msgstr "敏感属性"
+
+#: templates/task_page.html:42
+msgid "optimization_obj"
+msgstr "优化目标"
+
+#: templates/task_page.html:83
+msgid "task_stop"
+msgstr "终止任务"
+
+#: templates/task_page.html:88
+msgid "download_models"
+msgstr "下载模型"
+
