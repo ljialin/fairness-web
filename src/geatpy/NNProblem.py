@@ -967,7 +967,7 @@ class NNProblem_new(ea.Problem):  # 继承Problem父类
 
         pop.CV = np.zeros([popsize, 1])
 
-        pop.ObjV = AllObj_valid
+        pop.ObjV = AllObj_valid # 选择验证集上的结果来算fitness
 
         pop.ObjV_train = AllObj_train
         pop.ObjV_valid = AllObj_valid

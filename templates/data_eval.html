@@ -71,7 +71,7 @@
             </form>
         </div>
         <div class="main_content">
-            <h3>{{ _("group_fairness_analysis") }}<input type="submit" value="?" onclick="data_g_fair_info()"></h3>
+            <h3>{{ _("group_fairness_analysis") }} <input type="submit" value="?" onclick="data_g_fair_info()"></h3>
             <div class="block">
                 {% for i, cmmts in view.gf_cmmts %}
                     <div id="0{{ i }}" style="width:640px; height:360px">
@@ -93,7 +93,7 @@
                     {% endfor %}
                 {% endfor %}
             </div>
-            <h3>{{ _("individual_fariness_analysis") }}<input type="submit" value="?" onclick="data_i_fair_info()"></h3>
+            <h3>{{ _("individual_fariness_analysis") }} <input type="submit" value="?" onclick="data_i_fair_info()"></h3>
             <div class="block">
                 {% for cmmt in view.if_cmmts %}
                     <p>{{ cmmt }}</p>

@@ -64,8 +64,7 @@ class DataEvaluator:
             elif group_sp_rates[group] > 1 / self.theta_gf:
                 cmmts.append(_("data_eval_result_2").format(group, self.pos_label_val))
         if not cmmts:
-            data_eval_result_4 = _("data_eval_result_4")
-            cmmts.append(f'{featr}{data_eval_result_4}')
+            cmmts.append(_("data_eval_result_4").format(featr))
         return group_sp_rates, cmmts
 
     def analyze_cgf(self, sens_featr, legi_featr):
@@ -79,6 +78,7 @@ class DataEvaluator:
         res.sens_groups = list(data[sens_key].unique())
         pval = self.pos_label_val
         nval = self.neg_label_val
+        cmmts = {}
         for legi_grp in res.legi_groups:
             p_tcnt = sum(
                 get_count_from_series(counts, (legi_grp, sens_grp, pval))
@@ -91,21 +91,42 @@ class DataEvaluator:
             total_plr = p_tcnt / (p_tcnt + n_tcnt + 1e-5)
             res.data[legi_grp] = {}
             for sens_grp in res.sens_groups:
+                if cmmts.get(sens_grp) is None:
+                    cmmts[sens_grp] = {}
                 p_cnt = get_count_from_series(counts, (legi_grp, sens_grp, pval))
                 n_cnt = get_count_from_series(counts, (legi_grp, sens_grp, nval))
                 plr = p_cnt / (p_cnt + n_cnt + 1e-5)
                 ratio = plr / total_plr
                 res.data[legi_grp][sens_grp] = ratio
                 if ratio < THRESHOLDS['PLR']:
-                    res.cmmts.append(
-                        _("data_eval_result_6").format(sens_featr, sens_grp, legi_featr, legi_grp, self.label,
-                                                       self.pos_label_val)
-                    )
+                    if cmmts[sens_grp].get('low') is None:
+                        cmmts[sens_grp]['low'] = []
+                    cmmts[sens_grp]['low'].append(legi_grp)
+                    # res.cmmts.append(
+                    #     _("data_eval_result_6").format(sens_featr, sens_grp, legi_featr, legi_grp, self.label,
+                    #                                    self.pos_label_val)
+                    # )
                 elif ratio > 1 / THRESHOLDS['PLR']:
-                    res.cmmts.append(
-                        _("data_eval_result_7").format(sens_featr, sens_grp, legi_featr, legi_grp, self.label,
-                                                       self.pos_label_val)
-                    )
+                    if cmmts[sens_grp].get('high') is None:
+                        cmmts[sens_grp]['high'] = []
+                    cmmts[sens_grp]['high'].append(legi_grp)
+                    # res.cmmts.append(
+                    #     _("data_eval_result_7").format(sens_featr, sens_grp, legi_featr, legi_grp, self.label,
+                    #                                    self.pos_label_val)
+                    # )
+        for sens_grp in cmmts.keys():
+            for high_low in cmmts[sens_grp]:
+                porper_groups = ", ".join(cmmts[sens_grp][high_low])
+                if high_low == "low":
+                    res.cmmts.append(_("data_eval_result_6").format(
+                        sens_featr, sens_grp, legi_featr, porper_groups,
+                        self.label, self.pos_label_val
+                    ))
+                elif high_low == "high":
+                    res.cmmts.append(_("data_eval_result_7").format(
+                        sens_featr, sens_grp, legi_featr, porper_groups,
+                        self.label, self.pos_label_val
+                    ))
         if not res.cmmts:
             res.cmmts.append(_("data_eval_result_11").format(legi_featr, sens_featr))
         return res
@@ -123,12 +144,13 @@ class DataEvaluator:
         #     cmmts.append(f'以{legi_featr}作为正当特征分析，数据集中以下{len(pos_discriminated)}个个体可能受到了歧视\\偏爱：')
         #     cmmts.append(', '.join(map(str, pos_discriminated)))
         if neg_discriminated or pos_discriminated:
+            indivs = neg_discriminated + pos_discriminated
             # cmmts.append(_("data_eval_result_8").format(legi_featr, len(neg_discriminated)) +
             #              '\n, '.join(map(str, neg_discriminated)))
             # cmmts.append(_("data_eval_result_8").format(legi_featr, len(pos_discriminated)) +
             #              '\n, '.join(map(str, pos_discriminated)))
-            cmmts.append(_("data_eval_result_8").format(legi_featr, str(len(pos_discriminated)+len(neg_discriminated))) +
-                         '\n' + ', '.join(map(str, pos_discriminated)) + ', ' + ', '.join(map(str, neg_discriminated)))
+            cmmts.append(_("data_eval_result_8").format(legi_featr, str(len(pos_discriminated)+len(neg_discriminated))))
+            cmmts.append(', '.join(map(str, indivs)))
             # cmmts.append(
             #     f'以{legi_featr}作为正当特征分析，数据集中以下{len(pos_discriminated)}个个体可能'
             #     f'受到了偏爱：\n' + ', '.join(map(str, pos_discriminated))
@@ -230,8 +252,10 @@ class DataEvalView:
                         name_gap=25
                     ),
                     yaxis_opts=chart_opts.AxisOpts(
-                        name='\n'.join(_("data_chart_1")), name_location='center',
-                        name_gap=25, name_rotate=0
+                        name=_("data_chart_1"),
+                        name_textstyle_opts=chart_opts.TextStyleOpts(
+                            align="left"
+                        )
                     ),
                 )
                 .add_xaxis(list(group_sp_rates.index))

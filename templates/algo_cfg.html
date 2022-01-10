@@ -43,10 +43,10 @@
                 {% endfor %}
             </div>
 
-            {% set metric = ["Individual_fairness", "Group_fairness", "Predictive_parity",
-            "FPR_ratio", "FNR_ratio", "Equalized_odds", "Conditional_use_accuracy_equality", "Overall_accuracy",
-
-            "Equal_opportunity","Predictive_equality"
+            {% set metric = [
+            "Individual_fairness", "Group_fairness", "Overall_accuracy", "Statistical_parity",
+            "Positive_predictive_value_balance", "Negative_predictive_value_balance",
+            "False_positive_error_rate_balance", "False_negative_error_rate_balance"
             ] %}
 
             <div style="width: 48%; float: left; margin-left: 4%">
@@ -85,20 +85,6 @@
                         {% endif %}
                     </label> {{ each }}
                 {% endfor %}
-{#                <label>#}
-{#                    {% if cfg.optimizer == 'SRA' %}#}
-{#                        <input type="radio" name="optimizer" value="SRA" checked="checked">#}
-{#                    {% else %}#}
-{#                        <input type="radio" name="optimizer" value="SRA">#}
-{#                    {% endif %}#}
-{#                </label> SRA#}
-{#                <label>#}
-{#                    {% if cfg.optimizer == 'NSGA-II' %}#}
-{#                        <input type="radio" name="optimizer" value="NSGA-II" checked="checked">#}
-{#                    {% else %}#}
-{#                        <input type="radio" name="optimizer" value="NSGA-II">#}
-{#                    {% endif %}#}
-{#                </label> NSGA-II#}
             </p>
         </div>
     </div>

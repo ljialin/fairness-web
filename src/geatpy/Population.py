@@ -584,7 +584,7 @@ Population : class - 种群类
     def save_pop(self, dir):  # NNmodel=population.Chrom
         NNmodels = copy.deepcopy(self.Chrom)
         for i in range(self.sizes):
-            torch.save(NNmodels[i].state_dict(), dir + 'indiv_{}.pth'.format(str(i)))
+            torch.save(NNmodels[i].state_dict(), dir + 'indiv_{}.pth'.format(str(i+1)))
 
     def save(self, dirName='Result', Gen=0, NNmodel=None, Res_metrics=None,
              All_objs_train=None, All_objs_valid=None, All_objs_ensemble=None, All_objs_test=None, true_y=None, poplogits=None, runtime=0):

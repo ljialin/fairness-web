@@ -149,6 +149,7 @@ def load_data(dataModel, preserve_sens_in_net=1, sensitive_attributions=None):
     #datatype="numerical-for-NN"
     #is_ensemble 是读取张清泉预处理数据集用到的参数
 
+
     org_data, attrs, label = dataModel.load_data()
     data = df2onehot(org_data.copy(), attrs)
 
@@ -163,8 +164,9 @@ def load_data(dataModel, preserve_sens_in_net=1, sensitive_attributions=None):
     asd = normalize.transform(data_x)
     # ---
 
-    # train+validation = 80%      test = 20%
-    sss1 = StratifiedShuffleSplit(n_splits=2, test_size=0.2, random_state=20210811)
+    # train+validation = 80%      test = 20% 原来的
+    # train 75%      validation 25% 新的
+    sss1 = StratifiedShuffleSplit(n_splits=2, test_size=0.25, random_state=20210811)
     plan1, plan2 = sss1.split(data_x, data_label)
 
     test_org = org_data.iloc[plan1[1]]
@@ -182,13 +184,21 @@ def load_data(dataModel, preserve_sens_in_net=1, sensitive_attributions=None):
     sss2 = StratifiedShuffleSplit(n_splits=2, test_size=0.25, random_state=20210811)
     plan3, plan4 = sss2.split(trainvaliddata, trainvalidlabel)
 
-    train_org = trainvaliddata_org.loc[plan3[0]]
-    train_data = trainvaliddata.loc[plan3[0]]
-    train_label = trainvalidlabel.loc[plan3[0]]
+    # train_org = trainvaliddata_org.loc[plan3[0]]
+    # train_data = trainvaliddata.loc[plan3[0]]
+    # train_label = trainvalidlabel.loc[plan3[0]]
+    #
+    # valid_org = trainvaliddata_org.loc[plan3[1]]
+    # valid_data = trainvaliddata.loc[plan3[1]]
+    # valid_label = trainvalidlabel.loc[plan3[1]]
 
-    valid_org = trainvaliddata_org.loc[plan3[1]]
-    valid_data = trainvaliddata.loc[plan3[1]]
-    valid_label = trainvalidlabel.loc[plan3[1]]
+    train_org = trainvaliddata_org
+    train_data = trainvaliddata
+    train_label = trainvalidlabel
+
+    valid_org = trainvaliddata_org
+    valid_data = trainvaliddata
+    valid_label = trainvalidlabel
 
     train_org.reset_index(inplace=True, drop=True)
     train_data.reset_index(inplace=True, drop=True)

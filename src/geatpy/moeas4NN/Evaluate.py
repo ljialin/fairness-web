@@ -1,14 +1,12 @@
-import pandas as pd
 import numpy as np
-from sklearn.metrics import accuracy_score
 from itertools import product
-import itertools
 # from GroupInfo import GroupInfo, GroupsInfo
 import geatpy as ea
-from sklearn.metrics import accuracy_score, roc_auc_score
+from sklearn.metrics import roc_auc_score
 import copy
 from sklearn.metrics import log_loss
-from scipy.spatial.distance import pdist, squareform
+from scipy.spatial.distance import pdist
+from cal_metrics import get_metrics, get_obj
 
 
 def Cal_AUC(logits, truelabel, group):
@@ -881,52 +879,6 @@ def get_average(group_values, plan):
             return 0
 
 
-def get_obj(group_values, plan):
-    Group_values = copy.deepcopy(group_values)
-    if plan == 1:
-        # calculate the difference
-        values = []
-        num_group = len(group_values)
-        if num_group > 1:
-            for i in range(num_group):
-                if i == (num_group - 1):
-                    break
-                for j in range(i+1, num_group):
-                    values.append(np.abs(group_values[i] - group_values[j]))
-
-            return 0.5 * (np.mean(values) + np.max(values))
-
-        elif num_group == 1:
-            return 1
-
-        else:
-            return 0
-    else:
-        # calculate the ratio
-        values = []
-        num_group = len(group_values)
-        if num_group > 1:
-            for i in range(num_group):
-                if i == (num_group - 1):
-                    break
-                for j in range(i + 1, num_group):
-                    if group_values[j] == 0 and group_values[i] == 0:
-                        values.append(1)
-                    elif group_values[j] == 0 and group_values[i] != 0:
-                        values.append(0)
-                    elif group_values[j] != 0 and group_values[i] == 0:
-                        values.append(0)
-                    else:
-                        values.append(np.min([(group_values[j]/group_values[i]), (group_values[i]/group_values[j])]))
-            return 0.5 * (1 - np.mean(values) + 1 - np.min(values))
-
-        elif num_group == 1:
-            return 1
-
-        else:
-            return 0
-
-
 def calculate_similar_dist(dist_mat, y):
     dist_mat = dist_mat.reshape(1, -1)
     y = y.reshape(1, -1)
@@ -1224,7 +1176,7 @@ def calcul_all_fairness_new2(data, data_norm, logits, truelabel, sensitive_attri
     if obj_is_logits == 1:
         Groups_info = {"accuracy": accuracy, "MSE_loss": MSE_loss, "BCE_loss": BCE_loss, "Individual_fairness": Individual_fairness,
                        "Group_fairness": Group_fairness, "Demographic_parity": DP_value, "FPR": FPR_value,
-                       "FNR": FNR_value, "Predictive_parity": PP_value,
+                       "FNR": FNR_value, "Positive_predictive_value_balance": PP_value,
                        "DPs_logit": DPs_logit, "FPRs_logit": FPRs_logit, "FNRs_logit": FNRs_logit, "PPs_logit": PPs_logit,
                        "DPs": DPs, "FPRs": FPRs, "FNRs": FNRs, "PPs": PPs,
                        "DPs_true": DPs_true, "FPRs_true": FPRs_true, "FNRs_true": FNRs_true, "PPs_true": PPs_true,
@@ -1233,7 +1185,7 @@ def calcul_all_fairness_new2(data, data_norm, logits, truelabel, sensitive_attri
         Groups_info = {"accuracy": accuracy, "MSE_loss": MSE_loss, "BCE_loss": BCE_loss,
                        "Individual_fairness": Individual_fairness,
                        "Group_fairness": Group_fairness, "Demographic_parity": DPs_true, "FPR": FPRs_true,
-                       "FNR": FNRs_true, "Predictive_parity": PPs_true,
+                       "FNR": FNRs_true, "Positive_predictive_value_balance": PPs_true,
                        "DPs_logit": DPs_logit, "FPRs_logit": FPRs_logit, "FNRs_logit": FNRs_logit,
                        "PPs_logit": PPs_logit,
                        "DPs": DPs, "FPRs": FPRs, "FNRs": FNRs, "PPs": PPs,
@@ -1265,11 +1217,11 @@ def calcul_all_fairness_new3(data, data_norm, logits, truelabel, sensitive_attri
 
     Disparate_impact = []
     Calibration_Neg = []
-    Predictive_parity = []
+    Positive_predictive_value_balance = []
+    Negative_predictive_value_balance = []
     Discovery_ratio = []
     Discovery_diff = []
     Predictive_equality = []
-    FPR_ratio = []
     Equal_opportunity = []
     Equalized_odds1 = []
     Equalized_odds2 = []
@@ -1282,8 +1234,8 @@ def calcul_all_fairness_new3(data, data_norm, logits, truelabel, sensitive_attri
     Statistical_parity = []
     FOR_ratio = []
     FOR_diff = []
-    FPR_ratio = []
-    FNR_ratio = []
+    False_positive_error_rate_balance = []
+    False_negative_error_rate_balance = []
     FNR_diff = []
 
     for sens in sensitive_attributions:
@@ -1309,91 +1261,110 @@ def calcul_all_fairness_new3(data, data_norm, logits, truelabel, sensitive_attri
             # g_logits = logits[0, g_idx]
             g_truelabel = truelabel[0, g_idx]
             g_predlabel = pred_label[0, g_idx]
+            metrics = get_metrics(g_predlabel, g_truelabel)
 
+            '''
+            只算整体预测值
+            '''
             # P(d=1 | g)
-            # Disparate Impact  or  Statistical Parity
+            # Disparate Impact  or  Statistical Parity 群组公平性（用作平台的群体公平性分析，和PLR指标）
             if "Disparate_impact" in obj_names or "Statistical_parity" in obj_names:
-                Disparate_impact.append(np.sum(g_predlabel) / g_num)
+                Disparate_impact.append(metrics['PLR']) # 计算正面标签占比
                 Statistical_parity = Disparate_impact
 
+            '''
+            算整体，突出特点是分母是group里面全部个体，而不是一部分（比如预测为真的全部，真实为真的全部）
+            '''
             # P(y=d | g)
             # Overall accuracy
-            if "Overall_accuracy" in obj_names:
-                Overall_accuracy.append(np.sum(g_truelabel * g_predlabel) / g_num)
+            if "Overall_accuracy" in obj_names: #ACC指标：不同群组预测的准确率相同
+                Overall_accuracy.append(metrics['ACC'])
 
             # P(y != d, g)
             # Error ratio   or   Error diff
-            if "Error_ratio" in obj_names or "Error_diff" in obj_names:
-                Error_ratio.append(np.sum(g_truelabel != g_predlabel) / total_num)
+            if "Error_ratio" in obj_names or "Error_diff" in obj_names: #算每个群组预测错误的比例
+                Error_ratio.append(metrics['ERR'])
                 Error_diff = Error_ratio
 
+            '''
+            混淆矩阵
+            '''
             # P(y=1 | d=1, g)
             # Predictive parity
-            if "Predictive_parity" in obj_names:
+            if "Positive_predictive_value_balance" in obj_names: # 正类预测均等PPV：对于敏感属性的不同取值下，模型预测为正类的准确率相等
                 if np.sum(g_predlabel) > 0:
-                    Predictive_parity.append(np.sum(g_truelabel * g_predlabel) / np.sum(g_predlabel))
+                    Positive_predictive_value_balance.append(metrics['PPV'])
 
             # P(y=0 | d=1, g)
             # Discovery ratio  or   Discovery diff
-            if "Discovery_ratio" in obj_names or "Discovery_diff" in obj_names :
+            if "Discovery_ratio" in obj_names or "Discovery_diff" in obj_names : #这是对的FDR
                 if np.sum(g_predlabel) > 0:
-                    Discovery_ratio.append((np.sum((1-g_truelabel) * g_predlabel) / np.sum(g_predlabel)))
+                    Discovery_ratio.append(metrics['FDR'])
                     Discovery_diff = Discovery_ratio
 
             # P(y=1 | d=0, g)
-            # Calibration-   or   FOR ratio    or   FOR diff
+            # Calibration-   or   FOR ratio    or   FOR diff #这是对的FOR
             if "Calibration_neg" in obj_names or "FOR_ratio" in obj_names or "FOR_diff" in obj_names:
                 if np.sum(1-g_predlabel) > 0:
-                    Calibration_Neg.append(np.sum(g_truelabel * (1-g_predlabel)) / np.sum(1-g_predlabel))
+                    Calibration_Neg.append(metrics['FOR'])
                     FOR_ratio = Calibration_Neg
                     FOR_diff = Calibration_Neg
 
             # P(d=1 | y=0, g)
             # Predictive equality   or   FPR ratio
-            if "Predictive_equality" in obj_names or "FPR_ratio" in obj_names:
+            if "Predictive_equality" in obj_names or "False_positive_error_rate_balance" in obj_names: #正类预测错误平衡FPR
                 if np.sum(1-g_truelabel) > 0:
-                    Predictive_equality.append(np.sum(g_predlabel * (1-g_truelabel)) / np.sum(1-g_truelabel))
-                    FPR_ratio = Predictive_equality
+                    Predictive_equality.append(metrics['FPR'])
+                    False_positive_error_rate_balance = Predictive_equality
 
             # P(d=1 | y=1, g)
             # Equal opportunity
-            if "Equal_opportunity" in obj_names:
+            if "Equal_opportunity" in obj_names: #这是对的，TPR
                 if np.sum(g_truelabel) > 0:
-                    Equal_opportunity.append(np.sum(g_predlabel * g_truelabel) / np.sum(g_truelabel))
+                    Equal_opportunity.append(metrics['TPR'])
 
             # P(d=0 | y=1, g)
             # FNR ratio    or    FNR diff
-            if "FNR_ratio" in obj_names or "FNR_diff" in obj_names:
+            if "False_negative_error_rate_balance" in obj_names or "FNR_diff" in obj_names: #负类预测错误平衡FNR
                 if np.sum(g_truelabel) > 0:
-                    FNR_ratio.append(np.sum((1-g_predlabel) * g_truelabel) / np.sum(g_truelabel))
-                    FNR_diff = FNR_ratio
+                    False_negative_error_rate_balance.append(metrics['FNR'])
+                    FNR_diff = False_negative_error_rate_balance
 
+            if "Negative_predictive_value_balance" in obj_names:
+                if np.sum(g_truelabel) > 0:
+                    Negative_predictive_value_balance.append(metrics['NPV'])
+
+            '''
+            混淆矩阵两个以上项的组合
+            '''
             # P(d=1 | y=0, g) and P(d=1 | y=1, g)
             # Equalized odds
-            if "Equalized_odds" in obj_names:
+            if "Equalized_odds" in obj_names: # TPR and FPR
                 if np.sum(g_truelabel) > 0:
-                    Equalized_odds1.append(np.sum(g_predlabel * g_truelabel) / np.sum(g_truelabel))
+                    Equalized_odds1.append(metrics['TPR'])
                 if np.sum(1-g_truelabel) > 0:
-                    Equalized_odds2.append(np.sum(g_predlabel * (1-g_truelabel)) / np.sum(1-g_truelabel))
+                    Equalized_odds2.append(metrics['FNR'])
 
             # Conditional use accuracy equality
-            if "Conditional_use_accuracy_equality" in obj_names:
+            if "Conditional_use_accuracy_equality" in obj_names: # PPV and NPV
                 if np.sum(g_predlabel) > 0:
-                    Conditional_use_accuracy_equality1.append(np.sum(g_truelabel * g_predlabel) / np.sum(g_predlabel))
+                    Conditional_use_accuracy_equality1.append(metrics['PPV'])
                 if np.sum(1-g_predlabel) > 0:
-                    Conditional_use_accuracy_equality2.append(np.sum((1-g_truelabel) * (1-g_predlabel)) / np.sum(1-g_predlabel))
+                    Conditional_use_accuracy_equality2.append(metrics['NPV'])
+                    Conditional_use_accuracy_equality2.append(metrics['NPV'])
 
             # P(d=1 | y=0, g) + P(d=1 | y=1, g)
             # Average odd difference
-            if "Average_odd_diff" in obj_names:
+            if "Average_odd_diff" in obj_names: # 把TPR和FPR加起来
                 if np.sum(g_truelabel) > 0 and np.sum(1 - g_truelabel) > 0:
-                    Average_odd_diff.append((np.sum(g_predlabel * g_truelabel) / np.sum(g_truelabel)) + (
-                                np.sum(g_predlabel * (1 - g_truelabel)) / np.sum(1 - g_truelabel)))
+                    Average_odd_diff.append(metrics['TPR'] + metrics['FPR'])
 
     Groups_info = {}
-    if "Accuracy" in obj_names:
-        Groups_info.update({"Accuracy": 1-np.mean(pred_label == truelabel)})
 
+    '''
+    准确性指标
+    '''
+    # 误分类率
     if "Misclassification" in obj_names:
         Groups_info.update({"Misclassification": 1-np.mean(pred_label == truelabel)})
 
@@ -1407,6 +1378,9 @@ def calcul_all_fairness_new3(data, data_norm, logits, truelabel, sensitive_attri
         BCE_loss = log_loss(truelabel.reshape(-1, 1), np.hstack([1 - logits.reshape(-1, 1), logits.reshape(-1, 1)]))
         Groups_info.update({"BCE_loss": BCE_loss})
 
+    '''
+    公平性指标
+    '''
     # Individual unfairness = within-group + between-group
     if "Individual_fairness" in obj_names:
         Individual_fairness_val = generalized_entropy_index(benefits, alpha)
@@ -1421,94 +1395,99 @@ def calcul_all_fairness_new3(data, data_norm, logits, truelabel, sensitive_attri
     # Within_g_fairness = Individual_fairness - Group_fairness
 
     # Disparate impact
-    if "Disparate_impact" in obj_names:
+    if "Disparate_impact" in obj_names:  # PLR 算比例
         Disparate_impact_val = get_obj(Disparate_impact, 2)
         Groups_info.update({"Disparate_impact": Disparate_impact_val})
 
     # Statistical parity
-    if "Statistical_parity" in obj_names:
+    if "Statistical_parity" in obj_names:  # PLR 算差
         Statistical_parity_val = get_obj(Statistical_parity, 1)
         Groups_info.update({"Statistical_parity": Statistical_parity_val})
 
     # Overall accuracy
-    if "Overall_accuracy" in obj_names:
+    if "Overall_accuracy" in obj_names:  # ACC 算差
         Overall_accuracy_val = get_obj(Overall_accuracy, 1)
         Groups_info.update({"Overall_accuracy": Overall_accuracy_val})
 
     # Error ratio
     if "Error_ratio" in obj_names:
-        Error_ratio_val = get_obj(Error_ratio, 2)
+        Error_ratio_val = get_obj(Error_ratio, 2)  # ERR 算比例
         Groups_info.update({"Error_ratio": Error_ratio_val})
 
     # Error diff
     if "Error_diff" in obj_names:
-        Error_diff_val = get_obj(Error_diff, 1)
+        Error_diff_val = get_obj(Error_diff, 1)  # ERR 算差
         Groups_info.update({"Error_diff": Error_diff_val})
 
     # Predictive parity
-    if "Predictive_parity" in obj_names:
-        Predictive_parity_val = get_obj(Predictive_parity, 1)
-        Groups_info.update({"Predictive_parity": Predictive_parity_val})
+    if "Positive_predictive_value_balance" in obj_names:  # PPV 最终使用
+        Positive_predictive_value_balance_val = get_obj(Positive_predictive_value_balance, 1)
+        Groups_info.update({"Positive_predictive_value_balance": Positive_predictive_value_balance_val})
+
+    # NPV
+    if "Negative_predictive_value_balance" in obj_names:  # NPV最终使用
+        temp = get_obj(Negative_predictive_value_balance, 1)
+        Groups_info.update({"Negative_predictive_value_balance": temp})
 
     # Discovery ratio
-    if "Discovery_ratio" in obj_names:
+    if "Discovery_ratio" in obj_names:  # FDR 算比例
         Discovery_ratio_val = get_obj(Discovery_ratio, 2)
         Groups_info.update({"Discovery_ratio": Discovery_ratio_val})
 
     # Discovery diff
-    if "Discovery_diff" in obj_names:
+    if "Discovery_diff" in obj_names:  # FDR 算差
         Discovery_diff_val = get_obj(Discovery_diff, 1)
         Groups_info.update({"Discovery_diff": Discovery_diff_val})
 
     # Calibration Neg
-    if "Calibration_neg" in obj_names:
+    if "Calibration_neg" in obj_names:  # FOR 算差
         Calibration_Neg_val = get_obj(Calibration_Neg, 1)
         Groups_info.update({"Calibration_neg": Calibration_Neg_val})
 
     # FOR ratio
-    if "FOR_ratio" in obj_names:
+    if "FOR_ratio" in obj_names:  # FOR 算比例
         FOR_ratio_val = get_obj(FOR_ratio, 2)
         Groups_info.update({"FOR_ratio": FOR_ratio_val})
 
     # FOR diff
-    if "FOR_diff" in obj_names:
+    if "FOR_diff" in obj_names:  # FOR 算差
         FOR_diff_val = get_obj(FOR_diff, 1)
         Groups_info.update({"FOR_diff": FOR_diff_val})
 
     # Predictive equality
-    if "Predictive_equality" in obj_names:
+    if "Predictive_equality" in obj_names:  # FPR 算差
         Predictive_equality_val = get_obj(Predictive_equality, 1)
         Groups_info.update({"Predictive_equality": Predictive_equality_val})
 
     # FPR ratio
-    if "FPR_ratio" in obj_names:
-        FPR_ratio_val = get_obj(FPR_ratio, 2)
-        Groups_info.update({"FPR_ratio": FPR_ratio_val})
+    if "False_positive_error_rate_balance" in obj_names:  # FPR 最终使用
+        False_positive_error_rate_balance_val = get_obj(False_positive_error_rate_balance, 1)
+        Groups_info.update({"False_positive_error_rate_balance": False_positive_error_rate_balance_val})
 
     # Equal opportunity
-    if "Equal_opportunity" in obj_names:
+    if "Equal_opportunity" in obj_names:  # TPR 算差
         Equal_opportunity_val = get_obj(Equal_opportunity, 1)
         Groups_info.update({"Equal_opportunity": Equal_opportunity_val})
 
     # FNR ratio
-    if "FNR_ratio" in obj_names:
-        FNR_ratio_val = get_obj(FNR_ratio, 2)
-        Groups_info.update({"FNR_ratio": FNR_ratio_val})
+    if "False_negative_error_rate_balance" in obj_names:  # FNR 最终使用
+        False_negative_error_rate_balance_val = get_obj(False_negative_error_rate_balance, 1)
+        Groups_info.update({"False_negative_error_rate_balance": False_negative_error_rate_balance_val})
 
     # FNR diff
-    if "FNR_diff" in obj_names:
+    if "FNR_diff" in obj_names:  # FNR 算差
         FNR_diff_val = get_obj(FNR_diff, 1)
         Groups_info.update({"FNR_diff": FNR_diff_val})
 
     # Equalized odds
-    if "Equalized_odds" in obj_names:
+    if "Equalized_odds" in obj_names:  # EO 算差
         Equalized_odds_val = 0.5 * (get_obj(Equalized_odds1, 1) + get_obj(Equalized_odds2, 1))
         Groups_info.update({"Equalized_odds": Equalized_odds_val})
 
     # Conditional use accuracy equality
     if "Conditional_use_accuracy_equality" in obj_names:
         Conditional_use_accuracy_equality_val = 0.5 * (
-                    get_obj(Conditional_use_accuracy_equality1, 1) + get_obj(Conditional_use_accuracy_equality2, 1))
+                get_obj(Conditional_use_accuracy_equality1, 1) + get_obj(Conditional_use_accuracy_equality2, 1))
         Groups_info.update({"Conditional_use_accuracy_equality": Conditional_use_accuracy_equality_val})
 
     # Average odd difference

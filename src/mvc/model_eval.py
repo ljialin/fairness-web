@@ -9,7 +9,7 @@ import torch
 # from typing import List
 import pyecharts.options as chopts
 from pyecharts.charts import Radar
-
+from cal_metrics import *
 from src.common_fair_analyze import METRICS, METRIC_UBS, THRESHOLDS, PREFER_HIGH, CgfAnalyzeRes
 from src.mvc.data import DataController
 from src.mvc.model_upload import upload_model
@@ -54,10 +54,19 @@ class ModelEvaluator:
         self.__glb_metric_vals = None
         self.__fair_range = None
 
+    def frame2label(self, frame=None):
+        if frame is None:
+            frame = self.data
+        true_label = frame[self.label].to_numpy()
+        true_label[true_label == self.label_pval] = 1
+        true_label[true_label == self.label_nval] = 0
+        pred_label = frame["binary prediction"].to_numpy()
+        return pred_label, true_label
+
     def get_glb_metric_vals(self):
         if self.__glb_metric_vals is None:
-            self.__glb_metric_vals = self.compute_metrics(**self.__get_confus_vals())
-            print(self.__glb_metric_vals['Acc']) #gsh add
+            # self.__glb_metric_vals = self.compute_metrics(**self.__get_confus_vals()) #gsh commit
+            self.__glb_metric_vals = get_metrics(*self.frame2label())
         return self.__glb_metric_vals
 
     def get_fair_range(self):
@@ -71,16 +80,34 @@ class ModelEvaluator:
             ]
         return self.__fair_range
 
+    def get_fair_range2(self):
+        return [0.9 for i in range(len(METRICS))]
+
     def analyze_gf(self, featr):
         metric_vals = {}
         confus_vals = self.__get_grp_confus_vals(featr)
         cmmts = []
         for grp in confus_vals.keys():
-            metric_vals[grp] = self.compute_metrics(**confus_vals[grp])
+            # metric_vals[grp] = self.compute_metrics(**confus_vals[grp]) #gsh commit
+            metric_vals[grp] = compute_metrics(**confus_vals[grp])
+
             cmmts += self.make_fairness_cmmts(featr, grp, metric_vals[grp])
         if not cmmts:
             cmmts.append(_("model_eval_result_2").format(featr))
         return metric_vals, cmmts
+
+    def analyze_gf2(self, featr):
+        metric_vals = {}
+        confus_vals = self.__get_grp_confus_vals(featr)
+        cmmts = []
+        for grp in confus_vals.keys():
+            metric_vals[grp] = compute_metrics(**confus_vals[grp])
+        fairness_scores = cal_fairness_score(metric_vals)
+        cmmts += self.make_fairness_cmmts2(featr, fairness_scores)
+        if not cmmts:
+            cmmts.append(_("model_eval_result_2").format(featr))
+
+        return metric_vals, fairness_scores, cmmts
 
     def analyze_cgf(self, sens_featr, legi_featr):
         res = CgfAnalyzeRes(sens_featr, legi_featr)
@@ -136,11 +163,26 @@ class ModelEvaluator:
                 )
         return cmmts
 
+    def make_fairness_cmmts2(self, featr, metric_vals):
+        # make for a single group
+        cmmts = []
+        fair_range = self.get_fair_range2()
+        unfairness_metrics = []
+        for i, mtrc in enumerate(METRICS):
+            metric_val = metric_vals[mtrc]
+            if metric_val < fair_range[0]:
+                unfairness_metrics.append(mtrc)
+        if len(unfairness_metrics) == 0:
+            return cmmts
+        cmmts.append(_("model_eval_result_6")
+                     .format(", ".join(mtrc for mtrc in unfairness_metrics), featr, featr, self.label))
+        return cmmts
+
     @staticmethod
     def compute_metrics(TP, FP, FN, TN):
         total = TP + FP + FN + TN + 1e-8
         res = {
-            'Acc': (TP + TN) / total,
+            'ACC': (TP + TN) / total,
             'PLR': (TP + FP) / total,
             'PPV': TP / (TP + FP + 1e-8),
             'FPR': FP / (FP + TN + 1e-8),
@@ -157,8 +199,8 @@ class ModelEvaluator:
         F_subframe = frame[frame[self.label] == self.label_nval]
         res = {
             'TP': T_subframe[T_subframe['binary prediction'] == 1].shape[0],
-            'FP': T_subframe[T_subframe['binary prediction'] == 0].shape[0],
-            'FN': F_subframe[F_subframe['binary prediction'] == 1].shape[0],
+            'FN': T_subframe[T_subframe['binary prediction'] == 0].shape[0],
+            'FP': F_subframe[F_subframe['binary prediction'] == 1].shape[0],
             'TN': F_subframe[F_subframe['binary prediction'] == 0].shape[0]
         }
         return res
@@ -170,7 +212,8 @@ class ModelEvaluator:
         for grp in groups:
             frame = self.data
             subframe = frame[frame[key] == grp]
-            res[grp] = self.__get_confus_vals(subframe)
+            # res[grp] = self.__get_confus_vals(subframe) #gsh commit
+            res[grp] = get_confus_vals(*self.frame2label(subframe))
         return res
 
 
@@ -190,7 +233,7 @@ class ModelEvalView:
 
     def update_gf_res(self, evaltr: ModelEvaluator, sens_featrs):
         self.sens_featrs = sens_featrs
-        self.gf_cmmts.clear()
+        # self.gf_cmmts.clear() # 先2 后 1了
 
         charts = []
         fair_range = evaltr.get_fair_range()
@@ -232,6 +275,57 @@ class ModelEvalView:
             self.gf_cmmts.append((i, cmmts))
         return charts
 
+    def update_gf_res2(self, evaltr: ModelEvaluator, sens_featrs):
+        self.sens_featrs = sens_featrs
+        self.gf_cmmts.clear()
+
+        charts = []
+        for i, featr in enumerate(sens_featrs):
+            grp_metric_vals, fairness_scores, cmmts = evaltr.analyze_gf2(featr)
+            chart = (
+                Radar()
+                .add_schema(
+                    schema=[
+                        chopts.RadarIndicatorItem(mtrc, max_=METRIC_UBS[mtrc])
+                        for mtrc in METRICS
+                    ],
+                    splitarea_opt=chopts.SplitAreaOpts(
+                        is_show=True, areastyle_opts=chopts.AreaStyleOpts(opacity=1)
+                    )
+                )
+                # .add(
+                #     _("fairness_range"), fair_range,
+                #     label_opts=chopts.LabelOpts(is_show=False),
+                #     linestyle_opts=chopts.LineStyleOpts(color='red', width=2)
+                # )
+            )
+
+            chart.add(
+                _("metrics_score"), [[fairness_scores[mtrc] for mtrc in METRICS]],
+                label_opts=chopts.LabelOpts(is_show=False),
+                linestyle_opts=chopts.LineStyleOpts(width=2),
+                areastyle_opts=chopts.AreaStyleOpts(opacity=0.2),
+                color='gray'
+            )
+
+            for j, grp in enumerate(grp_metric_vals.keys()):
+                # Compute linear gradient RGB
+                alpha = 0.75 * j / (len(grp_metric_vals) - 1)
+                g, b = round(alpha * 255 + 63), round((0.75 - alpha) * 255 + 63)
+                color = f'#{get_rgb_hex(0, g, b)}'
+
+                chart.add(
+                    _("group").format(grp), [[grp_metric_vals[grp][mtrc] for mtrc in METRICS]],
+                    label_opts=chopts.LabelOpts(is_show=False),
+                    linestyle_opts=chopts.LineStyleOpts(width=2),
+                    areastyle_opts = chopts.AreaStyleOpts(opacity=0.2),
+                    color=color
+                )
+
+            charts.append(chart)
+            self.gf_cmmts.append((i, cmmts))
+        return charts
+
     def update_cgf_res(self, evaltr, sens_featrs, legi_featr):
         self.sens_featrs = sens_featrs
         self.legi_featr = legi_featr
@@ -260,7 +354,8 @@ class ModelEvalController:
         ModelEvalController.insts[ip] = self
 
     def gf_eval(self, sens_featrs):
-        charts = self.view.update_gf_res(self.model_evaltr, sens_featrs)
+        charts = self.view.update_gf_res2(self.model_evaltr, sens_featrs) # gsh change
+        # charts = self.view.update_gf_res(self.model_evaltr, sens_featrs)
         for i, chart in enumerate(charts):
             self.charts[f'0{i}'] = chart
 

@@ -58,7 +58,7 @@
 
     <h3>正类预测均等 (Positive Predictive Value, PPV）</h3>
     <p>如果下述等式成立（即，模型对于每个群组中实际为正类的个体被预测为正类的概率相同），则认为该模型是正类预测均等的。</p>
-    \[\mathcal{P}(\hat{y}=1|y=1,G=g_1)=\mathcal{P}(\hat{y}=1|y=1,G=g_2)\]
+    \[\mathcal{P}(y=1|\hat{y}=1,G=g_1)=\mathcal{P}(y=1|\hat{y}=1,G=g_2)\]
     <p>该指标表示，基于敏感属性划分不同群组中的正类个体应该有同等概率被预测为正类，否则此机器学习模型可能对其中一个群组存在偏爱或歧视。</p>
     <p>更多关于以上指标的解释请参考A. Chouldechova的论文 <cite><a href="https://pubmed.ncbi.nlm.nih.gov/28632438/">Fair Prediction with
         Disparate Impact: A Study of Bias in Recidivism Prediction Instruments</a></cite>。</p>
@@ -66,7 +66,7 @@
 
     <h3>负类预测均等 (Negative Predictive Value, NPV)</h3>
     <p>与PPV的定义类似。如果下述等式成立（即，模型对于每个群组中实际为负类的个体被预测为负类的概率相同），则认为该模型是负类预测均等的。</p>
-    \[\mathcal{P}(\hat{y}=0|y=0,G=g_1)=\mathcal{P}(\hat{y}=0|y=0,G=g_2)\]
+    \[\mathcal{P}(y=0|\hat{y}=0,G=g_1)=\mathcal{P}(y=0|\hat{y}=0,G=g_2)\]
     <p>该指标表示，基于敏感属性划分不同群组中的正类个体应该有同等概率被预测为正类，否则此机器学习模型可能对其中一个群组存在偏爱或歧视。</p>
     <p>更多关于以上指标的解释请参考A. Chouldechova的论文 <cite><a href="https://pubmed.ncbi.nlm.nih.gov/28632438/">Fair Prediction with
         Disparate Impact: A Study of Bias in Recidivism Prediction Instruments</a></cite>。</p>

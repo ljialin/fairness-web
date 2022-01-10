@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-12-28 10:26+0800\n"
+"POT-Creation-Date: 2022-01-03 21:23+0800\n"
 "PO-Revision-Date: 2021-12-27 11:32+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -18,326 +18,376 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.1\n"
 
-#: app.py:133 app.py:174 templates/data_eval.html:50
+#: app.py:134 app.py:175 templates/data_eval.html:50
 #: templates/data_eval.html:74 templates/model_eval.html:50
 #: templates/model_eval.html:73
 msgid "group_fairness_analysis"
-msgstr ""
+msgstr "Group fairness analysis"
 
-#: app.py:135 templates/data_eval.html:69 templates/data_eval.html:96
+#: app.py:136 templates/data_eval.html:69 templates/data_eval.html:96
 msgid "individual_fariness_analysis"
-msgstr ""
+msgstr "Individual fairness analysis"
 
-#: app.py:137 app.py:176 templates/data_eval.html:68
+#: app.py:138 app.py:177 templates/data_eval.html:68
 #: templates/data_eval.html:85 templates/model_eval.html:68
 #: templates/model_eval.html:84
 msgid "conditional_group_fairness_analysis"
-msgstr ""
+msgstr "Conditional group fairness analysis"
 
-#: app.py:216 templates/algo_cfg.html:105
+#: app.py:217 templates/algo_cfg.html:91
 msgid "upload_init_models"
-msgstr ""
+msgstr "Upload initialization models"
 
-#: app.py:355 templates/task_page.html:73
+#: app.py:356 templates/task_page.html:74
 msgid "optimization_result"
+msgstr "Optimization result for accuracy metrics and fairness metrics"
+
+#: src/common_fair_analyze.py:38
+msgid "model_chart_1"
 msgstr ""
+"Ratio of group positive label rate to overall positive label rate under a"
+" proper attribute"
 
 #: src/mvc/algo_cfg.py:93
 msgid "task_error1"
-msgstr ""
+msgstr "Population size must be digital"
 
 #: src/mvc/algo_cfg.py:98
 msgid "task_error2"
-msgstr ""
+msgstr "Generation number must be digital"
 
 #: src/mvc/algo_cfg.py:105
 msgid "task_error3"
-msgstr ""
+msgstr "Continuous attributes are not supported as sensitive attributes"
 
 #: src/mvc/algo_cfg.py:161
 msgid "progress_info_1"
-msgstr ""
+msgstr "Evolving ... generation {}/{}({}%) "
 
 #: src/mvc/algo_cfg.py:166
 msgid "progress_info_2"
-msgstr ""
+msgstr "Initializing problem instances ..."
 
 #: src/mvc/algo_cfg.py:168
 msgid "progress_info_3"
-msgstr ""
+msgstr "Initializing population"
 
 #: src/mvc/algo_cfg.py:170
 msgid "progress_info_4"
-msgstr ""
+msgstr "Initializing parameters ..."
 
 #: src/mvc/algo_cfg.py:172
 msgid "progress_info_5"
-msgstr ""
+msgstr "Evolution finished!"
 
 #: src/mvc/algo_cfg.py:179
 msgid "progress_info_6"
-msgstr ""
+msgstr "Task stop! generation{}/{}({}%)"
 
 #: src/mvc/data.py:74
 msgid "label_error"
-msgstr ""
+msgstr "Label can only contain two different values"
 
 #: src/mvc/data.py:93
 msgid "update_error"
-msgstr ""
+msgstr "The format of dataset is incorrect, please check by reading template file"
 
 #: src/mvc/data.py:343
 msgid "filename_conflict"
-msgstr ""
+msgstr "Filename conflict"
 
 #: src/mvc/data.py:349
 msgid "dataset_duplicate_name"
 msgstr ""
+"Upload fail: The name of uploaded dataset is same to the datasets already"
+" exsit"
 
-#: src/mvc/data_eval.py:63 src/mvc/data_eval.py:72
-msgid "label_freq_of"
-msgstr ""
-
-#: src/mvc/data_eval.py:64
+#: src/mvc/data_eval.py:63
 msgid "data_eval_result_1"
 msgstr ""
+"The positive label (label={}) rate of \"{}\" group is lower than the "
+"positive label rate of whole dataset. It is recommended to check whether "
+"the group is discriminated \\ preferenced, and this attribute should be "
+"non-sensitive attribute which influences the result."
 
-#: src/mvc/data_eval.py:65 src/mvc/data_eval.py:74
+#: src/mvc/data_eval.py:65
 msgid "data_eval_result_2"
 msgstr ""
+"The positive label (label={}) rate of \"{}\" group is higher than the "
+"positive label rate of whole dataset. It is recommended to check whether "
+"the group is discriminated \\ preferenced, and this attribute should be "
+"non-sensitive attribute which influences the result."
 
-#: src/mvc/data_eval.py:73
-msgid "data_eval_result_3"
-msgstr ""
-
-#: src/mvc/data_eval.py:81
+#: src/mvc/data_eval.py:67
 msgid "data_eval_result_4"
 msgstr ""
+"No fairness problem was found in group fairness analysis for sensitive "
+"attribute \"{}\""
 
-#: src/mvc/data_eval.py:115
+#: src/mvc/data_eval.py:121
 msgid "data_eval_result_6"
 msgstr ""
+"The radio of label in group \"{}\"=\"{}\" in the part of \"{}\"=\"{}\" "
+"(label \"{}\"=\"{}\") is low, this group may be discriminated \\ "
+"preferenced."
 
-#: src/mvc/data_eval.py:120
+#: src/mvc/data_eval.py:126
 msgid "data_eval_result_7"
 msgstr ""
+"The radio of label in group \"{}\"=\"{}\" in the part of \"{}\"=\"{}\" "
+"(label \"{}\"=\"{}\") is high, this group may be discriminated \\ "
+"preferenced."
 
-#: src/mvc/data_eval.py:124
+#: src/mvc/data_eval.py:131
 msgid "data_eval_result_11"
 msgstr ""
+"After analysing the proper attribute \"{}\" with \"{}\" as the legitimate"
+" feature, and no fairness problem was found."
 
-#: src/mvc/data_eval.py:140
+#: src/mvc/data_eval.py:152
 msgid "data_eval_result_8"
 msgstr ""
+"After analysing the proper attribute \"{}\", the following \"{}\" "
+"individuals may be discriminated \\ preferenced: "
 
-#: src/mvc/data_eval.py:146
+#: src/mvc/data_eval.py:159
 msgid "data_eval_result_5"
-msgstr ""
+msgstr "No fairness problems were found in the current dataset"
 
-#: src/mvc/data_eval.py:236
+#: src/mvc/data_eval.py:249
 msgid "data_eval_result_9"
-msgstr ""
+msgstr "The analysis result of attribute \"{}\""
 
-#: src/mvc/data_eval.py:238
+#: src/mvc/data_eval.py:251
 msgid "data_eval_result_10"
-msgstr ""
+msgstr "The group partitioned by \"{}\""
 
-#: src/mvc/data_eval.py:242
+#: src/mvc/data_eval.py:255
 msgid "data_chart_1"
-msgstr ""
+msgstr "Ratio of group positive label rate to overall positive label rate"
 
-#: src/mvc/data_eval.py:286
+#: src/mvc/data_eval.py:301
 msgid "data_eval_error_1"
-msgstr ""
+msgstr "At least one sensitive attribute must be selected for analysis"
 
-#: src/mvc/data_eval.py:293
+#: src/mvc/data_eval.py:308
 msgid "data_eval_error_2"
 msgstr ""
+"At least one sensitive attribute and one proper attribute must be "
+"selected for analysis"
 
-#: src/mvc/data_eval.py:295
+#: src/mvc/data_eval.py:310
 msgid "data_eval_error_3"
-msgstr ""
+msgstr "Proper attributes must be non-sensitive attributes"
 
-#: src/mvc/data_eval.py:302
+#: src/mvc/data_eval.py:317
 msgid "data_eval_error_4"
-msgstr ""
+msgstr "At least one proper attribute must be selected for analysis"
 
-#: src/mvc/model_eval.py:82
+#: src/mvc/model_eval.py:96 src/mvc/model_eval.py:108
 msgid "model_eval_result_2"
-msgstr ""
+msgstr "No fairness problem was found in the analysis of \"{}\""
 
-#: src/mvc/model_eval.py:112
+#: src/mvc/model_eval.py:139
 msgid "model_eval_result_3"
 msgstr ""
+"The radio of label in group \"{}={}\" in the part of \"{}={}\" (label "
+"\"{}={}\") is low, this group may be discriminated \\ preferenced."
 
-#: src/mvc/model_eval.py:114
+#: src/mvc/model_eval.py:141
 msgid "model_eval_result_4"
 msgstr ""
+"The radio of label in group \"{}={}\" in the part of \"{}={}\" (label "
+"\"{}={}\") is high, this group may be discriminated \\ preferenced."
 
-#: src/mvc/model_eval.py:116
+#: src/mvc/model_eval.py:143
 msgid "model_eval_result_5 "
 msgstr ""
+"After analysing the proper attribute \"{}\" with \"{}\" as the legitimate"
+" feature, and no fairness problem was found."
 
-#: src/mvc/model_eval.py:128 src/mvc/model_eval.py:131
+#: src/mvc/model_eval.py:155 src/mvc/model_eval.py:158
 msgid "discrimination_preference"
-msgstr ""
+msgstr "discriminated \\ preferenced"
 
-#: src/mvc/model_eval.py:132
+#: src/mvc/model_eval.py:159
 msgid "and_eo"
-msgstr ""
+msgstr " and Equalized Odds"
 
-#: src/mvc/model_eval.py:135
+#: src/mvc/model_eval.py:162
 msgid "model_eval_result_1"
 msgstr ""
+"According to \"{}\", group \"{}\" may be \"{}\". It is suggested to "
+"consider fairness metrics \"{}\" as one of the optimization objective or "
+"considering whether \"{}\" influences \"{}\". If yes, it is suggested to "
+"remove it from sensitive attributes list."
 
-#: src/mvc/model_eval.py:212
+#: src/mvc/model_eval.py:177
+msgid "model_eval_result_6"
+msgstr ""
+"The metrics score of \"{}\" is low, the groups partitioned by sensitive "
+"attribute \"{}\" may exsit unfairness. It is suggested to take these "
+"metrics as the one of the optimization objective. Or considering whether "
+"attribute \"{}\" has proper influences on \"{}\". If yes, it is suggested"
+" to remove it from sensitive attributes list."
+
+#: src/mvc/model_eval.py:255
 msgid "fairness_range"
-msgstr ""
+msgstr "Fairness range"
 
-#: src/mvc/model_eval.py:225
+#: src/mvc/model_eval.py:268 src/mvc/model_eval.py:318
 msgid "group"
-msgstr ""
+msgstr "group \"{}\""
 
-#: src/mvc/model_eval.py:270
+#: src/mvc/model_eval.py:304
+msgid "metrics_score"
+msgstr "Metrics score"
+
+#: src/mvc/model_eval.py:365
 msgid "model_eval_error_1"
 msgstr ""
+"A proper attribute must be selected to perform conditional group equity "
+"analysis."
 
-#: src/mvc/model_eval.py:273
+#: src/mvc/model_eval.py:368
 msgid "model_eval_error_2"
-msgstr ""
+msgstr "Proper attribute must be non-sensitive attribute."
 
-#: static/progress_bar.js:27 static/script.js:42
+#: static/progress_bar.js:27 static/script.js:40
 msgid "task_continue"
-msgstr ""
+msgstr "Continue task"
 
-#: static/script.js:35 static/script.js:36 static/script.js:43
-#: templates/task_page.html:84
+#: static/script.js:34 static/script.js:41 templates/task_page.html:85
 msgid "task_pause"
-msgstr ""
+msgstr "Pause task"
 
-#: static/script.js:37
+#: static/script.js:35
 msgid "task_pausing"
-msgstr ""
+msgstr "Task_pausing ... please wait"
 
-#: static/script.js:54
+#: static/script.js:52
 msgid "task_stopping"
-msgstr ""
+msgstr "Task_stopping ... please wait"
 
 #: templates/algo_cfg.html:5
 msgid "algo_config"
-msgstr ""
+msgstr "Algorithm configuration"
 
 #: templates/algo_cfg.html:17 templates/data.html:22
 #: templates/data_eval.html:26 templates/model_eval.html:26
-#: templates/model_upload.html:17 templates/task_page.html:23
+#: templates/model_upload.html:17 templates/task_page.html:24
 msgid "back"
-msgstr ""
+msgstr "Return to start page"
 
 #: templates/algo_cfg.html:18
 msgid "algo_para_config"
-msgstr ""
+msgstr "Configure algorithm parameters"
 
 #: templates/algo_cfg.html:20 templates/data_eval.html:33
 #: templates/model_eval.html:33
 msgid "choose_sensitive_attributes"
-msgstr ""
+msgstr "Select sensitive attributes"
 
 #: templates/algo_cfg.html:34
 msgid "accuracy_metric"
-msgstr ""
+msgstr "Accuracy metrics"
 
 #: templates/algo_cfg.html:53
 msgid "fairness_metric"
-msgstr ""
+msgstr "Fairness metrics"
 
-#: templates/algo_cfg.html:67 templates/task_page.html:43
+#: templates/algo_cfg.html:67 templates/task_page.html:44
 msgid "pop_size"
-msgstr ""
+msgstr "Population size"
 
-#: templates/algo_cfg.html:71 templates/task_page.html:44
+#: templates/algo_cfg.html:71 templates/task_page.html:45
 msgid "iter_time"
-msgstr ""
+msgstr "Evolutionary generation"
 
-#: templates/algo_cfg.html:78 templates/task_page.html:45
+#: templates/algo_cfg.html:78 templates/task_page.html:46
 msgid "mo_optimazor"
-msgstr ""
+msgstr "MOEA optimizer"
 
-#: templates/algo_cfg.html:106
+#: templates/algo_cfg.html:92
 #, fuzzy
 msgid "run_task"
-msgstr "Running tasks"
+msgstr "Run task"
 
 #: templates/data.html:5
 msgid "ml_model_eval "
-msgstr ""
+msgstr "Machine learning model evaluation"
 
 #: templates/data.html:26
 msgid "dataset_selection "
-msgstr ""
+msgstr "Dataset selection"
 
 #: templates/data.html:27
 msgid "data_info_1 "
 msgstr ""
+"Please click \"OK\" after selecting the data set. To upload a dataset, "
+"click \"Upload dataset\" after selecting the data file."
 
 #: templates/data.html:28
 msgid "data_info_2 "
 msgstr ""
+"After confirming the selected dataset and checking the property list, "
+"click \"Next step\"."
 
 #: templates/data.html:42
 msgid "yes"
-msgstr ""
+msgstr "OK"
 
 #: templates/data.html:46
 msgid "download_data_temp "
-msgstr ""
+msgstr "Download dataset template"
 
 #: templates/data.html:51
 msgid "select_data_file "
-msgstr ""
+msgstr "Select dataset file"
 
 #: templates/data.html:56
 msgid "longterm_save_dataset "
-msgstr ""
+msgstr "Longterm save datasets"
 
 #: templates/data.html:59
 msgid "dont_keep_dataset"
-msgstr ""
+msgstr "Do not keep dataset"
 
 #: templates/data.html:60
 msgid "upload_dataset "
-msgstr ""
+msgstr "Upload dataset"
 
 #: templates/data.html:65
 msgid "discrete_attribute"
-msgstr ""
+msgstr "Categorical attribute"
 
 #: templates/data.html:71
 msgid "continuous_attribute"
-msgstr ""
+msgstr "Numerical attribute"
 
 #: templates/data.html:77
 msgid "target_attribute "
-msgstr ""
+msgstr "Target attribute / Label"
 
 #: templates/data.html:84
 msgid "next"
-msgstr ""
+msgstr "Next step"
 
 #: templates/data_eval.html:5
 msgid "dataset_fairness_evaluation"
-msgstr ""
+msgstr "Dataset fairness evaluation"
 
 #: templates/data_eval.html:24
 msgid "dataset"
-msgstr ""
+msgstr "Dataset "
 
 #: templates/data_eval.html:24 templates/model_eval.html:24
 msgid "fairness_evaluation"
-msgstr ""
+msgstr " fairness evaluation"
 
 #: templates/data_eval.html:53 templates/model_eval.html:53
 msgid "select_proper_attributes"
-msgstr ""
+msgstr "Select proper attributes"
 
 #: templates/footer.html:11
 msgid "unit"
@@ -359,7 +409,7 @@ msgstr ""
 "This platform provides the function of analyzing the fairness problems "
 "existing in machine learning data and models, and alleviating the "
 "inequity of models by optimizing models with multi-objective algorithms. "
-"Fairness in machine learning generally refers to[1]"
+"Fairness in machine learning generally refers to [1]."
 
 #: templates/index.html:13
 msgid "intro_2"
@@ -372,8 +422,8 @@ msgstr ""
 #: templates/index.html:14
 msgid "intro_3"
 msgstr ""
-"The predicted results (or labels) between different groups should "
-"not differ more than the differences between their non-sensitive "
+"The predicted results (or labels) between different groups should not "
+"differ more than the differences between their non-sensitive "
 "characteristics."
 
 #: templates/index.html:15
@@ -381,98 +431,110 @@ msgid "intro_4"
 msgstr ""
 "Typically, there are certain characteristics recognized by law that do "
 "not permit discrimination, and in the computer science literature, these "
-"characteristics are often considered \"protected\" or \"sensitive\" "
-"attributes [2]"
+"characteristics are often considered as \"protected\" or \"sensitive\" "
+"attributes[2]."
 
-#: templates/index.html:26
+#: templates/index.html:16
+msgid "intro_5"
+msgstr "FairerML is capable of training Pareto model set considering simultaneously accuracy and one or more fairness metrics with multi-objective optimisation, specific algorithm implementation refers to [3]."
+
+#: templates/index.html:27
 msgid "finished_task"
 msgstr "Finished tasks"
 
-#: templates/index.html:31
+#: templates/index.html:32
 msgid "running_task"
 msgstr "Running tasks"
 
-#: templates/index.html:40
+#: templates/index.html:41
 msgid "func1"
-msgstr ""
+msgstr "Analysis the fairness on datasets"
 
-#: templates/index.html:45
+#: templates/index.html:46
 msgid "func2"
-msgstr ""
+msgstr "Analysis the fairness on models"
 
-#: templates/index.html:50
+#: templates/index.html:51
 msgid "func3"
-msgstr ""
+msgstr "Start new tasks"
 
 #: templates/model_eval.html:24
 msgid "model "
-msgstr ""
+msgstr "Model "
 
 #: templates/model_upload.html:5
 msgid "upload_ml_model"
-msgstr ""
+msgstr "Upload machine learning model"
 
 #: templates/model_upload.html:22
 msgid "upload_model"
-msgstr ""
+msgstr "Please upload model"
 
 #: templates/model_upload.html:25
 msgid "model_def_file_demo"
-msgstr ""
+msgstr "Model definition file demo"
 
 #: templates/model_upload.html:30
 msgid "model_def_file_dec"
 msgstr ""
+"Please refer to the Pytorch model definition file (.py) and the saved "
+"parameters (.pth or .plk) file. Saved parameters file must be exported by"
+" \"torch.save(model.state_dict(),path)\". Model definition file must "
+"contain a subclass of torch.nn.Module and a main() with no arguments, "
+"this function will return a model instance."
 
 #: templates/model_upload.html:32
 msgid "download_model_template"
-msgstr ""
+msgstr "Download model definition file template"
 
 #: templates/model_upload.html:34
 msgid "choose_model_structure"
-msgstr ""
+msgstr "Choose model structure file"
 
 #: templates/model_upload.html:36
 msgid "choose_model_para"
-msgstr ""
+msgstr "Choose model parameters file"
 
 #: templates/model_upload.html:38
 msgid "upload_model_eval"
-msgstr ""
+msgstr "Upload model and evaluation model"
 
 #: templates/task_page.html:5
 msgid "task_status"
-msgstr ""
+msgstr "Task status"
 
-#: templates/task_page.html:25
+#: templates/task_page.html:26
 msgid "optimization_process"
-msgstr ""
+msgstr "Optimization process"
 
-#: templates/task_page.html:27
+#: templates/task_page.html:28
 msgid "task_end"
-msgstr ""
+msgstr "Finished"
 
-#: templates/task_page.html:29
+#: templates/task_page.html:30
 msgid "task_running"
-msgstr ""
-
-#: templates/task_page.html:36
-msgid "dataset_name"
-msgstr ""
+msgstr "Running"
 
 #: templates/task_page.html:37
+msgid "dataset_name"
+msgstr "Dataset name"
+
+#: templates/task_page.html:38
 msgid "sensitive_attributes"
-msgstr ""
+msgstr "Sensitive attribute"
 
-#: templates/task_page.html:42
+#: templates/task_page.html:43
 msgid "optimization_obj"
-msgstr ""
+msgstr "Optimization objectives"
 
-#: templates/task_page.html:83
+#: templates/task_page.html:84
 msgid "task_stop"
-msgstr ""
+msgstr "Stop task"
 
-#: templates/task_page.html:88
+#: templates/task_page.html:89
 msgid "download_models"
-msgstr ""
+msgstr "Download models"
+
+#~ msgid "data_eval_result_3"
+#~ msgstr ""
 

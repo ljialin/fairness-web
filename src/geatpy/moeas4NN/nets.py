@@ -302,7 +302,7 @@ def mutate(model, var):
     return model
 
 
-class Population_NN:
+class Population_NN: #unused
 
     def __init__(self, train_data_norm, train_data, train_y, test_data, test_data_norm, test_y, pop_size, n_feature,
                  n_hidden, n_output, sensitive_attributions, positive_y):
