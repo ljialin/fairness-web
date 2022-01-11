@@ -5,11 +5,7 @@ This demo is implemented by Ziqi Wang from the Research Institute of Trustworthy
 ## Before running
 ### Install required packages
 ```
-pip install numpy
-pip install pandas
-pip install torch
-pip install flask
-pip install pyecharts
+pip install -r requirement.txt
 ```
 
 Verified versions:
