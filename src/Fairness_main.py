@@ -9,7 +9,7 @@ import numpy as np
 import random
 import torch
 import sys
-
+from pytorch_lightning import seed_everything
 
 def run(parameters):
     start_time = parameters['start_time']
@@ -66,6 +66,8 @@ def run(parameters):
 
 def interface4flask(ctrlr=None, task_id=0): #ctrlr可以认为非空
     algoCfg = ctrlr.cfg
+
+    seed_everything(task_id)
 
     dataname = ctrlr.view.dataname # 数据集名称
     sensitive_attributions = algoCfg.sens_featrs # 敏感属性列表
@@ -167,7 +169,6 @@ if __name__ == '__main__':
         popsize = 50  # 种群大小
         isNN = 1  # 决定编码方式为 NN
         MAXGEN = 500  # 最大进化代数
-
 
         # 算法其他参数
         logTras = 10  # 设置每多少代记录日志，若设置成0则表示不记录日志，只是打印，并不是储存
