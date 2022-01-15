@@ -291,6 +291,9 @@ class ModelEvalView:
                     ],
                     splitarea_opt=chopts.SplitAreaOpts(
                         is_show=True, areastyle_opts=chopts.AreaStyleOpts(opacity=1)
+                    ),
+                    textstyle_opts=chopts.TextStyleOpts(
+                        color="#000000"
                     )
                 )
                 # .add(

@@ -6,15 +6,21 @@ function start_task(pid) {
         $.getJSON(prog_url, function (res) {
             $('.progress-div').css('visibility', 'visible');
             $('.progress-bar').css('width', res.progress_rate + '%')
-                .css('background', 'green')
+                .css('background', '#339999')
                 .css('text-align', 'center')
                 .text("-");
             $('#prog_info').text(res.progress_info);
             var str = ""
-            for (let i = 0; i < res.pop.length; i++) { //刷新表格
-                str += "<tr><td>" + i +
-                    "</td><td>" + res.pop[i][0] +
-                    "</td><td>" + res.pop[i][1] + "</td></tr>";
+            for (let i = 0; i < res.pop1.length; i++) { //刷新表格
+                str += "<tr><td><font color=\"#336699\">" + (i+1) +
+                    "</font></td><td><font color=\"#336699\">" + res.pop1[i][0] +
+                    "</font></td><td><font color=\"#336699\">" + res.pop1[i][1] + "</font></td></tr>";
+                $("#poptext").html(str);
+            }
+            for (let i = res.pop1.length; i < res.pop1.length + res.pop2.length; i++) { //刷新表格
+                str += "<tr><td><font color=\"#696969\">" + (i+1) +
+                    "</font></td><td><font color=\"#696969\">" + res.pop2[i-res.pop1.length][0] +
+                    "</font></td><td><font color=\"#696969\">" + res.pop2[i-res.pop1.length][1] + "</font></td></tr>";
                 $("#poptext").html(str);
             }
             if (res.progress_status === 15) { //已经暂停了
@@ -26,7 +32,7 @@ function start_task(pid) {
         });
         get_chart(pid,"http://127.0.0.1:5000/task/" + pid + "/chart")
         if (res.progress_rate === -1){
-            clearInterval(sitv);
+            setTimeout(clearInterval(sitv), 1000);
         }
     }, 1000);
 
@@ -44,7 +50,7 @@ function start_task(pid) {
             clearInterval(sitv);
             $('.progress-div').css('visibility', 'visible');
             $('.progress-bar').css('width', '100%')
-                .css('background', 'green')
+                .css('background', '#339999')
                 .css('text-align', 'center')
                 .text(".");
             $('#prog_info').text(res.progress_info);
@@ -56,7 +62,7 @@ function start_task(pid) {
             // }, 100);
         }else{ //other
             $('.progress-bar').css('width', res.progress_rate + '%')
-                .css('background', 'green')
+                .css('background', '#339999')
                 .css('text-align', 'center')
                 .text("-");
             $('#prog_info').text(res.progress_info);

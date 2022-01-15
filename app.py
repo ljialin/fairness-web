@@ -29,9 +29,9 @@ def create_app():
     app = Flask(__name__)
     Babel(app)
     BabelJS(app)
-    app.config.update(
-        BABEL_DEFAULT_LOCALE="zh_Hans_CN"
-    )
+    # app.config.update(
+    #     BABEL_DEFAULT_LOCALE="zh_Hans_CN"
+    # )
     return app
 
 
@@ -247,10 +247,14 @@ def task_page(task_id):
 
     algomnger.add_task(task_id, ctrlr)  # 在新建任务，跳转到运行页面之前，把这个task加入管理者
 
-    fpops = [] if len(ctrlr.pops) == 0 else np.around(ctrlr.pops[-1], 5).tolist()
+    # fpops = [] if len(ctrlr.pops) == 0 else np.around(ctrlr.pops[-1], 5).tolist()
+    fpops1 = [] if len(ctrlr.pops1) == 0 else np.around(ctrlr.pops1[-1], 5).tolist()
+    fpops2 = [] if len(ctrlr.pops2) == 0 else np.around(ctrlr.pops2[-1], 5).tolist()
 
+    # return render_template('task_page.html', pid=task_id, status=ctrlr.status,
+    #                        fpops=fpops, cfg=algoCfg, view=algoView, url=url)
     return render_template('task_page.html', pid=task_id, status=ctrlr.status,
-                           fpops=fpops, cfg=algoCfg, view=algoView, url=url)
+                           fpops1=fpops1, fpops2=fpops2, cfg=algoCfg, view=algoView, url=url)
 
 
 @app.route('/task/<task_id>/intervene')
@@ -289,11 +293,10 @@ def run_task(task_id):
 
     interface4flask(ctrlr, task_id)
 
-    fpops = [] if len(ctrlr.pops) == 0 else np.around(ctrlr.pops[-1], 5).tolist()
+    # fpops = [] if len(ctrlr.pops) == 0 else np.around(ctrlr.pops[-1], 5).tolist()
     return jsonify({'progress_info': ctrlr.progress_info,
                     'progress_rate': ctrlr.progress,
-                    'progress_status': ctrlr.status,
-                    'pop': fpops})
+                    'progress_status': ctrlr.status})
 
 
 @app.route('/task/<task_id>/show_progress')
@@ -302,11 +305,18 @@ def show_progress(task_id):
     algomnger = AlgosManager.instances[ip]
     ctrlr = algomnger.get_task(task_id)
     fpops = [] if len(ctrlr.pops) == 0 else np.around(ctrlr.pops[-1], 5).tolist()
-    # print(ctrlr.status)
+    fpops1 = [] if len(ctrlr.pops1) == 0 else np.around(ctrlr.pops1[-1], 5).tolist()
+    fpops2 = [] if len(ctrlr.pops2) == 0 else np.around(ctrlr.pops2[-1], 5).tolist()
+    # return jsonify({'progress_info': ctrlr.progress_info,
+    #                 'progress_rate': ctrlr.progress,
+    #                 'progress_status': ctrlr.status,
+    #                 'pop': fpops})
     return jsonify({'progress_info': ctrlr.progress_info,
                     'progress_rate': ctrlr.progress,
                     'progress_status': ctrlr.status,
-                    'pop': fpops})
+                    'pop1': fpops1,
+                    'pop2': fpops2
+                    })
 
 
 @app.route('/task/<task_id>/download_model')
@@ -340,39 +350,68 @@ def algo_status_chart(task_id):
     ip = request.remote_addr
     algomnger = AlgosManager.instances[ip]
     ctrlr = algomnger.get_task(task_id)
-    pop = ctrlr.pops[-1] if len(ctrlr.pops) > 0 else np.array([[0,0]])
+    # pop = ctrlr.pops[-1] if len(ctrlr.pops) > 0 else np.array([[0,0]])
+    pop1 = ctrlr.pops1[-1] if len(ctrlr.pops) > 0 else np.array([[0,0]])
+    pop2 = ctrlr.pops2[-1] if len(ctrlr.pops) > 0 else np.array([[0,0]])
 
-    chart = (Scatter(opts.InitOpts(width="600px", height="600px"))
+    chart = (Scatter(opts.InitOpts(width="650px", height="600px"))
              .set_global_opts(xaxis_opts=opts.AxisOpts(name=ctrlr.cfg.acc_metric,
                                                        name_location='center',
                                                        name_gap=25,
+                                                       name_textstyle_opts=opts.TextStyleOpts(
+                                                           font_size=15
+                                                       ),
                                                        max_=float('%.3g' % ctrlr.max_pop[0]),
+                                                       min_= 0.36,
                                                        type_="value"),
                               yaxis_opts=opts.AxisOpts(name=ctrlr.cfg.fair_metric,
                                                        name_gap=40,
                                                        name_location='center',
+                                                       name_textstyle_opts=opts.TextStyleOpts(
+                                                           font_size=15
+                                                       ),
                                                        max_=float('%.3g' % ctrlr.max_pop[1]),
                                                        type_="value"),
-                              title_opts=opts.TitleOpts(title=_("optimization_result")),
+                              # title_opts=opts.TitleOpts(title=_("optimization_result")),
                               )
              )
 
-    chart.add_xaxis(list(pop[:,0]))
+    # chart.add_xaxis(list(pop[:,0]))
+    # chart.add_yaxis(
+    #     series_name="",
+    #     y_axis=[each for each in zip(list(pop[:,1]), list(pop[:,0]))],
+    #     symbol_size=3,
+    #     symbol=None,
+    #     is_selected=True,
+    #     color='#336699',
+    #     label_opts=opts.LabelOpts(is_show=False)
+    # )
+    chart.add_xaxis(list(pop1[:, 0]))
     chart.add_yaxis(
         series_name="",
-        y_axis=[each for each in zip(list(pop[:,1]), list(pop[:,0]))],
-        symbol_size=3,
+        y_axis=[each for each in zip(list(np.around(pop1[:, 1], 5)), list(pop1[:, 0]))],
+        symbol_size=10,
         symbol=None,
         is_selected=True,
-        color='#00BBFF',
+        color='#696969',
+        label_opts=opts.LabelOpts(is_show=False)
+    )
+    chart.add_xaxis(list(pop2[:, 0]))
+    chart.add_yaxis(
+        series_name="",
+        y_axis=[each for each in zip(list(np.around(pop2[:, 1], 5)), list(pop2[:, 0]))],
+        symbol_size=5,
+        symbol=None,
+        is_selected=True,
+        color='#336699',
         label_opts=opts.LabelOpts(is_show=False)
     )
 
-    chart.set_global_opts(tooltip_opts=opts.TooltipOpts(
-        formatter=JsCode(
-            "function (params) {return '( '+ params.value[2] +' : '+ params.value[1] + ' )';}"
-        )
-    ))
+    # chart.set_global_opts(tooltip_opts=opts.TooltipOpts(
+    #     formatter=JsCode(
+    #         "function (params) {return '( '+ params.value[2] +' : '+ params.value[1] + ' )';}"
+    #     )
+    # ))
     return chart.dump_options_with_quotes()
 
 

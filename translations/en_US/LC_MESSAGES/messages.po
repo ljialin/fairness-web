@@ -2,7 +2,7 @@
 # Copyright (C) 2021 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
-#
+# pybabel compile -d translations
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
@@ -40,7 +40,7 @@ msgstr "Upload initialization models"
 
 #: app.py:356 templates/task_page.html:74
 msgid "optimization_result"
-msgstr "Optimization result for accuracy metrics and fairness metrics"
+msgstr "Optimization result for accuracy metric and fairness metric"
 
 #: src/common_fair_analyze.py:38
 msgid "model_chart_1"
@@ -225,7 +225,7 @@ msgstr ""
 #: src/mvc/model_eval.py:177
 msgid "model_eval_result_6"
 msgstr ""
-"The metrics score of \"{}\" is low, the groups partitioned by sensitive "
+"The metric scores of \"{}\" is low, the groups partitioned by sensitive "
 "attribute \"{}\" may exsit unfairness. It is suggested to take these "
 "metrics as the one of the optimization objective. Or considering whether "
 "attribute \"{}\" has proper influences on \"{}\". If yes, it is suggested"
@@ -241,7 +241,7 @@ msgstr "group \"{}\""
 
 #: src/mvc/model_eval.py:304
 msgid "metrics_score"
-msgstr "Metrics score"
+msgstr "metric scores"
 
 #: src/mvc/model_eval.py:365
 msgid "model_eval_error_1"
@@ -302,7 +302,7 @@ msgstr "Population size"
 
 #: templates/algo_cfg.html:71 templates/task_page.html:45
 msgid "iter_time"
-msgstr "Evolutionary generation"
+msgstr "Evolutionary evaluation"
 
 #: templates/algo_cfg.html:78 templates/task_page.html:46
 msgid "mo_optimazor"
@@ -521,7 +521,7 @@ msgstr "Dataset name"
 
 #: templates/task_page.html:38
 msgid "sensitive_attributes"
-msgstr "Sensitive attribute"
+msgstr "Sensitive attribute(s)"
 
 #: templates/task_page.html:43
 msgid "optimization_obj"

@@ -20,17 +20,17 @@ def get_confus_vals(pred_label, true_label):
 def compute_metrics(TP, FP, FN, TN):
     total = TP + FP + FN + TN + 1e-8
     res = {
-        'ACC': (TP + TN) / total,
-        'PLR': (TP + FP) / total,
-        'ERR': (FP + FN) / total,
-        'PPV': TP / (TP + FP + 1e-8),
-        'NPV': TN / (TN + FN + 1e-8),
-        'FPR': FP / (FP + TN + 1e-8),
-        'FNR': FN / (TP + FN + 1e-8),
-        'FDR': 1 - TP / (TP + FP + 1e-8),  # 1-PPV
-        'FOR': 1 - TN / (TN + FN + 1e-8),  # 1-NPV
-        'TNR': 1 - FP / (FP + TN + 1e-8),  # 1-FPR
-        'TPR': 1 - FP / (FP + TN + 1e-8),  # 1-FNR
+        'overall accuracy equality': (TP + TN) / total,
+        'statistical parity': (TP + FP) / total,
+        # 'ERR': (FP + FN) / total,
+        'PPV balance': TP / (TP + FP + 1e-8),
+        'NPV balance': TN / (TN + FN + 1e-8),
+        'FPR balance': FP / (FP + TN + 1e-8),
+        'FNR balance': FN / (TP + FN + 1e-8),
+        # 'FDR': 1 - TP / (TP + FP + 1e-8),  # 1-PPV
+        # 'FOR': 1 - TN / (TN + FN + 1e-8),  # 1-NPV
+        # 'TNR': 1 - FP / (FP + TN + 1e-8),  # 1-FPR
+        # 'TPR': 1 - FP / (FP + TN + 1e-8),  # 1-FNR
     }
     return res
 
@@ -93,5 +93,6 @@ def cal_fairness_score(metric_vals: dict):
         grp_value = []
         for grp in group_name:
             grp_value.append(metric_vals[grp][metric])
-        scores[metric] = 1 - get_obj(grp_value, 1)
+        score = 1 - get_obj(grp_value, 1)
+        scores[metric] = np.around(score, 4)
     return scores

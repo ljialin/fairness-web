@@ -297,7 +297,7 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
             pop_idx_count += 1
             population.family_list[pop_idx].append(-1)
         # population.save(dirName='Result/' + self.start_time, Gen=-1, NNmodel=population.Chrom)  # 打印最开始初始化时的网络参数
-        population.save_pop(self.ctrlr.get_savepop_dir())  # 保存神经网络的权值
+        # population.save_pop(self.ctrlr.get_savepop_dir())  # 保存神经网络的权值
         self.update_timeslot()
         gen = 1
         if self.use_GAN:
@@ -347,7 +347,7 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
         self.update_timeslot()
         Archive = copy.deepcopy(population)
 
-        self.ctrlr.save_fitness(population.ObjV_valid, gen=gen)
+        self.ctrlr.save_pop(population.ObjV_valid, population.Chrom, population.sizes,gen=gen)
         if self.handle_status(gen):
             return self.finishing(population)
         population.FitnV = np.ones([len(population), 1])
@@ -527,8 +527,8 @@ moea_NSGA2_templet : class - 多目标进化NSGA-II算法模板
             self.update_timeslot()
             # print(population.ObjV_valid)
 
-            self.ctrlr.save_fitness(population.ObjV_valid, gen=gen) #保存适应度
-            population.save_pop(self.ctrlr.get_savepop_dir()) # 保存神经网络
+            self.ctrlr.save_pop(population.ObjV_valid, population.Chrom, population.sizes,gen=gen) #保存适应度
+            # population.save_pop(self.ctrlr.get_savepop_dir()) # 保存神经网络
             if self.handle_status(gen):
                 return self.finishing(population)
 

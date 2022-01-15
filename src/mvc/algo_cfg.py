@@ -6,12 +6,15 @@
 import json
 import os
 
+import torch
+
 from src.utils import auto_dire
 from src.task import Task
 from src.mvc.model_upload import init_pop_from_uploaded
 from src.algorithm import Algorithm
 import numpy as np
 from flask_babel import gettext as _
+import geatpy as ea
 
 
 class STATUS:
@@ -59,6 +62,11 @@ class AlgoCfg:
 #     def __init__(self, data_model):
 #         self.data_model = data_model
 
+class Individual:
+    def __init__(self, pop, NNmodel):
+        self.pop = pop #二维NP
+        self.NNmodel = NNmodel
+
 
 class AlgoController:
     instances = {}
@@ -78,6 +86,8 @@ class AlgoController:
         self.progress_info = ""
 
         self.pops = []  # list套二维np格式，第1个下标选代数，第2个下表选中个体，第3个下标选中个体维度
+        self.pops1 = []  # 非支配解
+        self.pops2 = []  # 支配解
         self.max_pop = [0, 0]
 
         AlgoController.instances[ip] = self
@@ -149,9 +159,14 @@ class AlgoController:
         if not os.path.exists(dir):
             return
         pop_files = os.listdir(dir)
+        pop_files = sorted(pop_files, key=lambda x: os.path.getmtime(os.path.join(dir, x)))
         for file in pop_files:
             pop = np.loadtxt(dir + file)
             self.pops.append(pop)
+            # 算支配关系
+            pop1, pop2 = self.update_dominate_relation(pop)
+            self.pops1.append(pop1)
+            self.pops2.append(pop2)
 
 
     def update_progress(self, status, gen=0, maxgen=1, error_info=""):
@@ -159,9 +174,9 @@ class AlgoController:
         if status == STATUS.RUNNING:
             self.progress = round(gen * 100 / maxgen, 2)
             self.progress_info = _("progress_info_1").format(gen, maxgen, str(self.progress))
-            if gen == 1:
-                for i in range(len(self.max_pop)):
-                    self.max_pop[i] = max(self.max_pop[i], max(self.pops[-1][:, i]))
+            # if gen == 1:
+            for i in range(len(self.max_pop)):
+                self.max_pop[i] = max(self.max_pop[i], max(self.pops[-1][:, i]))
         elif status == STATUS.INIT_PROBLEM:
             self.progress_info = _("progress_info_2")
         elif status == STATUS.INIT_POP:
@@ -182,12 +197,67 @@ class AlgoController:
             algomnger.finished_tasks[self.task.id] = self
         self.__saveConfig()  # 把每个状态写出文件
 
-    def save_fitness(self, pop, gen=0):
+    # def save_pop(self, pop, NNmodels, size, gen=0):
+    #     # 更新支配关系
+    #     pop1, pop2, idx1, idx2 = self.update_dominate_relation(pop)
+    #     self.pops1.append(pop1)
+    #     self.pops2.append(pop2)
+    #     new_pop = np.concatenate((pop1, pop2))
+    #     idx2 += np.ones(len(idx2), dtype=int)*len(idx1)
+    #     new_NNmodels = [None for i in range(size)]
+    #     for i in range(len(idx1)):
+    #         idx = idx1[i]
+    #         new_NNmodels[i] = NNmodels[idx]
+    #     for i in range(len(idx1), len(idx2)+len(idx1)):
+    #         idx = idx2[i-len(idx1)]
+    #         new_NNmodels[i] = NNmodels[idx]
+    #
+    #     dir = self.get_savepop_dir()
+    #     for i in range(size):
+    #         torch.save(new_NNmodels[i].state_dict(), dir + 'indiv_{}.pth'.format(str(i+1)))
+    #
+    #     dir = self.save_dir + 'fitness/'
+    #     if not os.path.exists(dir):
+    #         os.mkdir(dir)
+    #     np.savetxt(dir + 'pop_objs_valid_{}.txt'.format(gen), new_pop)
+    #     self.pops.append(new_pop)
+
+    def save_pop(self, pop, NNmodels, size, gen=0):
+        NNmodels = np.array(NNmodels)
+        pop1, pop2, NNmodels1, NNmodels2 = self.update_dominate_relation(pop, NNmodels)
+        self.pops1.append(pop1)
+        self.pops2.append(pop2)
+        new_pop = np.concatenate((pop1, pop2))
+        new_NNmodels = np.concatenate((NNmodels1, NNmodels2))
+
+        dir = self.get_savepop_dir()
+        for i in range(size):
+            torch.save(new_NNmodels[i].state_dict(), dir + 'indiv_{}.pth'.format(str(i+1)))
+
         dir = self.save_dir + 'fitness/'
         if not os.path.exists(dir):
             os.mkdir(dir)
-        np.savetxt(dir + 'pop_objs_valid{}.txt'.format(gen), pop)
-        self.pops.append(pop)
+        np.savetxt(dir + 'pop_objs_valid_{}.txt'.format(gen), new_pop)
+        self.pops.append(new_pop)
+
+    def update_dominate_relation(self, pop, NNmodels=None):
+        [level, _] = ea.ndsortDED(pop)
+        pop1 = pop[np.where(level == 1)]
+        idx1 = pop1.argsort(axis=0)[:,0]
+        pop1 = pop1[idx1]
+
+        pop2 = pop[np.where(level != 1)]
+        idx2 = pop2.argsort(axis=0)[:, 0]
+        pop2 = pop2[idx2]
+
+        if NNmodels is not None:
+            NNmodels1 = NNmodels[np.where(level == 1)]
+            NNmodels1 = NNmodels1[idx1]
+            NNmodels2 = NNmodels[np.where(level != 1)]
+            NNmodels2 = NNmodels2[idx2]
+            return pop1, pop2, NNmodels1, NNmodels2
+
+        return pop1, pop2
 
 
     def add_models(self, struct_file, var_files):

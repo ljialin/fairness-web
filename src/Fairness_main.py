@@ -67,7 +67,9 @@ def run(parameters):
 def interface4flask(ctrlr=None, task_id=0): #ctrlr可以认为非空
     algoCfg = ctrlr.cfg
 
-    seed_everything(task_id)
+    seed = int(task_id[5:])
+    seed = 13
+    seed_everything(seed)
 
     dataname = ctrlr.view.dataname # 数据集名称
     sensitive_attributions = algoCfg.sens_featrs # 敏感属性列表

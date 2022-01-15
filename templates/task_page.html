@@ -23,27 +23,32 @@
 <div class="headerpage"></div>
 <p><input type="button" value="{{ _("back") }}" onclick="window.location.href='/'"></p>
 <h2>
-    {{ _("optimization_process") }}-{{ pid }}（
+    {{ _("optimization_process") }}-{{ pid }} (
     {% if status == 11 %}
         {{ _("task_end") }}
     {% else %}
         {{ _("task_running") }}
     {% endif %}
-    ）
+    )
 </h2>
 <div style="width: 100%">
-    <div style="float:left;width:500px;margin-right: 150px">
-        <div class="cfg">
-            <h4>{{ _("dataset_name") }}: {{ view.dataname }}</h4>
-            <h4>{{ _("sensitive_attributes") }}:
+    <div style="float:left;width:500px;margin-right: 100px">
+        <div class="cfg" style="line-height: 8px">
+            <h4>{{ _("dataset_name") }}: <font color="#339999">{{ view.dataname }}</font></h4>
+            <h4>{{ _("sensitive_attributes") }}:<font color="#339999">
                 {% for fear in cfg.sens_featrs %}
-                    {{ fear }},
+                    {% if loop.index == 1 %}
+                        {{ fear }}
+                    {% else %}
+                        ,{{ fear }}
+                    {% endif %}
                 {% endfor %}
-            </h4>
-            <h4>{{ _("optimization_obj") }}: {{ cfg.acc_metric }}, {{ cfg.fair_metric }}</h4>
-            <h4>{{ _("pop_size") }}: {{ cfg.pop_size }}</h4>
-            <h4>{{ _("iter_time") }}: {{ cfg.max_gens }}</h4>
-            <h4>{{ _("mo_optimazor") }}: {{ cfg.optimizer }}</h4>
+            </font></h4>
+            {% set evalnum = cfg.max_gens * cfg.pop_size  %}
+            <h4>{{ _("optimization_obj") }}: <font color="#339999">{{ cfg.acc_metric }}, {{ cfg.fair_metric }}</font></h4>
+            <h4>{{ _("pop_size") }}: <font color="#339999">{{ cfg.pop_size }}</font></h4>
+            <h4>{{ _("iter_time") }}: <font color="#339999">{{ evalnum }}</font></h4>
+            <h4>{{ _("mo_optimazor") }}: <font color="#339999">{{ cfg.optimizer }}</font></h4>
         </div>
 
         <div class="poptable" style="width: 500px">
@@ -55,14 +60,20 @@
                     <th id="th_fair">{{ cfg.fair_metric }}</th>
                 </tr>
                 <tbody id="poptext">
-                {% for fpop in fpops %}
+                {% for fpop in fpops1 %}
                     <tr>
-                        {#                    <td><label>#}
-                        {#                        <input type="checkbox" name="slct{{ i }}" checked>#}
-                        {#                    </label></td>#}
-                        <td>{{ loop.index }}</td>
-                        <td>{{ fpop[0] }}</td>
-                        <td>{{ fpop[1] }}</td>
+                        <td><font color="#336699">{{ loop.index }}</font></td>
+                        <td><font color="#336699">{{ fpop[0] }}</font></td>
+                        <td><font color="#336699">{{ fpop[1] }}</font></td>
+                    </tr>
+                {% endfor %}
+
+                {% for fpop in fpops2 %}
+                    {% set idx = loop.index + fpops1|length %}
+                    <tr>
+                        <td><font color="#696969">{{ idx }}</font></td>
+                        <td><font color="#696969">{{ fpop[0] }}</font></td>
+                        <td><font color="#696969">{{ fpop[1] }}</font></td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -72,7 +83,7 @@
 
     <div class="block" style="float:left">
         <h3>{{ _("optimization_result") }}</h3>
-        <div id="{{ pid }}" style="width:500px; height:500px; text-align: center">
+        <div id="{{ pid }}" style="width:650px; height:600px; text-align: center">
             <script> get_chart("{{ pid }}", "http://{{ url }}/task/{{ pid }}/chart") </script>
         </div>
     </div>
@@ -90,7 +101,7 @@
     </p>
 </div>
 
-<div class="progress-div" style="float:left;width: 1200px">
+<div class="progress-div">
     <div class="progress">
         <h4 id="prog_info" style="text-align: center"></h4>
         <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0"

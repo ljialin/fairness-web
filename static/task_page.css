@@ -1,8 +1,9 @@
 .progress-div {
-    background: rgba(0, 0, 0, 0.03);
-    width: 600px;
+    background: whitesmoke;
+    width: 1200px;
     height: 100px;
-    padding: 60px 20px;
+    padding: 10px 20px;
+    float:left;
     visibility: hidden;
 }
 

@@ -259,7 +259,7 @@ msgstr "种群大小"
 
 #: templates/algo_cfg.html:71 templates/task_page.html:45
 msgid "iter_time"
-msgstr "演化代数"
+msgstr "评估次数"
 
 #: templates/algo_cfg.html:78 templates/task_page.html:46
 msgid "mo_optimazor"
