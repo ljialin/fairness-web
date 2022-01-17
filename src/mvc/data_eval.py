@@ -98,7 +98,7 @@ class DataEvaluator:
                 plr = p_cnt / (p_cnt + n_cnt + 1e-5)
                 ratio = plr / total_plr
                 res.data[legi_grp][sens_grp] = ratio
-                if ratio < THRESHOLDS['PLR']:
+                if ratio < THRESHOLDS['statistical parity']:
                     if cmmts[sens_grp].get('low') is None:
                         cmmts[sens_grp]['low'] = []
                     cmmts[sens_grp]['low'].append(legi_grp)
@@ -106,7 +106,7 @@ class DataEvaluator:
                     #     _("data_eval_result_6").format(sens_featr, sens_grp, legi_featr, legi_grp, self.label,
                     #                                    self.pos_label_val)
                     # )
-                elif ratio > 1 / THRESHOLDS['PLR']:
+                elif ratio > 1 / THRESHOLDS['statistical parity']:
                     if cmmts[sens_grp].get('high') is None:
                         cmmts[sens_grp]['high'] = []
                     cmmts[sens_grp]['high'].append(legi_grp)
@@ -119,12 +119,12 @@ class DataEvaluator:
                 porper_groups = ", ".join(cmmts[sens_grp][high_low])
                 if high_low == "low":
                     res.cmmts.append(_("data_eval_result_6").format(
-                        sens_featr, sens_grp, legi_featr, porper_groups,
+                        legi_featr, porper_groups, sens_featr, sens_grp,
                         self.label, self.pos_label_val
                     ))
                 elif high_low == "high":
                     res.cmmts.append(_("data_eval_result_7").format(
-                        sens_featr, sens_grp, legi_featr, porper_groups,
+                        legi_featr, porper_groups, sens_featr, sens_grp,
                         self.label, self.pos_label_val
                     ))
         if not res.cmmts:
@@ -248,8 +248,15 @@ class DataEvalView:
                 .set_global_opts(
                     title_opts=chart_opts.TitleOpts(title=_("data_eval_result_9").format(featr)),
                     xaxis_opts=chart_opts.AxisOpts(
-                        name=_("data_eval_result_10").format(featr), name_location='middle',
-                        name_gap=25
+                        name=_("data_eval_result_10").format(featr),
+                        name_location='middle',
+                        name_gap=40,
+                        axislabel_opts=chart_opts.LabelOpts(
+                            rotate=10,
+                            vertical_align='middle',
+                            horizontal_align='center',
+                            margin=20
+                        )
                     ),
                     yaxis_opts=chart_opts.AxisOpts(
                         name=_("data_chart_1"),

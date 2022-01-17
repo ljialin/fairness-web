@@ -2,7 +2,7 @@
 <html lang="cn">
 <head>
     <meta charset="UTF-8">
-    <title>机器学习公平性评估和建议平台</title>
+    <title>{{  _("platform_name") }}</title>
     <script type="text/javascript" src="/static/redirect.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}"/>
 </head>
@@ -25,7 +25,7 @@
     ACM Computing Surveys (CSUR), 54(6), 1-35.
 </p>
 <p>
-    [3] Qingquan Zhang, Jialin Liu, Zeqi Zhang, Junyi Wen, Bifei Mao, and Xin Yao. 2021. Fairer Machine Learning Through Multi-objective EvolutionaryLearning. (2021), 111–123.
+    [3] Qingquan Zhang, Jialin Liu, Zeqi Zhang, Junyi Wen, Bifei Mao, and Xin Yao. 2021. Fairer Machine Learning Through Multi-objective Evolutionary Learning. InInternational Conference on Artificial Neural Networks. Springer, 111–123.
 </p>
 <h3> {{ _("finished_task") }} </h3>
 {% for task_id in algomnger.finished_tasks.keys() %}

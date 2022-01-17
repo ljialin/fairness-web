@@ -45,9 +45,10 @@
                 {% endfor %}
             </font></h4>
             {% set evalnum = cfg.max_gens * cfg.pop_size  %}
+{#         style="line-height: 20px"#}
             <h4>{{ _("optimization_obj") }}: <font color="#339999">{{ cfg.acc_metric }}, {{ cfg.fair_metric }}</font></h4>
             <h4>{{ _("pop_size") }}: <font color="#339999">{{ cfg.pop_size }}</font></h4>
-            <h4>{{ _("iter_time") }}: <font color="#339999">{{ evalnum }}</font></h4>
+            <h4>{{ _("eval_num") }}: <font color="#339999">{{ evalnum }}</font></h4>
             <h4>{{ _("mo_optimazor") }}: <font color="#339999">{{ cfg.optimizer }}</font></h4>
         </div>
 

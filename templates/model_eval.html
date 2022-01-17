@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>模型公平性评估</title>
+    <title>{{ _("model_fairness_eval") }}</title>
     <link rel="stylesheet" type="text/css" href="/static/eval_page.css">
     <script src="/static/extlib/jquery.js"></script>
     <script type="text/javascript" src="/static/extlib/echarts.min.js"></script>
     <script type="text/javascript" src="/static/charts.js"></script>
     <script type="text/javascript" src="/static/info.js"></script>
+    <script src="{{ url_for("babel_catalog") }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}"/>
 </head>
 <body>
@@ -21,7 +22,7 @@
 <div class="headerpage"></div>
 <div class="container">
     <div class="header">
-        <div style="width: 90%; float: left"><h1>{{ _("model ") }}{{ view.name }}{{ _("fairness_evaluation") }}</h1></div>
+        <div style="width: 90%; float: left"><h1>{{ _("model ") }}<i>{{ view.name }}</i>{{ _("fairness_evaluation") }}</h1></div>
         <div style="width: 10%; float: left; margin-top: 30px">
             <input type="button" value="{{ _("back") }}" onclick="window.location.href='/'">
         </div>
@@ -73,12 +74,13 @@
             <h3>{{ _("group_fairness_analysis") }} <input type="submit" value="?" onclick="window.location.href='/model-eval/intro'"></h3>
             <div class="block">
                 {% for i, cmmts in view.gf_cmmts %}
-                    <div id="0{{ i }}" style="width:540px; height:480px">
+                    <div id="0{{ i }}" style="width:580px; height:580px">
                         <script> get_chart("0{{ i }}", "http://{{ url }}/model-eval/charts/0{{ i }}") </script>
                     </div>
                     {% for cmmt in cmmts %}
                         <p> {{ cmmt }} </p>
                     {% endfor %}
+                    <hr />
                 {% endfor %}
             </div>
             <h3>{{ _("conditional_group_fairness_analysis") }} <input type="submit" value="?" onclick="data_cg_fair_info()"></h3>
@@ -90,6 +92,7 @@
                     {% for cmmt in cmmts %}
                         <p> {{ cmmt }} </p>
                     {% endfor %}
+                    <hr />
                 {% endfor %}
             </div>
         </div>

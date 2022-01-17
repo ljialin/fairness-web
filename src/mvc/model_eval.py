@@ -135,10 +135,10 @@ class ModelEvaluator:
                 plr = p_cnt / (p_cnt + n_cnt + 1e-5)
                 ratio = plr / total_plr
                 res.data[legi_grp][sens_grp] = ratio
-                if ratio < THRESHOLDS['PLR']:
-                    res.cmmts.append(_("model_eval_result_3").format(sens_featr, sens_grp, legi_featr, legi_grp, self.label, self.label_pval))
-                elif ratio > 1 / THRESHOLDS['PLR']:
-                    res.cmmts.append(_("model_eval_result_4").format(sens_featr, sens_grp, legi_featr, legi_grp, self.label, self.label_pval))
+                if ratio < THRESHOLDS['statistical parity']:
+                    res.cmmts.append(_("model_eval_result_3").format(legi_featr, legi_grp, sens_featr, sens_grp, self.label, self.label_pval))
+                elif ratio > 1 / THRESHOLDS['statistical parity']:
+                    res.cmmts.append(_("model_eval_result_4").format(legi_featr, legi_grp, sens_featr, sens_grp, self.label, self.label_pval))
             if not res.cmmts:
                 res.cmmts.append(_("model_eval_result_5 ").format(legi_featr, sens_featr))
         return res
@@ -241,7 +241,7 @@ class ModelEvalView:
             grp_metric_vals, cmmts = evaltr.analyze_gf(featr)
 
             chart = (
-                Radar()
+                Radar(chopts.InitOpts(width="50px", height="600px"))
                 .add_schema(
                     schema=[
                         chopts.RadarIndicatorItem(mtrc, max_=METRIC_UBS[mtrc])
@@ -283,7 +283,7 @@ class ModelEvalView:
         for i, featr in enumerate(sens_featrs):
             grp_metric_vals, fairness_scores, cmmts = evaltr.analyze_gf2(featr)
             chart = (
-                Radar()
+                Radar(chopts.InitOpts())
                 .add_schema(
                     schema=[
                         chopts.RadarIndicatorItem(mtrc, max_=METRIC_UBS[mtrc])
@@ -293,7 +293,13 @@ class ModelEvalView:
                         is_show=True, areastyle_opts=chopts.AreaStyleOpts(opacity=1)
                     ),
                     textstyle_opts=chopts.TextStyleOpts(
-                        color="#000000"
+                        color="#000000",
+                    ),
+                    center=['50%', '60%']
+                )
+                .set_global_opts(
+                    legend_opts=chopts.LegendOpts(
+                        pos_bottom=500
                     )
                 )
                 # .add(

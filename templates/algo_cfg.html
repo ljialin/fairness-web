@@ -44,9 +44,8 @@
             </div>
 
             {% set metric = [
-            "Individual_fairness", "Group_fairness", "Overall_accuracy", "Statistical_parity",
-            "Positive_predictive_value_balance", "Negative_predictive_value_balance",
-            "False_positive_error_rate_balance", "False_negative_error_rate_balance"
+            "Within_groups_fairness", "Between_groups_fairness", "Overall_accuracy_equality", "Statistical_parity",
+            "PPV_balance", "NPV_balance", "FPR_balance", "FNR_balance"
             ] %}
 
             <div style="width: 48%; float: left; margin-left: 4%">

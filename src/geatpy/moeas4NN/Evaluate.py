@@ -1028,9 +1028,9 @@ def calcul_all_fairness_new(data, logits, truelabel, sensitive_attributions, alp
 
     Groups_info = {}
 
-    Groups_info.update({"Individual_fairness": Individual_fairness})
+    Groups_info.update({"Within_groups_fairness": Individual_fairness})
     Groups_info.update({"BCE_loss": BCE_loss})
-    Groups_info.update({"Group_fairness": Group_fairness})
+    Groups_info.update({"Between_groups_fairness": Group_fairness})
     Groups_info.update({"Accuracy": accuracy})
     return accuracy, BCE_loss, Individual_fairness, Group_fairness, Groups_info
 
@@ -1174,18 +1174,18 @@ def calcul_all_fairness_new2(data, data_norm, logits, truelabel, sensitive_attri
     Dwork_value = calculate_similar_dist(dist_mat, pred_label)
 
     if obj_is_logits == 1:
-        Groups_info = {"accuracy": accuracy, "MSE_loss": MSE_loss, "BCE_loss": BCE_loss, "Individual_fairness": Individual_fairness,
-                       "Group_fairness": Group_fairness, "Demographic_parity": DP_value, "FPR": FPR_value,
-                       "FNR": FNR_value, "Positive_predictive_value_balance": PP_value,
+        Groups_info = {"accuracy": accuracy, "MSE_loss": MSE_loss, "BCE_loss": BCE_loss, "Within_groups_fairness": Individual_fairness,
+                       "Between_groups_fairness": Group_fairness, "Demographic_parity": DP_value, "FPR": FPR_value,
+                       "FNR": FNR_value, "PPV_balance": PP_value,
                        "DPs_logit": DPs_logit, "FPRs_logit": FPRs_logit, "FNRs_logit": FNRs_logit, "PPs_logit": PPs_logit,
                        "DPs": DPs, "FPRs": FPRs, "FNRs": FNRs, "PPs": PPs,
                        "DPs_true": DPs_true, "FPRs_true": FPRs_true, "FNRs_true": FNRs_true, "PPs_true": PPs_true,
                        'addition_num': 4, "more_vals": more_vals, "Dwork_value": Dwork_value}
     else:
         Groups_info = {"accuracy": accuracy, "MSE_loss": MSE_loss, "BCE_loss": BCE_loss,
-                       "Individual_fairness": Individual_fairness,
-                       "Group_fairness": Group_fairness, "Demographic_parity": DPs_true, "FPR": FPRs_true,
-                       "FNR": FNRs_true, "Positive_predictive_value_balance": PPs_true,
+                       "Within_groups_fairness": Individual_fairness,
+                       "Between_groups_fairness": Group_fairness, "Demographic_parity": DPs_true, "FPR": FPRs_true,
+                       "FNR": FNRs_true, "PPV_balance": PPs_true,
                        "DPs_logit": DPs_logit, "FPRs_logit": FPRs_logit, "FNRs_logit": FNRs_logit,
                        "PPs_logit": PPs_logit,
                        "DPs": DPs, "FPRs": FPRs, "FNRs": FNRs, "PPs": PPs,
@@ -1269,7 +1269,7 @@ def calcul_all_fairness_new3(data, data_norm, logits, truelabel, sensitive_attri
             # P(d=1 | g)
             # Disparate Impact  or  Statistical Parity 群组公平性（用作平台的群体公平性分析，和PLR指标）
             if "Disparate_impact" in obj_names or "Statistical_parity" in obj_names:
-                Disparate_impact.append(metrics['PLR']) # 计算正面标签占比
+                Disparate_impact.append(metrics['Statistical_parity']) # 计算正面标签占比
                 Statistical_parity = Disparate_impact
 
             '''
@@ -1278,7 +1278,7 @@ def calcul_all_fairness_new3(data, data_norm, logits, truelabel, sensitive_attri
             # P(y=d | g)
             # Overall accuracy
             if "Overall_accuracy" in obj_names: #ACC指标：不同群组预测的准确率相同
-                Overall_accuracy.append(metrics['ACC'])
+                Overall_accuracy.append(metrics['overall accuracy equality'])
 
             # P(y != d, g)
             # Error ratio   or   Error diff
@@ -1291,9 +1291,9 @@ def calcul_all_fairness_new3(data, data_norm, logits, truelabel, sensitive_attri
             '''
             # P(y=1 | d=1, g)
             # Predictive parity
-            if "Positive_predictive_value_balance" in obj_names: # 正类预测均等PPV：对于敏感属性的不同取值下，模型预测为正类的准确率相等
+            if "PPV_balance" in obj_names: # 正类预测均等PPV：对于敏感属性的不同取值下，模型预测为正类的准确率相等
                 if np.sum(g_predlabel) > 0:
-                    Positive_predictive_value_balance.append(metrics['PPV'])
+                    Positive_predictive_value_balance.append(metrics['PPV balance'])
 
             # P(y=0 | d=1, g)
             # Discovery ratio  or   Discovery diff
@@ -1312,27 +1312,27 @@ def calcul_all_fairness_new3(data, data_norm, logits, truelabel, sensitive_attri
 
             # P(d=1 | y=0, g)
             # Predictive equality   or   FPR ratio
-            if "Predictive_equality" in obj_names or "False_positive_error_rate_balance" in obj_names: #正类预测错误平衡FPR
+            if "Predictive_equality" in obj_names or "FPR_balance" in obj_names: #正类预测错误平衡FPR
                 if np.sum(1-g_truelabel) > 0:
-                    Predictive_equality.append(metrics['FPR'])
+                    Predictive_equality.append(metrics['FPR balance'])
                     False_positive_error_rate_balance = Predictive_equality
 
             # P(d=1 | y=1, g)
             # Equal opportunity
             if "Equal_opportunity" in obj_names: #这是对的，TPR
                 if np.sum(g_truelabel) > 0:
-                    Equal_opportunity.append(metrics['TPR'])
+                    Equal_opportunity.append(metrics['TPR balance'])
 
             # P(d=0 | y=1, g)
             # FNR ratio    or    FNR diff
-            if "False_negative_error_rate_balance" in obj_names or "FNR_diff" in obj_names: #负类预测错误平衡FNR
+            if "FNR_balance" in obj_names or "FNR_diff" in obj_names: #负类预测错误平衡FNR
                 if np.sum(g_truelabel) > 0:
                     False_negative_error_rate_balance.append(metrics['FNR'])
                     FNR_diff = False_negative_error_rate_balance
 
-            if "Negative_predictive_value_balance" in obj_names:
+            if "NPV_balance" in obj_names:
                 if np.sum(g_truelabel) > 0:
-                    Negative_predictive_value_balance.append(metrics['NPV'])
+                    Negative_predictive_value_balance.append(metrics['NPV balance'])
 
             '''
             混淆矩阵两个以上项的组合
@@ -1341,23 +1341,23 @@ def calcul_all_fairness_new3(data, data_norm, logits, truelabel, sensitive_attri
             # Equalized odds
             if "Equalized_odds" in obj_names: # TPR and FPR
                 if np.sum(g_truelabel) > 0:
-                    Equalized_odds1.append(metrics['TPR'])
+                    Equalized_odds1.append(metrics['TPR balance'])
                 if np.sum(1-g_truelabel) > 0:
                     Equalized_odds2.append(metrics['FNR'])
 
             # Conditional use accuracy equality
             if "Conditional_use_accuracy_equality" in obj_names: # PPV and NPV
                 if np.sum(g_predlabel) > 0:
-                    Conditional_use_accuracy_equality1.append(metrics['PPV'])
+                    Conditional_use_accuracy_equality1.append(metrics['PPV balance'])
                 if np.sum(1-g_predlabel) > 0:
-                    Conditional_use_accuracy_equality2.append(metrics['NPV'])
-                    Conditional_use_accuracy_equality2.append(metrics['NPV'])
+                    Conditional_use_accuracy_equality2.append(metrics['NPV balance'])
+                    Conditional_use_accuracy_equality2.append(metrics['NPV balance'])
 
             # P(d=1 | y=0, g) + P(d=1 | y=1, g)
             # Average odd difference
             if "Average_odd_diff" in obj_names: # 把TPR和FPR加起来
                 if np.sum(g_truelabel) > 0 and np.sum(1 - g_truelabel) > 0:
-                    Average_odd_diff.append(metrics['TPR'] + metrics['FPR'])
+                    Average_odd_diff.append(metrics['TPR balance'] + metrics['FPR balance'])
 
     Groups_info = {}
 
@@ -1382,14 +1382,14 @@ def calcul_all_fairness_new3(data, data_norm, logits, truelabel, sensitive_attri
     公平性指标
     '''
     # Individual unfairness = within-group + between-group
-    if "Individual_fairness" in obj_names:
+    if "Within_groups_fairness" in obj_names:
         Individual_fairness_val = generalized_entropy_index(benefits, alpha)
-        Groups_info.update({"Individual_fairness": Individual_fairness_val})
+        Groups_info.update({"Within_groups_fairness": Individual_fairness_val})
 
     # Group unfairness = between-group
-    if "Group_fairness" in obj_names:
+    if "Between_groups_fairness" in obj_names:
         Group_fairness_val = generalized_entropy_index(benefits_group, alpha)
-        Groups_info.update({"Group_fairness": Group_fairness_val})
+        Groups_info.update({"Between_groups_fairness": Group_fairness_val})
 
     # Within-group
     # Within_g_fairness = Individual_fairness - Group_fairness
@@ -1420,14 +1420,14 @@ def calcul_all_fairness_new3(data, data_norm, logits, truelabel, sensitive_attri
         Groups_info.update({"Error_diff": Error_diff_val})
 
     # Predictive parity
-    if "Positive_predictive_value_balance" in obj_names:  # PPV 最终使用
+    if "PPV_balance" in obj_names:  # PPV 最终使用
         Positive_predictive_value_balance_val = get_obj(Positive_predictive_value_balance, 1)
-        Groups_info.update({"Positive_predictive_value_balance": Positive_predictive_value_balance_val})
+        Groups_info.update({"PPV_balance": Positive_predictive_value_balance_val})
 
     # NPV
-    if "Negative_predictive_value_balance" in obj_names:  # NPV最终使用
+    if "NPV_balance" in obj_names:  # NPV最终使用
         temp = get_obj(Negative_predictive_value_balance, 1)
-        Groups_info.update({"Negative_predictive_value_balance": temp})
+        Groups_info.update({"NPV_balance": temp})
 
     # Discovery ratio
     if "Discovery_ratio" in obj_names:  # FDR 算比例
@@ -1460,9 +1460,9 @@ def calcul_all_fairness_new3(data, data_norm, logits, truelabel, sensitive_attri
         Groups_info.update({"Predictive_equality": Predictive_equality_val})
 
     # FPR ratio
-    if "False_positive_error_rate_balance" in obj_names:  # FPR 最终使用
+    if "FPR_balance" in obj_names:  # FPR 最终使用
         False_positive_error_rate_balance_val = get_obj(False_positive_error_rate_balance, 1)
-        Groups_info.update({"False_positive_error_rate_balance": False_positive_error_rate_balance_val})
+        Groups_info.update({"FPR_balance": False_positive_error_rate_balance_val})
 
     # Equal opportunity
     if "Equal_opportunity" in obj_names:  # TPR 算差
@@ -1470,9 +1470,9 @@ def calcul_all_fairness_new3(data, data_norm, logits, truelabel, sensitive_attri
         Groups_info.update({"Equal_opportunity": Equal_opportunity_val})
 
     # FNR ratio
-    if "False_negative_error_rate_balance" in obj_names:  # FNR 最终使用
+    if "FNR_balance" in obj_names:  # FNR 最终使用
         False_negative_error_rate_balance_val = get_obj(False_negative_error_rate_balance, 1)
-        Groups_info.update({"False_negative_error_rate_balance": False_negative_error_rate_balance_val})
+        Groups_info.update({"FNR_balance": False_negative_error_rate_balance_val})
 
     # FNR diff
     if "FNR_diff" in obj_names:  # FNR 算差
