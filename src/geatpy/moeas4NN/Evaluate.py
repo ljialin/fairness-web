@@ -1269,7 +1269,7 @@ def calcul_all_fairness_new3(data, data_norm, logits, truelabel, sensitive_attri
             # P(d=1 | g)
             # Disparate Impact  or  Statistical Parity 群组公平性（用作平台的群体公平性分析，和PLR指标）
             if "Disparate_impact" in obj_names or "Statistical_parity" in obj_names:
-                Disparate_impact.append(metrics['Statistical_parity']) # 计算正面标签占比
+                Disparate_impact.append(metrics['statistical parity']) # 计算正面标签占比
                 Statistical_parity = Disparate_impact
 
             '''
