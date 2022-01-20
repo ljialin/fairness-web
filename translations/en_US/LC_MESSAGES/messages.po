@@ -2,7 +2,6 @@
 # Copyright (C) 2021 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
-# pybabel compile -d translations
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
@@ -17,6 +16,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.1\n"
+
+# pybabel compile -d translations
 
 #: app.py:134 app.py:175 templates/data_eval.html:51
 #: templates/data_eval.html:75 templates/model_eval.html:51
@@ -407,11 +408,11 @@ msgstr "Upload dataset"
 
 #: templates/data.html:65
 msgid "discrete_attribute"
-msgstr "Categorical attribute"
+msgstr "Categorical attribute(s)"
 
 #: templates/data.html:71
 msgid "continuous_attribute"
-msgstr "Numerical attribute"
+msgstr "Numerical attribute(s)"
 
 #: templates/data.html:77
 msgid "target_attribute "
@@ -499,15 +500,15 @@ msgstr "Running tasks"
 
 #: templates/index.html:44
 msgid "func1"
-msgstr "Analyse the fairness on datasets"
+msgstr "Fairness analysis on data"
 
 #: templates/index.html:49
 msgid "func2"
-msgstr "Analyse the fairness on models"
+msgstr "Fairness analysis on ML models"
 
 #: templates/index.html:54
 msgid "func3"
-msgstr "Start new tasks"
+msgstr "Training fairer ML models"
 
 #: templates/model_eval.html:5
 msgid "model_fairness_eval"

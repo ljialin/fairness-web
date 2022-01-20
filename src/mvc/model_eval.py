@@ -279,6 +279,11 @@ class ModelEvalView:
         self.sens_featrs = sens_featrs
         self.gf_cmmts.clear()
 
+        metric_text = {}
+        for each in METRICS:
+            metric_text[each] = each.replace(' ', '\n')
+        metric_text['overall accuracy equality'] = "overall accuracy\nequality"
+
         charts = []
         for i, featr in enumerate(sens_featrs):
             grp_metric_vals, fairness_scores, cmmts = evaltr.analyze_gf2(featr)
@@ -286,7 +291,7 @@ class ModelEvalView:
                 Radar(chopts.InitOpts())
                 .add_schema(
                     schema=[
-                        chopts.RadarIndicatorItem(mtrc, max_=METRIC_UBS[mtrc])
+                        chopts.RadarIndicatorItem(metric_text[mtrc], max_=METRIC_UBS[mtrc])
                         for mtrc in METRICS
                     ],
                     splitarea_opt=chopts.SplitAreaOpts(
@@ -294,12 +299,14 @@ class ModelEvalView:
                     ),
                     textstyle_opts=chopts.TextStyleOpts(
                         color="#000000",
+                        font_size=14,
+                        # align='center'
                     ),
-                    center=['50%', '60%']
+                    center=['50%', '55%']
                 )
                 .set_global_opts(
                     legend_opts=chopts.LegendOpts(
-                        pos_bottom=500
+                        pos_bottom=530
                     )
                 )
                 # .add(
