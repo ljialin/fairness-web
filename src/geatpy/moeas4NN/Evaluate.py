@@ -1228,7 +1228,7 @@ def calcul_all_fairness_new3(data, data_norm, logits, truelabel, sensitive_attri
     Average_odd_diff = []
     Conditional_use_accuracy_equality1 = []
     Conditional_use_accuracy_equality2 = []
-    Overall_accuracy = []
+    Overall_accuracy_equality = []
     Error_ratio = []
     Error_diff = []
     Statistical_parity = []
@@ -1277,8 +1277,8 @@ def calcul_all_fairness_new3(data, data_norm, logits, truelabel, sensitive_attri
             '''
             # P(y=d | g)
             # Overall accuracy
-            if "Overall_accuracy" in obj_names: #ACC指标：不同群组预测的准确率相同
-                Overall_accuracy.append(metrics['overall accuracy equality'])
+            if "Overall_accuracy_equality" in obj_names: #ACC指标：不同群组预测的准确率相同
+                Overall_accuracy_equality.append(metrics['overall accuracy equality'])
 
             # P(y != d, g)
             # Error ratio   or   Error diff
@@ -1405,9 +1405,9 @@ def calcul_all_fairness_new3(data, data_norm, logits, truelabel, sensitive_attri
         Groups_info.update({"Statistical_parity": Statistical_parity_val})
 
     # Overall accuracy
-    if "Overall_accuracy" in obj_names:  # ACC 算差
-        Overall_accuracy_val = get_obj(Overall_accuracy, 1)
-        Groups_info.update({"Overall_accuracy": Overall_accuracy_val})
+    if "Overall_accuracy_equality" in obj_names:  # ACC 算差
+        Overall_accuracy_equality_val = get_obj(Overall_accuracy_equality, 1)
+        Groups_info.update({"Overall_accuracy_equality": Overall_accuracy_equality_val})
 
     # Error ratio
     if "Error_ratio" in obj_names:
