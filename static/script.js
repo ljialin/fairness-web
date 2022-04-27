@@ -48,3 +48,9 @@ function killProcess(url) {
     //     success: function (){return 0}
     // })
 }
+
+function selectFairMetric(obj, id, url){
+    var index = obj.selectedIndex;
+    $.get(url + "select_fair/" + index);
+    get_chart(id, url + "chart");
+}

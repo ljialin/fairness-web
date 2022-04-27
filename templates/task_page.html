@@ -33,7 +33,7 @@
 </h2>
 <div style="width: 100%">
     <div style="float:left;width:500px;margin-right: 100px">
-        <div class="cfg" style="line-height: 8px">
+        <div class="cfg" style="line-height: 16px">
             <h4>{{ _("dataset_name") }}: <font color="#339999">{{ view.dataname }}</font></h4>
             <h4>{{ _("sensitive_attributes") }}:<font color="#339999">
                 {% for fear in cfg.sens_featrs %}
@@ -46,7 +46,11 @@
             </font></h4>
             {% set evalnum = cfg.max_gens * cfg.pop_size  %}
 {#         style="line-height: 20px"#}
-            <h4>{{ _("optimization_obj") }}: <font color="#339999">{{ cfg.acc_metric }}, {{ cfg.fair_metric }}</font></h4>
+            <h4>{{ _("optimization_obj") }}: <font color="#339999">{{ cfg.acc_metric }}
+                {% for each in cfg.fair_metric %}
+                    ,{{ each }}
+                {% endfor %}
+            </font></h4>
             <h4>{{ _("pop_size") }}: <font color="#339999">{{ cfg.pop_size }}</font></h4>
             <h4>{{ _("eval_num") }}: <font color="#339999">{{ evalnum }}</font></h4>
             <h4>{{ _("mo_optimazor") }}: <font color="#339999">{{ cfg.optimizer }}</font></h4>
@@ -58,14 +62,17 @@
                     {#                <th></th>#}
                     <th id="th_id">ID</th>
                     <th id="th_acc">{{ cfg.acc_metric }}</th>
-                    <th id="th_fair">{{ cfg.fair_metric }}</th>
+                    {% for fair in cfg.fair_metric %}
+                        <th id="{{ fair }}">{{ fair }}</th>
+                    {% endfor %}
                 </tr>
                 <tbody id="poptext">
                 {% for fpop in fpops1 %}
                     <tr>
                         <td><font color="#336699">{{ loop.index }}</font></td>
-                        <td><font color="#336699">{{ fpop[0] }}</font></td>
-                        <td><font color="#336699">{{ fpop[1] }}</font></td>
+                        {% for each in fpop %}
+                            <td><font color="#336699">{{ each }}</font></td>
+                        {% endfor %}
                     </tr>
                 {% endfor %}
 
@@ -73,8 +80,9 @@
                     {% set idx = loop.index + fpops1|length %}
                     <tr>
                         <td><font color="#696969">{{ idx }}</font></td>
-                        <td><font color="#696969">{{ fpop[0] }}</font></td>
-                        <td><font color="#696969">{{ fpop[1] }}</font></td>
+                        {% for each in fpop %}
+                            <td><font color="#696969">{{ each }}</font></td>
+                        {% endfor %}
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -87,6 +95,12 @@
         <div id="{{ pid }}" style="width:650px; height:600px; text-align: center">
             <script> get_chart("{{ pid }}", "http://{{ url }}/task/{{ pid }}/chart") </script>
         </div>
+        选择公平性指标：
+        <select onclick="selectFairMetric(this, '{{ pid }}', 'http://{{ url }}/task/{{ pid }}/')">
+            {% for fair in cfg.fair_metric %}
+                <option value="{{ fair }}">{{ fair }}</option>
+            {% endfor %}
+        </select>
     </div>
 </div>
 

@@ -12,15 +12,25 @@ function start_task(pid) {
             $('#prog_info').text(res.progress_info);
             var str = ""
             for (let i = 0; i < res.pop1.length; i++) { //刷新表格
-                str += "<tr><td><font color=\"#336699\">" + (i+1) +
-                    "</font></td><td><font color=\"#336699\">" + res.pop1[i][0] +
-                    "</font></td><td><font color=\"#336699\">" + res.pop1[i][1] + "</font></td></tr>";
+                str += "<tr><td><font color=\"#336699\">" + (i+1);
+                for (let j = 0; j < res.pop1[i].length; j++){
+                    str += "</font></td><td><font color=\"#336699\">" + res.pop1[i][j];
+                }
+                str += "</font></td></tr>";
+                // str += "<tr><td><font color=\"#336699\">" + (i+1) +
+                //     "</font></td><td><font color=\"#336699\">" + res.pop1[i][0] +
+                //     "</font></td><td><font color=\"#336699\">" + res.pop1[i][1] + "</font></td></tr>";
                 $("#poptext").html(str);
             }
             for (let i = res.pop1.length; i < res.pop1.length + res.pop2.length; i++) { //刷新表格
-                str += "<tr><td><font color=\"#696969\">" + (i+1) +
-                    "</font></td><td><font color=\"#696969\">" + res.pop2[i-res.pop1.length][0] +
-                    "</font></td><td><font color=\"#696969\">" + res.pop2[i-res.pop1.length][1] + "</font></td></tr>";
+                str += "<tr><td><font color=\"#696969\">" + (i+1);
+                for (let j = 0; j < res.pop2[i-res.pop1.length].length; j++){
+                    str += "</font></td><td><font color=\"#696969\">" + res.pop2[i-res.pop1.length][j]
+                }
+                str += "</font></td></tr>";
+                // str += "<tr><td><font color=\"#696969\">" + (i+1) +
+                //     "</font></td><td><font color=\"#696969\">" + res.pop2[i-res.pop1.length][0] +
+                //     "</font></td><td><font color=\"#696969\">" + res.pop2[i-res.pop1.length][1] + "</font></td></tr>";
                 $("#poptext").html(str);
             }
             if (res.progress_status === 15) { //已经暂停了

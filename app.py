@@ -29,9 +29,9 @@ def create_app():
     app = Flask(__name__)
     Babel(app)
     BabelJS(app)
-    # app.config.update(
-    #     BABEL_DEFAULT_LOCALE="zh_Hans_CN"
-    # )
+    app.config.update(
+        BABEL_DEFAULT_LOCALE="zh_Hans_CN"
+    )
     return app
 
 
@@ -205,7 +205,7 @@ def algo_cfg():
         ctrlr = AlgoController.instances[ip]
         errinfo, task_id = ctrlr.new_task(
             acc_metric=form['acc_metric'],
-            fair_metric=form['fair_metric'],
+            fair_metric=form.getlist('fair_metric'),
             optimizer=form['optimizer'],
             pop_size=form['pop_size'],
             max_gens=form['max_gens'],
@@ -319,6 +319,16 @@ def show_progress(task_id):
                     })
 
 
+@app.route('/task/<task_id>/select_fair/<idx>')
+def select_fair(task_id, idx):
+    ip = request.remote_addr
+    algomnger = AlgosManager.instances[ip]
+    ctrlr = algomnger.get_task(task_id)
+    ctrlr.selected_fair = ctrlr.cfg.fair_metric[int(idx)]
+    return jsonify({'res': 0})
+    # notifiy?
+
+
 @app.route('/task/<task_id>/download_model')
 def download_model(task_id):
     ip = request.remote_addr
@@ -353,6 +363,10 @@ def algo_status_chart(task_id):
     # pop = ctrlr.pops[-1] if len(ctrlr.pops) > 0 else np.array([[0,0]])
     pop1 = ctrlr.pops1[-1] if len(ctrlr.pops) > 0 else np.array([[0,0]])
     pop2 = ctrlr.pops2[-1] if len(ctrlr.pops) > 0 else np.array([[0,0]])
+    try:
+        idx = ctrlr.cfg.fair_metric.index(ctrlr.selected_fair)
+    except:
+        idx = 0
 
     chart = (Scatter(opts.InitOpts(width="650px", height="600px"))
              .set_global_opts(xaxis_opts=opts.AxisOpts(name=ctrlr.cfg.acc_metric,
@@ -362,15 +376,15 @@ def algo_status_chart(task_id):
                                                            font_size=15
                                                        ),
                                                        max_=float('%.3g' % ctrlr.max_pop[0]),
-                                                       min_= 0.36,
+                                                       # min_= 0.36,
                                                        type_="value"),
-                              yaxis_opts=opts.AxisOpts(name=ctrlr.cfg.fair_metric,
+                              yaxis_opts=opts.AxisOpts(name=ctrlr.selected_fair,
                                                        name_gap=40,
                                                        name_location='center',
                                                        name_textstyle_opts=opts.TextStyleOpts(
                                                            font_size=15
                                                        ),
-                                                       max_=float('%.3g' % ctrlr.max_pop[1]),
+                                                       max_=float('%.3g' % ctrlr.max_pop[1+idx]),
                                                        type_="value"),
                               # title_opts=opts.TitleOpts(title=_("optimization_result")),
                               )
@@ -389,7 +403,7 @@ def algo_status_chart(task_id):
     chart.add_xaxis(list(pop1[:, 0]))
     chart.add_yaxis(
         series_name="",
-        y_axis=[each for each in zip(list(np.around(pop1[:, 1], 5)), list(pop1[:, 0]))],
+        y_axis=[each for each in zip(list(np.around(pop1[:, 1+idx], 5)), list(pop1[:, 0]))],
         symbol_size=10,
         symbol=None,
         is_selected=True,
@@ -399,7 +413,7 @@ def algo_status_chart(task_id):
     chart.add_xaxis(list(pop2[:, 0]))
     chart.add_yaxis(
         series_name="",
-        y_axis=[each for each in zip(list(np.around(pop2[:, 1], 5)), list(pop2[:, 0]))],
+        y_axis=[each for each in zip(list(np.around(pop2[:, 1+idx], 5)), list(pop2[:, 0]))],
         symbol_size=5,
         symbol=None,
         is_selected=True,

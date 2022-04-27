@@ -73,7 +73,8 @@ def interface4flask(ctrlr=None, task_id=0): #ctrlr可以认为非空
 
     dataname = ctrlr.view.dataname # 数据集名称
     sensitive_attributions = algoCfg.sens_featrs # 敏感属性列表
-    objectives_class = [algoCfg.acc_metric, algoCfg.fair_metric] # 优化目标列表
+    objectives_class = [algoCfg.acc_metric]
+    objectives_class.extend(algoCfg.fair_metric)  # 优化目标列表
     popsize = algoCfg.pop_size # 种群大小
     MAXGEN = algoCfg.max_gens # 进化代数
     optimizer = algoCfg.optimizer # 优化器

@@ -42,7 +42,7 @@ class AlgoCfgView:
 class AlgoCfg:
     def __init__(self):
         self.acc_metric = 'BCE_loss'
-        self.fair_metric = 'Individual_fairness'
+        self.fair_metric = ['Individual_fairness']
         self.optimizer = 'SRA'
         self.pop_size = 50
         self.max_gens = 100
@@ -97,6 +97,9 @@ class AlgoController:
         self.cfg.acc_metric = kwargs['acc_metric']
         self.cfg.fair_metric = kwargs['fair_metric']
         self.cfg.optimizer = kwargs['optimizer']
+        self.max_pop = [0 for i in range(len(self.cfg.fair_metric) + 1)]
+        self.selected_fair = self.cfg.fair_metric[0]
+
         try:
             self.cfg.pop_size = int(kwargs['pop_size'])
         except:
@@ -162,6 +165,8 @@ class AlgoController:
         pop_files = sorted(pop_files, key=lambda x: os.path.getmtime(os.path.join(dir, x)))
         for file in pop_files:
             pop = np.loadtxt(dir + file)
+            if len(pop.shape) == 1: #只有一个个体，升维
+                pop = np.reshape(pop,(1, -1))
             self.pops.append(pop)
             # 算支配关系
             pop1, pop2 = self.update_dominate_relation(pop)

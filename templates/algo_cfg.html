@@ -53,9 +53,9 @@
                 {% for each in metric %}
                     <p><label>
                         {% if cfg.fair_metric == each %}
-                            <input type="radio" name="fair_metric" value="{{ each }}" checked="checked">
+                            <input type="checkbox" name="fair_metric" value="{{ each }}" checked="checked">
                         {% else %}
-                            <input type="radio" name="fair_metric" value="{{ each }}">
+                            <input type="checkbox" name="fair_metric" value="{{ each }}">
                         {% endif %}
                     </label> {{ each }} </p>
                 {% endfor %}
