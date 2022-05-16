@@ -110,6 +110,11 @@ def data_page():
         return render_template('data.html', view=ctrlr.view, errinfo=errinfo)
 
 
+@app.route('/data/data_intro')
+def data_intro():
+    return render_template('data_intro.html')
+
+
 @app.route('/data/desc_template')
 def download_desc_template():
     return send_from_directory('static/file_templates', 'data.csv', as_attachment=True)
@@ -139,7 +144,23 @@ def data_eval():
                 errinfo = ctrlr.cgf_eval(sens_featrs, legi_featr)
 
     # 这里的ip好像没被用到
-    return render_template('data_eval.html', view=ctrlr.view, url=url, errinfo=errinfo)
+    return render_template('data_eval.html', view=ctrlr.view, model=ctrlr.model, url=url, errinfo=errinfo)
+
+
+@app.route('/data-eval/setThreshold/<threshold>', methods=['GET', 'POST'])
+def data_eval_threshold(threshold):
+    try:
+        threshold = float(threshold)
+        if threshold > 1 or threshold < 0:
+            err = "Threshold should be in the range [0,1]."
+        else:
+            ip = request.remote_addr
+            ctrlr = DataEvalController(ip, DataController.insts[ip].model)
+            ctrlr.model.theta_gf = threshold
+            err = "Success!"
+    except:
+        err = "Threshold should be digital."
+    return jsonify({'err': err})
 
 
 @app.route('/model-upload', methods=['GET', 'POST'])

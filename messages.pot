@@ -8,32 +8,32 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-01-17 19:00+0800\n"
+"POT-Creation-Date: 2022-04-29 16:54+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.1\n"
+"Generated-By: Babel 2.9.0\n"
 
-#: app.py:134 app.py:175 templates/data_eval.html:51
-#: templates/data_eval.html:75 templates/model_eval.html:51
+#: app.py:139 app.py:196 templates/data_eval.html:52
+#: templates/data_eval.html:77 templates/model_eval.html:51
 #: templates/model_eval.html:74
 msgid "group_fairness_analysis"
 msgstr ""
 
-#: app.py:136 templates/data_eval.html:70 templates/data_eval.html:99
+#: app.py:141 templates/data_eval.html:71 templates/data_eval.html:109
 msgid "individual_fariness_analysis"
 msgstr ""
 
-#: app.py:138 app.py:177 templates/data_eval.html:69
-#: templates/data_eval.html:87 templates/model_eval.html:69
+#: app.py:143 app.py:198 templates/data_eval.html:70
+#: templates/data_eval.html:97 templates/model_eval.html:69
 #: templates/model_eval.html:86
 msgid "conditional_group_fairness_analysis"
 msgstr ""
 
-#: app.py:217 templates/algo_cfg.html:90
+#: app.py:238 templates/algo_cfg.html:90
 msgid "upload_init_models"
 msgstr ""
 
@@ -41,39 +41,39 @@ msgstr ""
 msgid "model_chart_1"
 msgstr ""
 
-#: src/mvc/algo_cfg.py:103
+#: src/mvc/algo_cfg.py:106
 msgid "task_error1"
 msgstr ""
 
-#: src/mvc/algo_cfg.py:108
+#: src/mvc/algo_cfg.py:111
 msgid "task_error2"
 msgstr ""
 
-#: src/mvc/algo_cfg.py:115
+#: src/mvc/algo_cfg.py:118
 msgid "task_error3"
 msgstr ""
 
-#: src/mvc/algo_cfg.py:176
+#: src/mvc/algo_cfg.py:181
 msgid "progress_info_1"
 msgstr ""
 
-#: src/mvc/algo_cfg.py:181
+#: src/mvc/algo_cfg.py:186
 msgid "progress_info_2"
 msgstr ""
 
-#: src/mvc/algo_cfg.py:183
+#: src/mvc/algo_cfg.py:188
 msgid "progress_info_3"
 msgstr ""
 
-#: src/mvc/algo_cfg.py:185
+#: src/mvc/algo_cfg.py:190
 msgid "progress_info_4"
 msgstr ""
 
-#: src/mvc/algo_cfg.py:187
+#: src/mvc/algo_cfg.py:192
 msgid "progress_info_5"
 msgstr ""
 
-#: src/mvc/algo_cfg.py:194
+#: src/mvc/algo_cfg.py:199
 msgid "progress_info_6"
 msgstr ""
 
@@ -93,63 +93,63 @@ msgstr ""
 msgid "dataset_duplicate_name"
 msgstr ""
 
-#: src/mvc/data_eval.py:63
+#: src/mvc/data_eval.py:64
 msgid "data_eval_result_1"
 msgstr ""
 
-#: src/mvc/data_eval.py:65
+#: src/mvc/data_eval.py:66
 msgid "data_eval_result_2"
 msgstr ""
 
-#: src/mvc/data_eval.py:67
+#: src/mvc/data_eval.py:68
 msgid "data_eval_result_4"
 msgstr ""
 
-#: src/mvc/data_eval.py:121
+#: src/mvc/data_eval.py:122
 msgid "data_eval_result_6"
 msgstr ""
 
-#: src/mvc/data_eval.py:126
+#: src/mvc/data_eval.py:127
 msgid "data_eval_result_7"
 msgstr ""
 
-#: src/mvc/data_eval.py:131
+#: src/mvc/data_eval.py:132
 msgid "data_eval_result_11"
 msgstr ""
 
-#: src/mvc/data_eval.py:152
+#: src/mvc/data_eval.py:153
 msgid "data_eval_result_8"
 msgstr ""
 
-#: src/mvc/data_eval.py:159
+#: src/mvc/data_eval.py:160
 msgid "data_eval_result_5"
 msgstr ""
 
-#: src/mvc/data_eval.py:249
+#: src/mvc/data_eval.py:251
 msgid "data_eval_result_9"
 msgstr ""
 
-#: src/mvc/data_eval.py:251
+#: src/mvc/data_eval.py:253
 msgid "data_eval_result_10"
 msgstr ""
 
-#: src/mvc/data_eval.py:262
+#: src/mvc/data_eval.py:264
 msgid "data_chart_1"
 msgstr ""
 
-#: src/mvc/data_eval.py:308
+#: src/mvc/data_eval.py:310
 msgid "data_eval_error_1"
 msgstr ""
 
-#: src/mvc/data_eval.py:315
+#: src/mvc/data_eval.py:317
 msgid "data_eval_error_2"
 msgstr ""
 
-#: src/mvc/data_eval.py:317
+#: src/mvc/data_eval.py:319
 msgid "data_eval_error_3"
 msgstr ""
 
-#: src/mvc/data_eval.py:324
+#: src/mvc/data_eval.py:326
 msgid "data_eval_error_4"
 msgstr ""
 
@@ -189,19 +189,19 @@ msgstr ""
 msgid "fairness_range"
 msgstr ""
 
-#: src/mvc/model_eval.py:268 src/mvc/model_eval.py:326
+#: src/mvc/model_eval.py:268 src/mvc/model_eval.py:334
 msgid "group"
 msgstr ""
 
-#: src/mvc/model_eval.py:312
+#: src/mvc/model_eval.py:320
 msgid "metrics_score"
 msgstr ""
 
-#: src/mvc/model_eval.py:373
+#: src/mvc/model_eval.py:381
 msgid "model_eval_error_1"
 msgstr ""
 
-#: src/mvc/model_eval.py:376
+#: src/mvc/model_eval.py:384
 msgid "model_eval_error_2"
 msgstr ""
 
@@ -245,11 +245,11 @@ msgstr ""
 msgid "data_i_fair_info_2"
 msgstr ""
 
-#: static/progress_bar.js:34 static/script.js:40
+#: static/progress_bar.js:50 static/script.js:40
 msgid "task_continue"
 msgstr ""
 
-#: static/script.js:34 static/script.js:41 templates/task_page.html:97
+#: static/script.js:34 static/script.js:41 templates/task_page.html:111
 msgid "task_pause"
 msgstr ""
 
@@ -261,13 +261,22 @@ msgstr ""
 msgid "task_stopping"
 msgstr ""
 
+#: static/script.js:76 templates/data_eval.html:79
+msgid "advance_setting_show"
+msgstr ""
+
+#: static/script.js:79
+msgid "advance_setting_hide"
+msgstr ""
+
 #: templates/algo_cfg.html:5
 msgid "algo_config"
 msgstr ""
 
 #: templates/algo_cfg.html:17 templates/data.html:22
-#: templates/data_eval.html:27 templates/model_eval.html:27
-#: templates/model_upload.html:17 templates/task_page.html:24
+#: templates/data_eval.html:28 templates/data_intro.html:13
+#: templates/model_eval.html:27 templates/model_upload.html:17
+#: templates/task_page.html:24
 msgid "back"
 msgstr ""
 
@@ -275,7 +284,7 @@ msgstr ""
 msgid "algo_para_config"
 msgstr ""
 
-#: templates/algo_cfg.html:20 templates/data_eval.html:34
+#: templates/algo_cfg.html:20 templates/data_eval.html:35
 #: templates/model_eval.html:34
 msgid "choose_sensitive_attributes"
 msgstr ""
@@ -288,7 +297,7 @@ msgstr ""
 msgid "fairness_metric"
 msgstr ""
 
-#: templates/algo_cfg.html:66 templates/task_page.html:50
+#: templates/algo_cfg.html:66 templates/task_page.html:54
 msgid "pop_size"
 msgstr ""
 
@@ -296,7 +305,7 @@ msgstr ""
 msgid "iter_time"
 msgstr ""
 
-#: templates/algo_cfg.html:77 templates/task_page.html:52
+#: templates/algo_cfg.html:77 templates/task_page.html:56
 msgid "mo_optimazor"
 msgstr ""
 
@@ -308,55 +317,59 @@ msgstr ""
 msgid "ml_model_eval "
 msgstr ""
 
-#: templates/data.html:26
+#: templates/data.html:28
 msgid "dataset_selection "
 msgstr ""
 
-#: templates/data.html:27
+#: templates/data.html:31
+msgid "data_intro"
+msgstr ""
+
+#: templates/data.html:34
 msgid "data_info_1 "
 msgstr ""
 
-#: templates/data.html:28
+#: templates/data.html:35
 msgid "data_info_2 "
 msgstr ""
 
-#: templates/data.html:42
+#: templates/data.html:49 templates/data_eval.html:84
 msgid "yes"
 msgstr ""
 
-#: templates/data.html:46
+#: templates/data.html:53
 msgid "download_data_temp "
 msgstr ""
 
-#: templates/data.html:51
+#: templates/data.html:58
 msgid "select_data_file "
 msgstr ""
 
-#: templates/data.html:56
+#: templates/data.html:63
 msgid "longterm_save_dataset "
 msgstr ""
 
-#: templates/data.html:59
+#: templates/data.html:66
 msgid "dont_keep_dataset"
 msgstr ""
 
-#: templates/data.html:60
+#: templates/data.html:67
 msgid "upload_dataset "
 msgstr ""
 
-#: templates/data.html:65
+#: templates/data.html:72
 msgid "discrete_attribute"
 msgstr ""
 
-#: templates/data.html:71
+#: templates/data.html:78
 msgid "continuous_attribute"
 msgstr ""
 
-#: templates/data.html:77
+#: templates/data.html:84
 msgid "target_attribute "
 msgstr ""
 
-#: templates/data.html:84
+#: templates/data.html:91
 msgid "next"
 msgstr ""
 
@@ -364,16 +377,24 @@ msgstr ""
 msgid "dataset_fairness_evaluation"
 msgstr ""
 
-#: templates/data_eval.html:25
+#: templates/data_eval.html:26
 msgid "dataset"
 msgstr ""
 
-#: templates/data_eval.html:25 templates/model_eval.html:25
+#: templates/data_eval.html:26 templates/model_eval.html:25
 msgid "fairness_evaluation"
 msgstr ""
 
-#: templates/data_eval.html:54 templates/model_eval.html:54
+#: templates/data_eval.html:55 templates/model_eval.html:54
 msgid "select_proper_attributes"
+msgstr ""
+
+#: templates/data_eval.html:82
+msgid "threshold"
+msgstr ""
+
+#: templates/data_intro.html:15
+msgid "provided_data"
 msgstr ""
 
 #: templates/footer.html:11
@@ -496,19 +517,19 @@ msgstr ""
 msgid "optimization_obj"
 msgstr ""
 
-#: templates/task_page.html:51
+#: templates/task_page.html:55
 msgid "eval_num"
 msgstr ""
 
-#: templates/task_page.html:86
+#: templates/task_page.html:94
 msgid "optimization_result"
 msgstr ""
 
-#: templates/task_page.html:96
+#: templates/task_page.html:110
 msgid "task_stop"
 msgstr ""
 
-#: templates/task_page.html:101
+#: templates/task_page.html:115
 msgid "download_models"
 msgstr ""
 

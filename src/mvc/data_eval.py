@@ -7,6 +7,7 @@
 import random
 import time
 
+import numpy as np
 import pandas as pds
 import pyecharts.options as chart_opts
 from typing import List
@@ -145,6 +146,7 @@ class DataEvaluator:
         #     cmmts.append(', '.join(map(str, pos_discriminated)))
         if neg_discriminated or pos_discriminated:
             indivs = neg_discriminated + pos_discriminated
+            indivs = np.sort(indivs)
             # cmmts.append(_("data_eval_result_8").format(legi_featr, len(neg_discriminated)) +
             #              '\n, '.join(map(str, neg_discriminated)))
             # cmmts.append(_("data_eval_result_8").format(legi_featr, len(pos_discriminated)) +
@@ -193,6 +195,7 @@ class DataEvaluator:
         val_arr = frame[legi_featr].to_numpy()
         label_arr = frame[self.label].to_numpy()
         id_arr = frame['ID'].to_numpy()
+        # id_arr = np.sort(id_arr)
         while i < len(self.data):
             cur_val = val_arr[i]
             cur_label = label_arr[i]

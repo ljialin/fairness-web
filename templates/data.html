@@ -23,7 +23,14 @@
     </div>
     <div style="float: left; width: 100%">
         <div style="width: 32%; height: 100%; float: left">
-            <h4> {{ _("dataset_selection ") }} </h4>
+            <div style="width: 100%">
+                <div style="width: 70%; float: left">
+                    <h4> {{ _("dataset_selection ") }} </h4>
+                </div><br>
+                <div style="width: 30%; float: left">
+                   <input type="button" value="{{ _("data_intro") }}" onclick="window.location.href='/data/data_intro'">
+                </div><br><br>
+            </div>
             <p>{{ _("data_info_1 ") }}</p>
             <p>{{ _("data_info_2 ") }}</p>
             <form action="" method="post" style="width: 100%; height: 48%; float: top">

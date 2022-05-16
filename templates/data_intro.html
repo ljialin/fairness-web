@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/static/extlib/jquery.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename="task_page.css") }}"/>
+</head>
+<div class="headerpage"></div>
+<body>
+<div style="float: left; width: 100%">
+    <input type="button" value="{{ _("back") }}" onclick="window.location.href='/'">
+</div>
+<h2 align="center"><b>{{ _("provided_data") }}</b></h2>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Label</th>
+        <th>#Records</th>
+        <th>Sensitive Attributes</th>
+    </tr>
+    <tbody>
+    <tr>
+        <td>Adult[1]</td>
+        <td>The Adult dataset is based on 1994 US census data. It contains personal information such as employment, housing, saving, age and their annually incomes.</td>
+        <td>Whether individuals' income is higher than 50 thousand per years.</td>
+        <td>32561</td>
+        <td>Race; Sex</td>
+    </tr>
+    <tr>
+        <td>German[2]</td>
+        <td>The German dataset is based on 1994 Germen bank individuals’ records. It contains features including occupation, marital status, education and risk score.</td>
+        <td>Whether persons should receive a good or bad credit risk score.</td>
+        <td>1000</td>
+        <td>Sex; Age</td>
+    </tr>
+    <tr>
+        <td>COMPAS[3]</td>
+        <td>The COMPAS dataset is for analysing criminal risk. It contains offender’s previous felonies, charge, degree, age, race and etc.</td>
+        <td>Whether the offender will be arrested again within two years after the release.</td>
+        <td>6167</td>
+        <td>Race; Sex</td>
+    </tr>
+    <tr>
+        <td>Bank[4]</td>
+        <td>The Bank dataset is based on an activative of a Portuguese banking insititution. It contains basic information of bank customers.</td>
+        <td>Whether the bank's customers subscribe the deposit service.</td>
+        <td>30488</td>
+        <td>Age</td>
+    </tr>
+    <tr>
+        <td>LSAT[5]</td>
+        <td>The LAST dataset contains attributes study status and persional information of students.</td>
+        <td>Whether the candidate passed the law test.</td>
+        <td>21791</td>
+        <td>Race; Sex</td>
+    </tr>
+    <tr>
+        <td>Dutch[6]</td>
+        <td>The Dutch dataset is originate from census data. It contains the basic information of the people who live in Dutch.</td>
+        <td>Whether a person has a prestigious job occupation.</td>
+        <td>60420</td>
+        <td>Sex</td>
+    </tr>
+    <tr>
+        <td>Ricci[7]</td>
+        <td>The Ricci dataset is about the result of an exam which determine if a firefighter would receive a promotion.</td>
+        <td>Whether firefighters receives a promotion.</td>
+        <td>118</td>
+        <td>Race</td>
+    </tr>
+    <tr>
+        <td>Student[8]</td>
+        <td>The student dataset records the students’ study grade in secondary education in Protuguese schools and their relavent peronal information.</td>
+        <td>Whether students pass the final exam.</td>
+        <td>608</td>
+        <td>Sex</td>
+    </tr>
+    <tr>
+        <td>Default[9]</td>
+        <td>The default dataset records payment data of credit card holders from an important bank (a cash and credit card issuer) in Taiwan in October, 2005.</td>
+        <td>Whether credit card holders default payment.</td>
+        <td>30000</td>
+        <td>Sex</td>
+    </tr>
+{#    <tr>#}
+{#        <td>heart_failure</td>#}
+{#        <td>Adult</td>#}
+{#        <td>Adult</td>#}
+{#        <td>Adult</td>#}
+{#        <td>Adult</td>#}
+{#    </tr>#}
+{#    <tr>#}
+{#        <td>Patient_treatment</td>#}
+{#        <td>Adult</td>#}
+{#        <td>Adult</td>#}
+{#        <td>Adult</td>#}
+{#        <td>Adult</td>#}
+{#    </tr>#}
+{#    <tr>#}
+{#        <td>Adult</td>#}
+{#        <td>Adult</td>#}
+{#        <td>Adult</td>#}
+{#        <td>Adult</td>#}
+{#        <td>Adult</td>#}
+{#    </tr>#}
+    </tbody>
+</table>
+<br>[1] R. Kohavi et al., “Scaling up the accuracy of naive-bayes classifiers: A decision-tree hybrid.” in Kdd, vol. 96, 1996, pp. 202–207.
+<br>[2] F. Kamiran and T. Calders, “Classifying without discriminating,”in 2009 2nd International Conference on Computer, Control and Communication. IEEE, 2009, pp. 1–6.
+<br>[3] J. Larson, S. Mattu, L. Kirchner, and J. Angwin. (2016) Data and analysis for “how we analyzed the compas recidivism algorithm”. [Online]. Available: https://www.propublica.org/ article/how-we-analyzed-the-compas-recidivism-algorithm
+<br>[4] M. B. Zafar, I. Valera, M. G. Rogriguez, and K. P. Gummadi,“Fairness constraints: Mechanisms for fair classification,” in Artificial Intelligence and Statistics. PMLR, 2017, pp. 962–970.
+<br>[5] R. H. Sander, “A systemic analysis of affirmative action in american law schools,” Stan. L. Rev., vol. 57, p. 367, 2004.
+<br>[6] F. Kamiran and T. Calders, “Data preprocessing techniques for classification without discrimination,” Knowledge and Information Systems, vol. 33, no. 1, pp. 1–33, 2012.
+<br>[7] Miao W. Did the results of promotion exams have a disparate impact on minorities? Using statistical evidence in Ricci v. DeStefano[J]. Journal of Statistics Education, 2010, 18(3).
+<br>[8] P. Cortez and A. M. G. Silva, “Using data mining to predict secondary school student performance.” EUROSIS-ETI, 2008, pp. 5–12.
+<br>[9] Yeh I C, Lien C. The comparisons of data mining techniques for the predictive accuracy of probability of default of credit card clients[J]. Expert systems with applications, 2009, 36(2): 2473-2480.
+{#<br>[10] D. Chicco and G. Jurman, “Machine learning can predict survival of patients with heart failure from serum creatinine and ejection fraction alone,” BMC medical informatics and decision making,vol. 20, no. 1, pp. 1–16, 2020.#}
+{#<br>[11] #}
+
+
+<div class="footerpage" style="float:left;width: 100%"></div>
+<script src="{{ url_for('static',filename='extlib/jquery.js') }}"></script>
+<script>
+    $(function () {
+        $(".headerpage").load("{{ url_for('loadheader', para="null") }}");
+        $(".footerpage").load("{{ url_for('loadfooter') }}");
+    });
+</script>
+</body>
+</html>

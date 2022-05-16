@@ -54,3 +54,22 @@ function selectFairMetric(obj, id, url){
     $.get(url + "select_fair/" + index);
     get_chart(id, url + "chart");
 }
+
+function showAdvance(){
+    var advance = $("#advance");
+    var button = $("#advance_setting")
+    if (advance.is(":hidden")){
+        advance.show();
+        button.val(_("advance_setting_hide"))
+    }else{
+        advance.hide();
+        button.val(_("advance_setting_show"))
+    }
+}
+
+function changeThreshold(url){
+    var threshold = $('#threshold').val()
+    $.getJSON(url + threshold, function (res) {
+        alert(res.err);
+    });
+}

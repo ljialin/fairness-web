@@ -37,6 +37,8 @@ class DataModel:
 
         self.errinfo = self.__load_data(file_path)
         self.__train_data = None
+        self.get_processed_data()
+        print()
 
     def __load_data(self, file_path):
         # 绝对路径
@@ -166,6 +168,7 @@ class DataModel:
 
 
     def __group_n_featr(self, featr):
+        # 数值型属性划分五分
         vmax = self.data4eval[featr].max()
         vmin = self.data4eval[featr].min()
         d = (vmax - vmin + 1e-5) / N_SPLIT
@@ -227,7 +230,7 @@ class DataModel:
         num_input = len(self.n_featrs) + sum(
             len(self.categorical_map[c_featr])
             for c_featr in self.c_featrs
-        )
+        ) #离散型变成onehot之后数据的维度数量
         np_data = np.zeros((len(raw_data), num_input), np.float32)
 
         start = 0
