@@ -35,7 +35,6 @@ def create_app():
     return app
 
 
-url = "127.0.0.1:5000"
 port = 5000
 app = create_app()
 
@@ -123,6 +122,7 @@ def download_desc_template():
 @app.route('/data-eval', methods=['GET', 'POST'])
 def data_eval():
     ip = request.remote_addr
+    url = "{}:{}".format(ip, port)
     form = request.form
     errinfo = None
     if not form:  # 检测是不是在页面内按按钮之后，还要用这个页面
@@ -202,6 +202,7 @@ def download_model_template():
 @app.route('/model-eval', methods=['GET', 'POST'])
 def model_eval():
     ip = request.remote_addr
+    url = "{}:{}".format(ip, port)
     form = request.form
     if ModelEvalController.insts[ip] is None:
         return '必须在选择数据集页面选择数据集，并在上传模型页面上传模型后才能访问该页面'
@@ -278,6 +279,7 @@ def task_page(task_id):
     print(task_id)
     form = request.form
     ip = request.remote_addr
+    url = "{}:{}".format(ip, port)
     algomnger = AlgosManager.instances[ip]
     ctrlr = algomnger.get_task(task_id)
     algoCfg = ctrlr.cfg
@@ -539,4 +541,4 @@ def datagf_chart(feature):
 
 
 if __name__ == '__main__':
-    app.run(port=port)
+    app.run(host='0.0.0.0', port=port)
