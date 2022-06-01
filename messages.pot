@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-04-29 16:54+0800\n"
+"POT-Creation-Date: 2022-06-01 14:48+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,9 +17,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.0\n"
 
-#: app.py:139 app.py:196 templates/data_eval.html:52
-#: templates/data_eval.html:77 templates/model_eval.html:51
-#: templates/model_eval.html:74
+#: app.py:139 app.py:213 templates/data_eval.html:52
+#: templates/data_eval.html:77 templates/model_eval.html:52
+#: templates/model_eval.html:77
 msgid "group_fairness_analysis"
 msgstr ""
 
@@ -27,13 +27,13 @@ msgstr ""
 msgid "individual_fariness_analysis"
 msgstr ""
 
-#: app.py:143 app.py:198 templates/data_eval.html:70
-#: templates/data_eval.html:97 templates/model_eval.html:69
-#: templates/model_eval.html:86
+#: app.py:143 app.py:215 templates/data_eval.html:70
+#: templates/data_eval.html:97 templates/model_eval.html:70
+#: templates/model_eval.html:112
 msgid "conditional_group_fairness_analysis"
 msgstr ""
 
-#: app.py:238 templates/algo_cfg.html:90
+#: app.py:255 templates/algo_cfg.html:90
 msgid "upload_init_models"
 msgstr ""
 
@@ -77,19 +77,19 @@ msgstr ""
 msgid "progress_info_6"
 msgstr ""
 
-#: src/mvc/data.py:74
+#: src/mvc/data.py:77
 msgid "label_error"
 msgstr ""
 
-#: src/mvc/data.py:93
+#: src/mvc/data.py:96
 msgid "update_error"
 msgstr ""
 
-#: src/mvc/data.py:343
+#: src/mvc/data.py:287
 msgid "filename_conflict"
 msgstr ""
 
-#: src/mvc/data.py:349
+#: src/mvc/data.py:293
 msgid "dataset_duplicate_name"
 msgstr ""
 
@@ -105,103 +105,103 @@ msgstr ""
 msgid "data_eval_result_4"
 msgstr ""
 
-#: src/mvc/data_eval.py:122
+#: src/mvc/data_eval.py:124
 msgid "data_eval_result_6"
 msgstr ""
 
-#: src/mvc/data_eval.py:127
+#: src/mvc/data_eval.py:129
 msgid "data_eval_result_7"
 msgstr ""
 
-#: src/mvc/data_eval.py:132
+#: src/mvc/data_eval.py:134
 msgid "data_eval_result_11"
 msgstr ""
 
-#: src/mvc/data_eval.py:153
+#: src/mvc/data_eval.py:156
 msgid "data_eval_result_8"
 msgstr ""
 
-#: src/mvc/data_eval.py:160
+#: src/mvc/data_eval.py:163
 msgid "data_eval_result_5"
 msgstr ""
 
-#: src/mvc/data_eval.py:251
+#: src/mvc/data_eval.py:254
 msgid "data_eval_result_9"
 msgstr ""
 
-#: src/mvc/data_eval.py:253
+#: src/mvc/data_eval.py:256
 msgid "data_eval_result_10"
 msgstr ""
 
-#: src/mvc/data_eval.py:264
+#: src/mvc/data_eval.py:267
 msgid "data_chart_1"
 msgstr ""
 
-#: src/mvc/data_eval.py:310
+#: src/mvc/data_eval.py:313
 msgid "data_eval_error_1"
 msgstr ""
 
-#: src/mvc/data_eval.py:317
+#: src/mvc/data_eval.py:320
 msgid "data_eval_error_2"
 msgstr ""
 
-#: src/mvc/data_eval.py:319
+#: src/mvc/data_eval.py:322
 msgid "data_eval_error_3"
 msgstr ""
 
-#: src/mvc/data_eval.py:326
+#: src/mvc/data_eval.py:329
 msgid "data_eval_error_4"
 msgstr ""
 
-#: src/mvc/model_eval.py:96 src/mvc/model_eval.py:108
+#: src/mvc/model_eval.py:104 src/mvc/model_eval.py:116
 msgid "model_eval_result_2"
 msgstr ""
 
-#: src/mvc/model_eval.py:139
+#: src/mvc/model_eval.py:147
 msgid "model_eval_result_3"
 msgstr ""
 
-#: src/mvc/model_eval.py:141
+#: src/mvc/model_eval.py:149
 msgid "model_eval_result_4"
 msgstr ""
 
-#: src/mvc/model_eval.py:143
+#: src/mvc/model_eval.py:151
 msgid "model_eval_result_5 "
 msgstr ""
 
-#: src/mvc/model_eval.py:155 src/mvc/model_eval.py:158
+#: src/mvc/model_eval.py:163 src/mvc/model_eval.py:166
 msgid "discrimination_preference"
 msgstr ""
 
-#: src/mvc/model_eval.py:159
+#: src/mvc/model_eval.py:167
 msgid "and_eo"
 msgstr ""
 
-#: src/mvc/model_eval.py:162
+#: src/mvc/model_eval.py:170
 msgid "model_eval_result_1"
 msgstr ""
 
-#: src/mvc/model_eval.py:177
+#: src/mvc/model_eval.py:186
 msgid "model_eval_result_6"
 msgstr ""
 
-#: src/mvc/model_eval.py:255
+#: src/mvc/model_eval.py:264
 msgid "fairness_range"
 msgstr ""
 
-#: src/mvc/model_eval.py:268 src/mvc/model_eval.py:334
+#: src/mvc/model_eval.py:277 src/mvc/model_eval.py:345
 msgid "group"
 msgstr ""
 
-#: src/mvc/model_eval.py:320
+#: src/mvc/model_eval.py:331
 msgid "metrics_score"
 msgstr ""
 
-#: src/mvc/model_eval.py:381
+#: src/mvc/model_eval.py:393
 msgid "model_eval_error_1"
 msgstr ""
 
-#: src/mvc/model_eval.py:384
+#: src/mvc/model_eval.py:396
 msgid "model_eval_error_2"
 msgstr ""
 
@@ -261,12 +261,12 @@ msgstr ""
 msgid "task_stopping"
 msgstr ""
 
-#: static/script.js:76 templates/data_eval.html:79
-msgid "advance_setting_show"
+#: static/script.js:76
+msgid "advance_setting_hide"
 msgstr ""
 
-#: static/script.js:79
-msgid "advance_setting_hide"
+#: static/script.js:79 templates/data_eval.html:79 templates/model_eval.html:79
+msgid "advance_setting_show"
 msgstr ""
 
 #: templates/algo_cfg.html:5
@@ -275,7 +275,7 @@ msgstr ""
 
 #: templates/algo_cfg.html:17 templates/data.html:22
 #: templates/data_eval.html:28 templates/data_intro.html:13
-#: templates/model_eval.html:27 templates/model_upload.html:17
+#: templates/model_eval.html:28 templates/model_upload.html:17
 #: templates/task_page.html:24
 msgid "back"
 msgstr ""
@@ -285,7 +285,7 @@ msgid "algo_para_config"
 msgstr ""
 
 #: templates/algo_cfg.html:20 templates/data_eval.html:35
-#: templates/model_eval.html:34
+#: templates/model_eval.html:35
 msgid "choose_sensitive_attributes"
 msgstr ""
 
@@ -334,6 +334,7 @@ msgid "data_info_2 "
 msgstr ""
 
 #: templates/data.html:49 templates/data_eval.html:84
+#: templates/model_eval.html:84
 msgid "yes"
 msgstr ""
 
@@ -381,15 +382,15 @@ msgstr ""
 msgid "dataset"
 msgstr ""
 
-#: templates/data_eval.html:26 templates/model_eval.html:25
+#: templates/data_eval.html:26 templates/model_eval.html:26
 msgid "fairness_evaluation"
 msgstr ""
 
-#: templates/data_eval.html:55 templates/model_eval.html:54
+#: templates/data_eval.html:55 templates/model_eval.html:55
 msgid "select_proper_attributes"
 msgstr ""
 
-#: templates/data_eval.html:82
+#: templates/data_eval.html:82 templates/model_eval.html:82
 msgid "threshold"
 msgstr ""
 
@@ -453,8 +454,16 @@ msgstr ""
 msgid "model_fairness_eval"
 msgstr ""
 
-#: templates/model_eval.html:25
+#: templates/model_eval.html:26
 msgid "model "
+msgstr ""
+
+#: templates/model_eval.html:91
+msgid "metric_score"
+msgstr ""
+
+#: templates/model_eval.html:97
+msgid "metric_base_value"
 msgstr ""
 
 #: templates/model_upload.html:5
@@ -523,6 +532,10 @@ msgstr ""
 
 #: templates/task_page.html:94
 msgid "optimization_result"
+msgstr ""
+
+#: templates/task_page.html:98
+msgid "select_fairness_metrics: "
 msgstr ""
 
 #: templates/task_page.html:110

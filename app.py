@@ -163,6 +163,23 @@ def data_eval_threshold(threshold):
     return jsonify({'err': err})
 
 
+@app.route('/model-eval/setThreshold/<threshold>', methods=['GET', 'POST'])
+def model_eval_threshold(threshold):
+    try:
+        threshold = float(threshold)
+        if threshold > 1 or threshold < 0:
+            err = "Threshold should be in the range [0,1]."
+        else:
+            ip = request.remote_addr
+            ctrlr = ModelEvalController.insts[ip]
+            model_evaltr = ctrlr.model_evaltr
+            model_evaltr.theta_gf = threshold
+            err = "Success!"
+    except:
+        err = "Threshold should be digital."
+    return jsonify({'err': err})
+
+
 @app.route('/model-upload', methods=['GET', 'POST'])
 def model_upload():
     ip = request.remote_addr
@@ -197,7 +214,7 @@ def model_eval():
                 errinfo = ctrlr.gf_eval(sens_featrs)
             elif form['type'] == _("conditional_group_fairness_analysis"):
                 errinfo = ctrlr.cgf_eval(sens_featrs, form['legi-featr'])
-    return render_template('model_eval.html', url=url, view=ctrlr.view, errinfo=errinfo)
+    return render_template('model_eval.html', url=url, view=ctrlr.view, model_evaltr=ctrlr.model_evaltr, errinfo=errinfo)
 
 
 @app.route('/model-eval/intro')
@@ -397,7 +414,7 @@ def algo_status_chart(task_id):
                                                            font_size=15
                                                        ),
                                                        max_=float('%.3g' % ctrlr.max_pop[0]),
-                                                       # min_= 0.36,
+                                                       min_= 0.36,
                                                        type_="value"),
                               yaxis_opts=opts.AxisOpts(name=ctrlr.selected_fair,
                                                        name_gap=40,

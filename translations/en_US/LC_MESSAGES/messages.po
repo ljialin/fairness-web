@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-04-29 16:54+0800\n"
+"POT-Creation-Date: 2022-06-01 14:48+0800\n"
 "PO-Revision-Date: 2021-12-27 11:32+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -20,9 +20,9 @@ msgstr ""
 # pybabel extract -F babel.cfg -o messages.pot .
 # pybabel update -i messages.pot -d translations
 # pybabel compile -d translations
-#: app.py:139 app.py:196 templates/data_eval.html:52
-#: templates/data_eval.html:77 templates/model_eval.html:51
-#: templates/model_eval.html:74
+#: app.py:139 app.py:213 templates/data_eval.html:52
+#: templates/data_eval.html:77 templates/model_eval.html:52
+#: templates/model_eval.html:77
 msgid "group_fairness_analysis"
 msgstr "Group fairness analysis"
 
@@ -30,13 +30,13 @@ msgstr "Group fairness analysis"
 msgid "individual_fariness_analysis"
 msgstr "Individual fairness analysis"
 
-#: app.py:143 app.py:198 templates/data_eval.html:70
-#: templates/data_eval.html:97 templates/model_eval.html:69
-#: templates/model_eval.html:86
+#: app.py:143 app.py:215 templates/data_eval.html:70
+#: templates/data_eval.html:97 templates/model_eval.html:70
+#: templates/model_eval.html:112
 msgid "conditional_group_fairness_analysis"
 msgstr "Conditional group fairness analysis"
 
-#: app.py:238 templates/algo_cfg.html:90
+#: app.py:255 templates/algo_cfg.html:90
 msgid "upload_init_models"
 msgstr "Upload initialization models"
 
@@ -82,23 +82,23 @@ msgstr "Evolution finished!"
 msgid "progress_info_6"
 msgstr "Task stop! generation{}/{}({}%)"
 
-#: src/mvc/data.py:74
+#: src/mvc/data.py:77
 msgid "label_error"
 msgstr "Label can only contain two different values"
 
-#: src/mvc/data.py:93
+#: src/mvc/data.py:96
 msgid "update_error"
 msgstr "The format of dataset is incorrect, please check by reading template file"
 
-#: src/mvc/data.py:343
+#: src/mvc/data.py:287
 msgid "filename_conflict"
 msgstr "Filename conflict"
 
-#: src/mvc/data.py:349
+#: src/mvc/data.py:293
 msgid "dataset_duplicate_name"
 msgstr ""
 "Upload fail: The name of uploaded dataset is same to the datasets already"
-" exsit"
+" exist"
 
 #: src/mvc/data_eval.py:64
 msgid "data_eval_result_1"
@@ -120,109 +120,112 @@ msgstr ""
 msgid "data_eval_result_4"
 msgstr ""
 "No fairness issue was found in group fairness analysis for sensitive "
-"attribute \"{}\", user can try other sensitive attributes. Or user should "
-"still conduct further analyses on this data, seek input from all stakeholders "
-"(especially affected marginalized communities)."
+"attribute \"{}\", user can try other sensitive attributes. Or user should"
+" still conduct further analyses on this data, seek input from all "
+"stakeholders (especially affected marginalized communities)."
 
-#: src/mvc/data_eval.py:122
+#: src/mvc/data_eval.py:124
 msgid "data_eval_result_6"
 msgstr ""
 "The radio of positive label rate between the subgroup \"{}\"=\"{}\" of "
 "group \"{}\"=\"{}\" and the whole group (positive label: \"{}\"=\"{}\") "
 "is low, this group may be discriminated \\ preferenced."
 
-#: src/mvc/data_eval.py:127
+#: src/mvc/data_eval.py:129
 msgid "data_eval_result_7"
 msgstr ""
 "The radio of positive label rate between the subgroup \"{}\"=\"{}\" of "
 "group \"{}\"=\"{}\" and the whole group (positive label: \"{}\"=\"{}\") "
 "is high, this group may be discriminated \\ preferenced."
 
-#: src/mvc/data_eval.py:132
+#: src/mvc/data_eval.py:134
 msgid "data_eval_result_11"
 msgstr ""
 "After using \"{}\" as the legitimate attribute to analyse the attribute "
-"\"{}\", no fairness issue was found. Or user should "
-"still conduct further analyses on this data, seek input from all stakeholders "
-"(especially affected marginalized communities)."
+"\"{}\", no fairness issue was found. Or user should still conduct further"
+" analyses on this data, seek input from all stakeholders (especially "
+"affected marginalized communities)."
 
-#: src/mvc/data_eval.py:153
+#: src/mvc/data_eval.py:156
 msgid "data_eval_result_8"
 msgstr ""
 "After analysing the legitimate attribute \"{}\", the following \"{}\" "
 "individuals may be discriminated \\ preferenced: "
 
-#: src/mvc/data_eval.py:160
+#: src/mvc/data_eval.py:163
 msgid "data_eval_result_5"
 msgstr "No fairness problems were found in the current dataset"
 
-#: src/mvc/data_eval.py:251
+#: src/mvc/data_eval.py:254
 msgid "data_eval_result_9"
 msgstr "The analysis result of attribute \"{}\""
 
-#: src/mvc/data_eval.py:253
+#: src/mvc/data_eval.py:256
 msgid "data_eval_result_10"
 msgstr "The group partitioned by \"{}\""
 
-#: src/mvc/data_eval.py:264
+#: src/mvc/data_eval.py:267
 msgid "data_chart_1"
 msgstr "Ratio of group positive label rate to overall positive label rate"
 
-#: src/mvc/data_eval.py:310
+#: src/mvc/data_eval.py:313
 msgid "data_eval_error_1"
 msgstr "At least one sensitive attribute must be selected for analysis"
 
-#: src/mvc/data_eval.py:317
+#: src/mvc/data_eval.py:320
 msgid "data_eval_error_2"
 msgstr ""
 "At least one sensitive attribute and one legitimate attribute must be "
 "selected for analysis"
 
-#: src/mvc/data_eval.py:319
+#: src/mvc/data_eval.py:322
 msgid "data_eval_error_3"
 msgstr "Legitimate attributes must be non-sensitive attributes"
 
-#: src/mvc/data_eval.py:326
+#: src/mvc/data_eval.py:329
 msgid "data_eval_error_4"
 msgstr "At least one legitimate attribute must be selected for analysis"
 
-#: src/mvc/model_eval.py:96 src/mvc/model_eval.py:108
+#: src/mvc/model_eval.py:104 src/mvc/model_eval.py:116
 msgid "model_eval_result_2"
-msgstr "No fairness issue was found in the analysis of \"{}\". User should "
-"still conduct further analyses, seek input from all stakeholders "
-"(especially affected marginalized communities), and actively monitor the model if it's deployed."
+msgstr ""
+"No fairness issue was found in the analysis of \"{}\". User should still "
+"conduct further analyses, seek input from all stakeholders (especially "
+"affected marginalized communities), and actively monitor the model if "
+"it's deployed."
 
-#: src/mvc/model_eval.py:139
+#: src/mvc/model_eval.py:147
 msgid "model_eval_result_3"
 msgstr ""
 "The radio of positive prediction rate between the subgroup \"{}\"=\"{}\" "
 "of group \"{}\"=\"{}\" and the whole group (positive label: "
 "\"{}\"=\"{}\") is low, this group may be discriminated \\ preferenced."
 
-#: src/mvc/model_eval.py:141
+#: src/mvc/model_eval.py:149
 msgid "model_eval_result_4"
 msgstr ""
 "The radio of positive prediction rate between the subgroup \"{}\"=\"{}\" "
 "of group \"{}\"=\"{}\" and the whole group (positive label: "
 "\"{}\"=\"{}\") is high, this group may be discriminated \\ preferenced."
 
-#: src/mvc/model_eval.py:143
+#: src/mvc/model_eval.py:151
 msgid "model_eval_result_5 "
 msgstr ""
 "After using \"{}\" as the legitimate attribute to analyse the attribute "
-"\"{}\", no fairness issue was found. User should "
-"still conduct further analyses, seek input from all stakeholders "
-"(especially affected marginalized communities), and actively monitor the model if it's deployed."
+"\"{}\", no fairness issue was found. User should still conduct further "
+"analyses, seek input from all stakeholders (especially affected "
+"marginalized communities), and actively monitor the model if it's "
+"deployed."
 
-#: src/mvc/model_eval.py:155 src/mvc/model_eval.py:158
+#: src/mvc/model_eval.py:163 src/mvc/model_eval.py:166
 msgid "discrimination_preference"
 msgstr "discriminated \\ preferenced"
 
-#: src/mvc/model_eval.py:159
+#: src/mvc/model_eval.py:167
 msgid "and_eo"
 msgstr " and Equalized Odds"
 
-#: src/mvc/model_eval.py:162
+#: src/mvc/model_eval.py:170
 msgid "model_eval_result_1"
 msgstr ""
 "According to \"{}\", group \"{}\" may be \"{}\". It is suggested to "
@@ -230,34 +233,34 @@ msgstr ""
 "considering whether \"{}\" influences \"{}\". If yes, it is suggested to "
 "remove it from sensitive attributes list."
 
-#: src/mvc/model_eval.py:177
+#: src/mvc/model_eval.py:186
 msgid "model_eval_result_6"
 msgstr ""
 "The metric score(s) \"{}\" is low, the groups divided by sensitive "
-"attribute \"{}\" may exsit bias. It is suggested to take these metrics as"
+"attribute \"{}\" may exist bias. It is suggested to take these metrics as"
 " the optimization objectives. Or considering whether attribute \"{}\" has"
 " influences on \"{}\". If yes, please remove it from sensitive attributes"
 " list."
 
-#: src/mvc/model_eval.py:255
+#: src/mvc/model_eval.py:264
 msgid "fairness_range"
 msgstr "Fairness range"
 
-#: src/mvc/model_eval.py:268 src/mvc/model_eval.py:334
+#: src/mvc/model_eval.py:277 src/mvc/model_eval.py:345
 msgid "group"
 msgstr "group \"{}\""
 
-#: src/mvc/model_eval.py:320
+#: src/mvc/model_eval.py:331
 msgid "metrics_score"
 msgstr "metric scores"
 
-#: src/mvc/model_eval.py:381
+#: src/mvc/model_eval.py:393
 msgid "model_eval_error_1"
 msgstr ""
 "A legitimate attribute must be selected to perform conditional group "
 "equity analysis."
 
-#: src/mvc/model_eval.py:384
+#: src/mvc/model_eval.py:396
 msgid "model_eval_error_2"
 msgstr "Legitimate attribute must be non-sensitive attribute."
 
@@ -327,13 +330,13 @@ msgstr "Task_pausing ... please wait"
 msgid "task_stopping"
 msgstr "Task_stopping ... please wait"
 
-#: static/script.js:76 templates/data_eval.html:79
-msgid "advance_setting_show"
-msgstr "advance setting: show"
-
-#: static/script.js:79
+#: static/script.js:76
 msgid "advance_setting_hide"
 msgstr "advance setting: hide"
+
+#: static/script.js:79 templates/data_eval.html:79 templates/model_eval.html:79
+msgid "advance_setting_show"
+msgstr "advance setting: show"
 
 #: templates/algo_cfg.html:5
 msgid "algo_config"
@@ -341,7 +344,7 @@ msgstr "Algorithm configuration"
 
 #: templates/algo_cfg.html:17 templates/data.html:22
 #: templates/data_eval.html:28 templates/data_intro.html:13
-#: templates/model_eval.html:27 templates/model_upload.html:17
+#: templates/model_eval.html:28 templates/model_upload.html:17
 #: templates/task_page.html:24
 msgid "back"
 msgstr "Return to start page"
@@ -351,7 +354,7 @@ msgid "algo_para_config"
 msgstr "Configure algorithm parameters"
 
 #: templates/algo_cfg.html:20 templates/data_eval.html:35
-#: templates/model_eval.html:34
+#: templates/model_eval.html:35
 msgid "choose_sensitive_attributes"
 msgstr "Select sensitive attributes"
 
@@ -405,6 +408,7 @@ msgstr ""
 "click \"Next step\"."
 
 #: templates/data.html:49 templates/data_eval.html:84
+#: templates/model_eval.html:84
 msgid "yes"
 msgstr "OK"
 
@@ -452,15 +456,15 @@ msgstr "Dataset fairness evaluation"
 msgid "dataset"
 msgstr "Dataset "
 
-#: templates/data_eval.html:26 templates/model_eval.html:25
+#: templates/data_eval.html:26 templates/model_eval.html:26
 msgid "fairness_evaluation"
 msgstr " fairness evaluation"
 
-#: templates/data_eval.html:55 templates/model_eval.html:54
+#: templates/data_eval.html:55 templates/model_eval.html:55
 msgid "select_proper_attributes"
 msgstr "Select legitimate attributes"
 
-#: templates/data_eval.html:82
+#: templates/data_eval.html:82 templates/model_eval.html:82
 msgid "threshold"
 msgstr ""
 
@@ -544,9 +548,17 @@ msgstr "Training fairer ML models"
 msgid "model_fairness_eval"
 msgstr "Model fairness evaluation"
 
-#: templates/model_eval.html:25
+#: templates/model_eval.html:26
 msgid "model "
 msgstr "Model "
+
+#: templates/model_eval.html:91
+msgid "metric_score"
+msgstr "Metric scores"
+
+#: templates/model_eval.html:97
+msgid "metric_base_value"
+msgstr "Metric base value"
 
 #: templates/model_upload.html:5
 msgid "upload_ml_model"
@@ -620,6 +632,10 @@ msgstr "Evolutionary evaluation"
 #: templates/task_page.html:94
 msgid "optimization_result"
 msgstr "Optimization result for accuracy metric and fairness metric"
+
+#: templates/task_page.html:98
+msgid "select_fairness_metrics: "
+msgstr "Select fairness metrics: "
 
 #: templates/task_page.html:110
 msgid "task_stop"

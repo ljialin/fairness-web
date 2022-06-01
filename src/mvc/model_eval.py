@@ -3,6 +3,7 @@
   @Author : Ziqi Wang
   @File : model_eval.py 
 """
+import copy
 
 import numpy as np
 import torch
@@ -37,6 +38,7 @@ class Predictor:
 
 class ModelEvaluator:
     # fairness_cmmt_fmt = _("model_eval_result_1")
+    theta_gf = 0.8
 
     def __init__(self, predictor, data_model):
         self.predictor = predictor
@@ -50,6 +52,7 @@ class ModelEvaluator:
         data_model.update_prediction(self.predictor.predict(self.processed_data))
         # self.data = data_model.get_raw_data()
         self.data = data_model.data4eval
+        self.accuracy = self.udpateAcc()
 
         self.__glb_metric_vals = None
         self.__fair_range = None
@@ -62,6 +65,11 @@ class ModelEvaluator:
         true_label[true_label == self.label_nval] = 0
         pred_label = frame["binary prediction"].to_numpy()
         return pred_label, true_label
+
+    def udpateAcc(self):
+        pred_label, true_label = self.frame2label()
+        acc = np.sum(pred_label == true_label) / len(pred_label)
+        return np.around(acc, 4)
 
     def get_glb_metric_vals(self):
         if self.__glb_metric_vals is None:
@@ -170,7 +178,8 @@ class ModelEvaluator:
         unfairness_metrics = []
         for i, mtrc in enumerate(METRICS):
             metric_val = metric_vals[mtrc]
-            if metric_val < fair_range[0]:
+            # if metric_val < fair_range[0]:
+            if metric_val < self.theta_gf:
                 unfairness_metrics.append(mtrc)
         if len(unfairness_metrics) == 0:
             return cmmts
@@ -287,7 +296,7 @@ class ModelEvalView:
         charts = []
         for i, featr in enumerate(sens_featrs):
             grp_metric_vals, fairness_scores, cmmts = evaltr.analyze_gf2(featr)
-            chart = (
+            chart1 = (
                 Radar(chopts.InitOpts())
                 .add_schema(
                     schema=[
@@ -316,7 +325,9 @@ class ModelEvalView:
                 # )
             )
 
-            chart.add(
+            chart2 = copy.deepcopy(chart1)
+
+            chart1.add(
                 _("metrics_score"), [[fairness_scores[mtrc] for mtrc in METRICS]],
                 label_opts=chopts.LabelOpts(is_show=False),
                 linestyle_opts=chopts.LineStyleOpts(width=2),
@@ -330,7 +341,7 @@ class ModelEvalView:
                 g, b = round(alpha * 255 + 63), round((0.75 - alpha) * 255 + 63)
                 color = f'#{get_rgb_hex(0, g, b)}'
 
-                chart.add(
+                chart2.add(
                     _("group").format(grp), [[grp_metric_vals[grp][mtrc] for mtrc in METRICS]],
                     label_opts=chopts.LabelOpts(is_show=False),
                     linestyle_opts=chopts.LineStyleOpts(width=2),
@@ -338,7 +349,8 @@ class ModelEvalView:
                     color=color
                 )
 
-            charts.append(chart)
+            charts.append(chart1)
+            charts.append(chart2)
             self.gf_cmmts.append((i, cmmts))
         return charts
 

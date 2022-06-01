@@ -8,6 +8,7 @@
     <script type="text/javascript" src="/static/extlib/echarts.min.js"></script>
     <script type="text/javascript" src="/static/charts.js"></script>
     <script type="text/javascript" src="/static/info.js"></script>
+    <script type="text/javascript" src="/static/script.js"></script>
     <script src="{{ url_for("babel_catalog") }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}"/>
 </head>
@@ -71,15 +72,40 @@
             </form>
         </div>
         <div class="main_content">
-            <h3>{{ _("group_fairness_analysis") }} <input type="submit" value="?" onclick="window.location.href='/model-eval/intro'"></h3>
+            <h3>Accuracy: {{ model_evaltr.accuracy }}</h3>
+            <h3>
+                {{ _("group_fairness_analysis") }}
+                <input type="submit" value="?" onclick="window.location.href='/model-eval/intro'">
+                <input id="advance_setting" type="submit" name="type" value="{{ _("advance_setting_show") }}" onclick="showAdvance()">
+            </h3>
+            <div id="advance" hidden>
+                {{ _("threshold") }} θ:
+                <input id="threshold" type="text" name="threshold" value="{{ model_evaltr.theta_gf }}">
+                <input id="threshold2" type="submit" name="type" value="{{ _("yes") }}" onclick="changeThreshold('http://{{ url }}/model-eval/setThreshold/')">
+            </div>
             <div class="block">
                 {% for i, cmmts in view.gf_cmmts %}
-                    <div id="0{{ i }}" style="width:580px; height:580px">
-                        <script> get_chart("0{{ i }}", "http://{{ url }}/model-eval/charts/0{{ i }}") </script>
+                    <div style="display: flex; flex-direction: column;">
+                        <div style="width: 100%">
+                            <div style="float:left; width:500px; height:610px">
+                                <div style="text-align: center"><h4>{{ _("metric_score") }}</h4></div>
+                                <div id="0{{ 2*i }}" style="width:500px; height:580px">
+                                    <script> get_chart("0{{ 2*i }}", "http://{{ url }}/model-eval/charts/0{{ 2*i }}") </script>
+                                </div>
+                            </div>
+                            <div style="float:left; width:500px; height:610px">
+                                <div style="text-align: center"><h4>{{ _("metric_base_value") }}</h4></div>
+                                <div id="0{{ 2*i+1 }}" style="width:500px; height:580px">
+                                    <script> get_chart("0{{ 2*i+1 }}", "http://{{ url }}/model-eval/charts/0{{ 2*i+1 }}") </script>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="width: 100%">
+                            {% for cmmt in cmmts %}
+                                <p> {{ cmmt }} </p>
+                            {% endfor %}
+                        </div>
                     </div>
-                    {% for cmmt in cmmts %}
-                        <p> {{ cmmt }} </p>
-                    {% endfor %}
                     <hr />
                 {% endfor %}
             </div>

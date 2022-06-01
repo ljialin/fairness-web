@@ -95,7 +95,7 @@
         <div id="{{ pid }}" style="width:650px; height:600px; text-align: center">
             <script> get_chart("{{ pid }}", "http://{{ url }}/task/{{ pid }}/chart") </script>
         </div>
-        选择公平性指标：
+        {{ _("select_fairness_metrics: ") }}
         <select onclick="selectFairMetric(this, '{{ pid }}', 'http://{{ url }}/task/{{ pid }}/')">
             {% for fair in cfg.fair_metric %}
                 <option value="{{ fair }}">{{ fair }}</option>

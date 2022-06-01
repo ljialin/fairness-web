@@ -387,7 +387,7 @@ class NNProblem_new(ea.Problem):  # 继承Problem父类
             else:
                 print('There is no dataset called ', dataname)
         name = 'FairnessProblem'  # 初始化name（函数名称，可以随意设置）
-        Dim = 5  # 初始化Dim（决策变量维数）
+        Dim = 10086  # 初始化Dim（决策变量维数）
         maxormins = [1] * M  # 初始化maxormins（目标最小最大化标记列表，1：最小化该目标；-1：最大化该目标）
         varTypes = [1] * Dim  # 初始化varTypes（决策变量的类型，0：实数；1：整数）
         lb = [0] * Dim  # 决策变量下界
@@ -413,12 +413,12 @@ class NNProblem_new(ea.Problem):  # 继承Problem父类
         self.valid_label = DATA['valid_label']
         self.valid_y = DATA['valid_y']
 
-        if is_ensemble:
-            self.ensemble_data = DATA['ensemble_data']
-            self.ensemble_data_norm = DATA['ensemble_data_norm']
-            self.ensemble_label = DATA['ensemble_label']
-            self.ensemble_y = DATA['ensemble_y']
+        self.test_data = DATA['test_data']
+        self.test_data_norm = DATA['test_data_norm']
+        self.test_label = DATA['test_label']
+        self.test_y = DATA['test_y']
 
+        if is_ensemble:
             self.ensemble_data = DATA['ensemble_data']
             self.ensemble_data_norm = DATA['ensemble_data_norm']
             self.ensemble_label = DATA['ensemble_label']
@@ -426,11 +426,6 @@ class NNProblem_new(ea.Problem):  # 继承Problem父类
 
             self.ensemble_org = DATA['ensemble_org']
             self.num_ensemble = self.ensemble_org.shape[0]
-
-        self.test_data = DATA['test_data']
-        self.test_data_norm = DATA['test_data_norm']
-        self.test_label = DATA['test_label']
-        self.test_y = DATA['test_y']
 
         self.data_org = DATA['org_data']
         self.train_org = DATA['train_org']

@@ -204,6 +204,7 @@ Population : class - 种群类
             with torch.no_grad():
                 for name, param in self.Chrom[0].named_parameters():
                     self.Lind += 1  # 计算染色体的长度
+            print()
             # -------- ZQQ - end -----------
 
     def decoding(self):

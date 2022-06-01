@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-04-29 16:54+0800\n"
+"POT-Creation-Date: 2022-06-01 14:48+0800\n"
 "PO-Revision-Date: 2021-12-27 11:32+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh_Hans_CN\n"
@@ -18,9 +18,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.0\n"
 
-#: app.py:139 app.py:196 templates/data_eval.html:52
-#: templates/data_eval.html:77 templates/model_eval.html:51
-#: templates/model_eval.html:74
+#: app.py:139 app.py:213 templates/data_eval.html:52
+#: templates/data_eval.html:77 templates/model_eval.html:52
+#: templates/model_eval.html:77
 msgid "group_fairness_analysis"
 msgstr "群体公平分析"
 
@@ -28,13 +28,13 @@ msgstr "群体公平分析"
 msgid "individual_fariness_analysis"
 msgstr "个体公平分析"
 
-#: app.py:143 app.py:198 templates/data_eval.html:70
-#: templates/data_eval.html:97 templates/model_eval.html:69
-#: templates/model_eval.html:86
+#: app.py:143 app.py:215 templates/data_eval.html:70
+#: templates/data_eval.html:97 templates/model_eval.html:70
+#: templates/model_eval.html:112
 msgid "conditional_group_fairness_analysis"
 msgstr "条件性群体公平分析"
 
-#: app.py:238 templates/algo_cfg.html:90
+#: app.py:255 templates/algo_cfg.html:90
 msgid "upload_init_models"
 msgstr "上传初始化模型"
 
@@ -78,19 +78,19 @@ msgstr "演化完成！"
 msgid "progress_info_6"
 msgstr "任务终止！ 代数{}/{}({}%)"
 
-#: src/mvc/data.py:74
+#: src/mvc/data.py:77
 msgid "label_error"
 msgstr "标签的取值只有两种可能"
 
-#: src/mvc/data.py:93
+#: src/mvc/data.py:96
 msgid "update_error"
 msgstr "数据集文件格式不正确，请对照模板文件进行检查！"
 
-#: src/mvc/data.py:343
+#: src/mvc/data.py:287
 msgid "filename_conflict"
 msgstr "文件名冲突"
 
-#: src/mvc/data.py:349
+#: src/mvc/data.py:293
 msgid "dataset_duplicate_name"
 msgstr "上传失败：上传数据集与已有数据集重名"
 
@@ -106,103 +106,103 @@ msgstr "{}群体的正面标签率（标签值为{}的频率）与总体正面�
 msgid "data_eval_result_4"
 msgstr "在对敏感属性{}的群体公平分析中，未发现公平性问题"
 
-#: src/mvc/data_eval.py:122
+#: src/mvc/data_eval.py:124
 msgid "data_eval_result_6"
 msgstr "子组{}为{}的群体在敏感属性组{}为{}与整个敏感属性组的正面标签率（{}为{}）过低，可能受到了歧视\\偏爱"
 
-#: src/mvc/data_eval.py:127
+#: src/mvc/data_eval.py:129
 msgid "data_eval_result_7"
 msgstr "子组{}为{}的群体在敏感属性组{}为{}与整个敏感属性组的正面标签率（{}为{}）过高，可能受到了歧视\\偏爱"
 
-#: src/mvc/data_eval.py:132
+#: src/mvc/data_eval.py:134
 msgid "data_eval_result_11"
 msgstr "以{}为正当特征对{}进行分析，未发现公平性问题"
 
-#: src/mvc/data_eval.py:153
+#: src/mvc/data_eval.py:156
 msgid "data_eval_result_8"
 msgstr "以{}作为正当特征分析，数据集中以下{}个个体可能受到了歧视\\偏爱："
 
-#: src/mvc/data_eval.py:160
+#: src/mvc/data_eval.py:163
 msgid "data_eval_result_5"
 msgstr "当前数据集中未发现个体公平问题。"
 
-#: src/mvc/data_eval.py:251
+#: src/mvc/data_eval.py:254
 msgid "data_eval_result_9"
 msgstr "对{}属性的分析结果"
 
-#: src/mvc/data_eval.py:253
+#: src/mvc/data_eval.py:256
 msgid "data_eval_result_10"
 msgstr "基于{}划分的群组"
 
-#: src/mvc/data_eval.py:264
+#: src/mvc/data_eval.py:267
 msgid "data_chart_1"
 msgstr "群组正标签率与总体正标签率之比"
 
-#: src/mvc/data_eval.py:310
+#: src/mvc/data_eval.py:313
 msgid "data_eval_error_1"
 msgstr "必须选择至少一个敏感属性才能进行分析"
 
-#: src/mvc/data_eval.py:317
+#: src/mvc/data_eval.py:320
 msgid "data_eval_error_2"
 msgstr "必须选择至少一个敏感属性和一个正当属性才能进行分析"
 
-#: src/mvc/data_eval.py:319
+#: src/mvc/data_eval.py:322
 msgid "data_eval_error_3"
 msgstr "正当特征必须是非敏感特征"
 
-#: src/mvc/data_eval.py:326
+#: src/mvc/data_eval.py:329
 msgid "data_eval_error_4"
 msgstr "必须选择至少一个正当属性才能进行分析"
 
-#: src/mvc/model_eval.py:96 src/mvc/model_eval.py:108
+#: src/mvc/model_eval.py:104 src/mvc/model_eval.py:116
 msgid "model_eval_result_2"
 msgstr "对{}特征进行分析，未发现公平性问题"
 
-#: src/mvc/model_eval.py:139
+#: src/mvc/model_eval.py:147
 msgid "model_eval_result_3"
 msgstr "子组{}为{}的群体在敏感属性组{}为{}与整个敏感属性组的正面标签预测率（{}为{}）过低，可能受到了歧视\\偏爱"
 
-#: src/mvc/model_eval.py:141
+#: src/mvc/model_eval.py:149
 msgid "model_eval_result_4"
 msgstr "子组{}为{}的群体在敏感属性组{}为{}与整个敏感属性组的正面标签预测率（{}为{}）过高，可能受到了歧视\\偏爱"
 
-#: src/mvc/model_eval.py:143
+#: src/mvc/model_eval.py:151
 msgid "model_eval_result_5 "
 msgstr "以{}为正当特征对{}进行分析，未发现公平性问题"
 
-#: src/mvc/model_eval.py:155 src/mvc/model_eval.py:158
+#: src/mvc/model_eval.py:163 src/mvc/model_eval.py:166
 msgid "discrimination_preference"
 msgstr "歧视\\偏爱"
 
-#: src/mvc/model_eval.py:159
+#: src/mvc/model_eval.py:167
 msgid "and_eo"
 msgstr "和Equalized Odds"
 
-#: src/mvc/model_eval.py:162
+#: src/mvc/model_eval.py:170
 msgid "model_eval_result_1"
 msgstr "根据{}指标，{}群体可能受到了{}，建议考虑将{}指标作为算法优化的目标之一对该模型进行优化，或考察{}特征是否对{}有正当影响。若有，建议将该特征从敏感特征列表中去除。"
 
-#: src/mvc/model_eval.py:177
+#: src/mvc/model_eval.py:186
 msgid "model_eval_result_6"
 msgstr "指标{}的公平性分数偏低，以敏感属性{}划分的群体中可能存在不公平情况，建议考虑将这些指标作为优化目标之一对该模型进行优化，或考察属性{}是否对{}有正当影响。若有，建议将该属性从敏感属性列表中去除。"
 
-#: src/mvc/model_eval.py:255
+#: src/mvc/model_eval.py:264
 msgid "fairness_range"
 msgstr "公平范围"
 
-#: src/mvc/model_eval.py:268 src/mvc/model_eval.py:334
+#: src/mvc/model_eval.py:277 src/mvc/model_eval.py:345
 msgid "group"
 msgstr "{}群组"
 
-#: src/mvc/model_eval.py:320
+#: src/mvc/model_eval.py:331
 msgid "metrics_score"
 msgstr "指标得分"
 
-#: src/mvc/model_eval.py:381
+#: src/mvc/model_eval.py:393
 msgid "model_eval_error_1"
 msgstr "必须选择一个正当属性才能进行条件性群体公平分析"
 
-#: src/mvc/model_eval.py:384
+#: src/mvc/model_eval.py:396
 msgid "model_eval_error_2"
 msgstr "正当特征必须是非敏感特征"
 
@@ -262,13 +262,13 @@ msgstr "暂停中... 请稍后"
 msgid "task_stopping"
 msgstr "正在终止任务... 请稍后"
 
-#: static/script.js:76 templates/data_eval.html:79
-msgid "advance_setting_show"
-msgstr "高级设置：显示"
-
-#: static/script.js:79
+#: static/script.js:76
 msgid "advance_setting_hide"
 msgstr "高级设置：隐藏"
+
+#: static/script.js:79 templates/data_eval.html:79 templates/model_eval.html:79
+msgid "advance_setting_show"
+msgstr "高级设置：显示"
 
 #: templates/algo_cfg.html:5
 msgid "algo_config"
@@ -276,7 +276,7 @@ msgstr "算法配置"
 
 #: templates/algo_cfg.html:17 templates/data.html:22
 #: templates/data_eval.html:28 templates/data_intro.html:13
-#: templates/model_eval.html:27 templates/model_upload.html:17
+#: templates/model_eval.html:28 templates/model_upload.html:17
 #: templates/task_page.html:24
 msgid "back"
 msgstr "回到主页面"
@@ -286,7 +286,7 @@ msgid "algo_para_config"
 msgstr "配置算法参数"
 
 #: templates/algo_cfg.html:20 templates/data_eval.html:35
-#: templates/model_eval.html:34
+#: templates/model_eval.html:35
 msgid "choose_sensitive_attributes"
 msgstr "选择敏感属性"
 
@@ -335,6 +335,7 @@ msgid "data_info_2 "
 msgstr "确认过选择的数据集并看到属性列表后，请点击“下一步”。"
 
 #: templates/data.html:49 templates/data_eval.html:84
+#: templates/model_eval.html:84
 msgid "yes"
 msgstr "确认"
 
@@ -382,15 +383,15 @@ msgstr "数据集公平性评估"
 msgid "dataset"
 msgstr "数据集"
 
-#: templates/data_eval.html:26 templates/model_eval.html:25
+#: templates/data_eval.html:26 templates/model_eval.html:26
 msgid "fairness_evaluation"
 msgstr "公平性分析"
 
-#: templates/data_eval.html:55 templates/model_eval.html:54
+#: templates/data_eval.html:55 templates/model_eval.html:55
 msgid "select_proper_attributes"
 msgstr "选择正当属性"
 
-#: templates/data_eval.html:82
+#: templates/data_eval.html:82 templates/model_eval.html:82
 msgid "threshold"
 msgstr ""
 
@@ -454,9 +455,17 @@ msgstr "创建新任务"
 msgid "model_fairness_eval"
 msgstr "模型公平性评估"
 
-#: templates/model_eval.html:25
+#: templates/model_eval.html:26
 msgid "model "
 msgstr "模型"
+
+#: templates/model_eval.html:91
+msgid "metric_score"
+msgstr "指标得分"
+
+#: templates/model_eval.html:97
+msgid "metric_base_value"
+msgstr "指标基值"
 
 #: templates/model_upload.html:5
 msgid "upload_ml_model"
@@ -525,6 +534,10 @@ msgstr "评估次数"
 #: templates/task_page.html:94
 msgid "optimization_result"
 msgstr "公平性指标和准确性指标优化结果"
+
+#: templates/task_page.html:98
+msgid "select_fairness_metrics: "
+msgstr "选择公平性指标："
 
 #: templates/task_page.html:110
 msgid "task_stop"

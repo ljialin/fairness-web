@@ -99,7 +99,8 @@ class DataEvaluator:
                 plr = p_cnt / (p_cnt + n_cnt + 1e-5)
                 ratio = plr / total_plr
                 res.data[legi_grp][sens_grp] = ratio
-                if ratio < THRESHOLDS['statistical parity']:
+                # if ratio < THRESHOLDS['statistical parity']:
+                if ratio < self.theta_gf:
                     if cmmts[sens_grp].get('low') is None:
                         cmmts[sens_grp]['low'] = []
                     cmmts[sens_grp]['low'].append(legi_grp)
@@ -107,7 +108,8 @@ class DataEvaluator:
                     #     _("data_eval_result_6").format(sens_featr, sens_grp, legi_featr, legi_grp, self.label,
                     #                                    self.pos_label_val)
                     # )
-                elif ratio > 1 / THRESHOLDS['statistical parity']:
+                # elif ratio > 1 / THRESHOLDS['statistical parity']:
+                elif ratio > 1 / self.theta_gf:
                     if cmmts[sens_grp].get('high') is None:
                         cmmts[sens_grp]['high'] = []
                     cmmts[sens_grp]['high'].append(legi_grp)
