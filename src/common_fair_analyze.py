@@ -35,6 +35,7 @@ class CgfAnalyzeRes:
         chart = (
             Bar()
             .set_global_opts(
+                # title_opts=chopts.TitleOpts(_("conditional_analysis_title_1").format(self.sens_featr, self.legi_featr) + '\n'),
                 yaxis_opts=chopts.AxisOpts(
                     name=_("model_chart_1"),
                     name_gap=10, name_rotate=0,

@@ -1,4 +1,4 @@
-function start_task(pid) {
+function start_task(pid, url) {
     // 设置定时器,隔段时间请求一次数据
     var sitv = setInterval(function () {
         // prog_url指向请求进度的url，后面会在flask中设置
@@ -40,7 +40,7 @@ function start_task(pid) {
                 $("#download_model").show()
             }
         });
-        get_chart(pid,"http://127.0.0.1:5000/task/" + pid + "/chart")
+        get_chart(pid,"http://" + url + "/task/" + pid + "/chart")
         if (res.progress_rate === -1){
             setTimeout(clearInterval(sitv), 1000);
         }

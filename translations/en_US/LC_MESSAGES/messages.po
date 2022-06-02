@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-06-01 14:48+0800\n"
+"POT-Creation-Date: 2022-06-02 10:25+0800\n"
 "PO-Revision-Date: 2021-12-27 11:32+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -20,7 +20,7 @@ msgstr ""
 # pybabel extract -F babel.cfg -o messages.pot .
 # pybabel update -i messages.pot -d translations
 # pybabel compile -d translations
-#: app.py:139 app.py:213 templates/data_eval.html:52
+#: app.py:139 app.py:214 templates/data_eval.html:52
 #: templates/data_eval.html:77 templates/model_eval.html:52
 #: templates/model_eval.html:77
 msgid "group_fairness_analysis"
@@ -30,17 +30,21 @@ msgstr "Group fairness analysis"
 msgid "individual_fariness_analysis"
 msgstr "Individual fairness analysis"
 
-#: app.py:143 app.py:215 templates/data_eval.html:70
+#: app.py:143 app.py:216 templates/data_eval.html:70
 #: templates/data_eval.html:97 templates/model_eval.html:70
 #: templates/model_eval.html:112
 msgid "conditional_group_fairness_analysis"
 msgstr "Conditional group fairness analysis"
 
-#: app.py:255 templates/algo_cfg.html:90
+#: app.py:256 templates/algo_cfg.html:90
 msgid "upload_init_models"
 msgstr "Upload initialization models"
 
-#: src/common_fair_analyze.py:39
+#: src/common_fair_analyze.py:38
+msgid "conditional_analysis_title_1"
+msgstr "The analysis result of sensitive attribute {} under the subgroup divided by legitimate attribute {}."
+
+#: src/common_fair_analyze.py:40
 msgid "model_chart_1"
 msgstr ""
 "Ratio of group positive label rate between overall and groups divided by "

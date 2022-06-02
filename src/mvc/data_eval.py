@@ -251,7 +251,7 @@ class DataEvalView:
             chart = (
                 Bar()
                 .set_global_opts(
-                    title_opts=chart_opts.TitleOpts(title=_("data_eval_result_9").format(featr)),
+                    # title_opts=chart_opts.TitleOpts(title=_("data_eval_result_9").format(featr)),
                     xaxis_opts=chart_opts.AxisOpts(
                         name=_("data_eval_result_10").format(featr),
                         name_location='middle',
