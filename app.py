@@ -37,7 +37,7 @@ def create_app():
 
 port = 5000
 app = create_app()
-
+url = "10.16.27.228:5000"
 
 # import logging
 # log = logging.getLogger('werkzeug')
@@ -106,6 +106,7 @@ def data_page():
                 errinfo = '必须选择数据集并确认后才能进行下一步'
             else:
                 return redirect(ctrlr.target)
+
         return render_template('data.html', view=ctrlr.view, errinfo=errinfo)
 
 
@@ -122,7 +123,7 @@ def download_desc_template():
 @app.route('/data-eval', methods=['GET', 'POST'])
 def data_eval():
     ip = request.remote_addr
-    url = "{}:{}".format(ip, port)
+    # url = "{}:{}".format(ip, port)
     form = request.form
     errinfo = None
     if not form:  # 检测是不是在页面内按按钮之后，还要用这个页面
@@ -198,11 +199,14 @@ def model_upload():
 def download_model_template():
     return send_from_directory('static/file_templates', 'model_defination.py', as_attachment=True)
 
+@app.route('/model/test_file')
+def download_test_file():
+    return send_from_directory('static/file_templates', 'test.zip', as_attachment=True)
 
 @app.route('/model-eval', methods=['GET', 'POST'])
 def model_eval():
     ip = request.remote_addr
-    url = "{}:{}".format(ip, port)
+    # url = "{}:{}".format(ip, port)
     form = request.form
     if ModelEvalController.insts[ip] is None:
         return '必须在选择数据集页面选择数据集，并在上传模型页面上传模型后才能访问该页面'
@@ -279,7 +283,7 @@ def task_page(task_id):
     print(task_id)
     form = request.form
     ip = request.remote_addr
-    url = "{}:{}".format(ip, port)
+    # url = "{}:{}".format(ip, port)
     algomnger = AlgosManager.instances[ip]
     ctrlr = algomnger.get_task(task_id)
     algoCfg = ctrlr.cfg
@@ -416,7 +420,7 @@ def algo_status_chart(task_id):
                                                            font_size=15
                                                        ),
                                                        max_=float('%.3g' % ctrlr.max_pop[0]),
-                                                       min_= 0.36,
+                                                       min_= 0,
                                                        type_="value"),
                               yaxis_opts=opts.AxisOpts(name=ctrlr.selected_fair,
                                                        name_gap=40,

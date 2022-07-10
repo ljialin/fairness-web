@@ -98,6 +98,8 @@ class AlgoController:
         self.cfg.fair_metric = kwargs['fair_metric']
         self.cfg.optimizer = kwargs['optimizer']
         self.max_pop = [0 for i in range(len(self.cfg.fair_metric) + 1)]
+        if len(self.cfg.fair_metric) == 0:
+            return _("task_error4"), 0
         self.selected_fair = self.cfg.fair_metric[0]
 
         try:

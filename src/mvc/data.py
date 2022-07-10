@@ -6,6 +6,8 @@
 
 import os
 import glob
+
+import pandas as pd
 import torch
 import pandas
 import numpy as np
@@ -193,7 +195,10 @@ class DataModel:
                 np_data[row_indexs, col_indexs] = 1
                 start = end
 
+
         labels = list(map(int, (self.label_map[val] for val in raw_data[self.label].values)))
+        # labels = list(set(raw_data[self.label].values))
+
 
         if norm:
             normalize = StandardScaler()
@@ -292,6 +297,32 @@ class DataService:
             os.remove(data_path)
             return _("dataset_duplicate_name")
         self.datasets[name] = data_path[:-4]
+
+        data = pd.read_csv(data_path)
+        # 检查数据集是否为空
+        if len(data.columns) == 0:
+            return _("dataset_format_error")
+        size = len(data[data.columns[0]])
+        # 检查行数相同
+        for each in data.columns:
+            if len(data[each]) != size:
+                return _("dataset_format_error")
+        # 检查是否有两个以上label
+        count = 0
+        label_name = 0
+        for i,each in enumerate(data.loc[0]):
+            if each == "label":
+                count += 1
+                label_name = data.columns[i]
+        if count != 1:
+            return _("dataset_format_error")
+        # 检查label是否有多个
+        labels = data[label_name].to_list()
+        labels.pop(0)
+        labels = set(labels)
+        if len(labels) != 2:
+            return _("dataset_format_error")
+
         return f'OK:{name}'
 
     @staticmethod

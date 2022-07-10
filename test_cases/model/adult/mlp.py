@@ -16,5 +16,5 @@ class IndividualNet(torch.nn.Module):
     def forward(self, x):
         return self.main(x)
 
-def get_model():
+def qwe():
     return IndividualNet(108, [128])

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-06-02 10:25+0800\n"
+"POT-Creation-Date: 2022-07-10 14:52+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.0\n"
 
-#: app.py:139 app.py:214 templates/data_eval.html:52
+#: app.py:139 app.py:217 templates/data_eval.html:52
 #: templates/data_eval.html:77 templates/model_eval.html:52
 #: templates/model_eval.html:77
 msgid "group_fairness_analysis"
@@ -27,57 +27,57 @@ msgstr ""
 msgid "individual_fariness_analysis"
 msgstr ""
 
-#: app.py:143 app.py:216 templates/data_eval.html:70
+#: app.py:143 app.py:219 templates/data_eval.html:70
 #: templates/data_eval.html:97 templates/model_eval.html:70
 #: templates/model_eval.html:112
 msgid "conditional_group_fairness_analysis"
 msgstr ""
 
-#: app.py:256 templates/algo_cfg.html:90
+#: app.py:259
 msgid "upload_init_models"
-msgstr ""
-
-#: src/common_fair_analyze.py:38
-msgid "conditional_analysis_title_1"
 msgstr ""
 
 #: src/common_fair_analyze.py:40
 msgid "model_chart_1"
 msgstr ""
 
-#: src/mvc/algo_cfg.py:106
+#: src/mvc/algo_cfg.py:102
+msgid "task_error4"
+msgstr ""
+
+#: src/mvc/algo_cfg.py:108
 msgid "task_error1"
 msgstr ""
 
-#: src/mvc/algo_cfg.py:111
+#: src/mvc/algo_cfg.py:113
 msgid "task_error2"
 msgstr ""
 
-#: src/mvc/algo_cfg.py:118
+#: src/mvc/algo_cfg.py:120
 msgid "task_error3"
 msgstr ""
 
-#: src/mvc/algo_cfg.py:181
+#: src/mvc/algo_cfg.py:183
 msgid "progress_info_1"
 msgstr ""
 
-#: src/mvc/algo_cfg.py:186
+#: src/mvc/algo_cfg.py:188
 msgid "progress_info_2"
 msgstr ""
 
-#: src/mvc/algo_cfg.py:188
+#: src/mvc/algo_cfg.py:190
 msgid "progress_info_3"
 msgstr ""
 
-#: src/mvc/algo_cfg.py:190
+#: src/mvc/algo_cfg.py:192
 msgid "progress_info_4"
 msgstr ""
 
-#: src/mvc/algo_cfg.py:192
+#: src/mvc/algo_cfg.py:194
 msgid "progress_info_5"
 msgstr ""
 
-#: src/mvc/algo_cfg.py:199
+#: src/mvc/algo_cfg.py:201
 msgid "progress_info_6"
 msgstr ""
 
@@ -127,10 +127,6 @@ msgstr ""
 
 #: src/mvc/data_eval.py:163
 msgid "data_eval_result_5"
-msgstr ""
-
-#: src/mvc/data_eval.py:254
-msgid "data_eval_result_9"
 msgstr ""
 
 #: src/mvc/data_eval.py:256
@@ -490,15 +486,19 @@ msgstr ""
 msgid "download_model_template"
 msgstr ""
 
-#: templates/model_upload.html:34
+#: templates/model_upload.html:33
+msgid "download_test_file"
+msgstr ""
+
+#: templates/model_upload.html:35
 msgid "choose_model_structure"
 msgstr ""
 
-#: templates/model_upload.html:36
+#: templates/model_upload.html:37
 msgid "choose_model_para"
 msgstr ""
 
-#: templates/model_upload.html:38
+#: templates/model_upload.html:39
 msgid "upload_model_eval"
 msgstr ""
 

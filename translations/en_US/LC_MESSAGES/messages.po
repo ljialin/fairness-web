@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-06-02 10:25+0800\n"
+"POT-Creation-Date: 2022-07-10 14:50+0800\n"
 "PO-Revision-Date: 2021-12-27 11:32+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -20,7 +20,7 @@ msgstr ""
 # pybabel extract -F babel.cfg -o messages.pot .
 # pybabel update -i messages.pot -d translations
 # pybabel compile -d translations
-#: app.py:139 app.py:214 templates/data_eval.html:52
+#: app.py:139 app.py:217 templates/data_eval.html:52
 #: templates/data_eval.html:77 templates/model_eval.html:52
 #: templates/model_eval.html:77
 msgid "group_fairness_analysis"
@@ -30,19 +30,15 @@ msgstr "Group fairness analysis"
 msgid "individual_fariness_analysis"
 msgstr "Individual fairness analysis"
 
-#: app.py:143 app.py:216 templates/data_eval.html:70
+#: app.py:143 app.py:219 templates/data_eval.html:70
 #: templates/data_eval.html:97 templates/model_eval.html:70
 #: templates/model_eval.html:112
 msgid "conditional_group_fairness_analysis"
 msgstr "Conditional group fairness analysis"
 
-#: app.py:256 templates/algo_cfg.html:90
+#: app.py:259
 msgid "upload_init_models"
 msgstr "Upload initialization models"
-
-#: src/common_fair_analyze.py:38
-msgid "conditional_analysis_title_1"
-msgstr "The analysis result of sensitive attribute {} under the subgroup divided by legitimate attribute {}."
 
 #: src/common_fair_analyze.py:40
 msgid "model_chart_1"
@@ -50,39 +46,43 @@ msgstr ""
 "Ratio of group positive label rate between overall and groups divided by "
 "this legitimate attribute"
 
-#: src/mvc/algo_cfg.py:106
+#: src/mvc/algo_cfg.py:102
+msgid "task_error4"
+msgstr "You need to select at least one fairness metric!"
+
+#: src/mvc/algo_cfg.py:108
 msgid "task_error1"
 msgstr "Population size must be digital"
 
-#: src/mvc/algo_cfg.py:111
+#: src/mvc/algo_cfg.py:113
 msgid "task_error2"
 msgstr "Generation number must be digital"
 
-#: src/mvc/algo_cfg.py:118
+#: src/mvc/algo_cfg.py:120
 msgid "task_error3"
 msgstr "Continuous attributes are not supported as sensitive attributes"
 
-#: src/mvc/algo_cfg.py:181
+#: src/mvc/algo_cfg.py:183
 msgid "progress_info_1"
 msgstr "Evolving ... generation {}/{}({}%) "
 
-#: src/mvc/algo_cfg.py:186
+#: src/mvc/algo_cfg.py:188
 msgid "progress_info_2"
 msgstr "Initializing problem instances ..."
 
-#: src/mvc/algo_cfg.py:188
+#: src/mvc/algo_cfg.py:190
 msgid "progress_info_3"
 msgstr "Initializing population"
 
-#: src/mvc/algo_cfg.py:190
+#: src/mvc/algo_cfg.py:192
 msgid "progress_info_4"
 msgstr "Initializing parameters ..."
 
-#: src/mvc/algo_cfg.py:192
+#: src/mvc/algo_cfg.py:194
 msgid "progress_info_5"
 msgstr "Evolution finished!"
 
-#: src/mvc/algo_cfg.py:199
+#: src/mvc/algo_cfg.py:201
 msgid "progress_info_6"
 msgstr "Task stop! generation{}/{}({}%)"
 
@@ -159,10 +159,6 @@ msgstr ""
 #: src/mvc/data_eval.py:163
 msgid "data_eval_result_5"
 msgstr "No fairness problems were found in the current dataset"
-
-#: src/mvc/data_eval.py:254
-msgid "data_eval_result_9"
-msgstr "The analysis result of attribute \"{}\""
 
 #: src/mvc/data_eval.py:256
 msgid "data_eval_result_10"
@@ -589,15 +585,20 @@ msgstr ""
 msgid "download_model_template"
 msgstr "Download model definition file template"
 
-#: templates/model_upload.html:34
+#: templates/model_upload.html:33
+#, fuzzy
+msgid "download_test_file"
+msgstr "Download models"
+
+#: templates/model_upload.html:35
 msgid "choose_model_structure"
 msgstr "Choose model structure file"
 
-#: templates/model_upload.html:36
+#: templates/model_upload.html:37
 msgid "choose_model_para"
 msgstr "Choose model parameters file"
 
-#: templates/model_upload.html:38
+#: templates/model_upload.html:39
 msgid "upload_model_eval"
 msgstr "Upload model and evaluation model"
 
@@ -663,4 +664,13 @@ msgstr "Download models"
 
 #~ msgid "data_cg_fair_info_3"
 #~ msgstr ""
+
+#~ msgid "conditional_analysis_title_1"
+#~ msgstr ""
+#~ "The analysis result of sensitive "
+#~ "attribute {} under the subgroup divided"
+#~ " by legitimate attribute {}."
+
+#~ msgid "data_eval_result_9"
+#~ msgstr "The analysis result of attribute \"{}\""
 
